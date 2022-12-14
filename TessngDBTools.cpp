@@ -375,10 +375,10 @@ bool TessngDBTools::deleteBusStationLine(QList<long> ids)
 	try {
 		gDB.transaction();
 		//需要删除的公交站点线路
-		QList<IBusStationLine*> rmBusStationLine;
+		QList<BusStationLine*> rmBusStationLine;
 
 		for (auto& busLine : gpScene->mlGBusLine) {
-			for (auto& stationLine : busLine->stationLines()) {
+			for (auto& stationLine : busLine->mpBusLine->mlBusStationLine) {
 				if (!ids.contains(stationLine->id()))continue;
 				if (rmBusStationLine.contains(stationLine))continue;
 
@@ -432,7 +432,7 @@ bool TessngDBTools::deleteBusStation(QList<long> ids) {
 		//需要调整内存数据的公交线路
 		QList<GBusLine*> updateBusLine;
 		//需要删除的公交线路
-		QList<IBusStationLine*> rmBSLine;
+		QList<BusStationLine*> rmBSLine;
 		
 		//得到所有需要删除的公交站
 		foreach (auto& station, gpScene->mlGBusStation)
@@ -452,7 +452,7 @@ bool TessngDBTools::deleteBusStation(QList<long> ids) {
 				updateBusLine.push_back(bline);
 			}
 			//搜索该线路存在的所有公交站-线路关系中，所有与当前lineId相同，且stationId包含在ids里的关系记录
-			foreach(auto& sline, bline->stationLines()) {
+			foreach(auto& sline, bline->mpBusLine->mlBusStationLine) {
 				if (rmBSLine.contains(sline)) continue;
 				if(sline->lineId() != bline->id() || !ids.contains(sline->stationId())) continue;
 
@@ -467,11 +467,21 @@ bool TessngDBTools::deleteBusStation(QList<long> ids) {
 		///删除公交站
 		result = removeBusStation(rmBusTstation);
 		if (!result) goto failed;
-		foreach(auto  it, rmBusLine)
-		{
-			gpScene->removeGBusLine(it);
+
+		foreach(auto busLine, gpScene->mlGBusLine) {
+			for (int i = 0; i < busLine->mpBusLine->mlBusStationLine.size();) {
+				if (busLine->mpBusLine->mlBusStationLine[i]->lineId() != busLine->id()
+					|| !ids.contains(busLine->mpBusLine->mlBusStationLine[i]->stationId())) 
+				{
+					i++;
+				}
+				else 
+				{
+					busLine->mpBusLine->mlBusStationLine.removeAt(i);
+				}
+			}
 		}
-		foreach (auto  it , rmBusTstation)
+		foreach (auto it , rmBusTstation)
 		{
 			gpScene->removeGBusStation(it);
 		}
@@ -502,25 +512,23 @@ bool TessngDBTools::deleteBusLine(QList<long> ids) {
 	try {
 		gDB.transaction();
 		QList<GBusLine*> rmBusLine;
-		QList<IBusStationLine*> rmBSLine;
+		QList<BusStationLine*> rmBSLine;
 		foreach(auto bline, gpScene->mlGBusLine) {
 			if (!ids.contains(bline->id())) continue;
 			if (rmBusLine.contains(bline)) continue;
 			rmBusLine.push_back(bline);
-			foreach(auto sline, bline->stationLines()) {
-				if (rmBSLine.contains(sline)) continue;
-				rmBSLine.push_back(sline);
-			}
+			rmBSLine.append(bline->mpBusLine->mlBusStationLine);
 		}
 
 		///删除公交站线路
 		result = removeBusStationLine(rmBSLine);
 		if (!result) goto failed;
 
-		///删除公交线
+		///删除公交线路
 		result = removeBusLine(rmBusLine);
 		if (!result) goto failed;
-		foreach(auto  it, rmBusLine)
+
+		foreach(auto& it, rmBusLine)
 		{
 			gpScene->removeGBusLine(it);
 		}
@@ -556,8 +564,8 @@ bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
 		foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
 		{
 			if (!ids.contains(it->id())) continue;
-			if (rmRouteings.contains(it)) continue;
-			rmRouteings.push_back(it);
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
 		}
 
 		result = removeDrivInfoCollector(rmTemps);
@@ -630,24 +638,24 @@ failed:
 	return result;
 }
 
-/**删除检测器**/
-bool TessngDBTools::deleteVehicleDetector(QList<long> ids) {
+/**删除行程时间检测器**/
+bool TessngDBTools::deleteVehicleTravelDetector(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
-		QList<GVehicleDetector*> rmTemps;
-		foreach(auto it, gpScene->mlGVehicleDetector)
+		QList<GVehicleTravelDetector*> rmTemps;
+		foreach(auto it, gpScene->mlGVehicleTravelDetector)
 		{
-			if (!ids.contains(it->mpVehicleDetector->vehicleDetectorId)) continue;
+			if (!ids.contains(it->mpVehicleTravelDetector->detectorId)) continue;
 			if (rmTemps.contains(it)) continue;
 			rmTemps.push_back(it);
 		}
 
-		//result = removeVehicleConsDetail(rmTemps);
+		result = removeVehicleTravelDetector(rmTemps);
 		if (!result) goto failed;
 
 		foreach(auto it, rmTemps) {
-			gpScene->removeGVehicleDetector(it);
+			gpScene->removeGTravelDetector(it);
 		}
 	}
 	catch (QException& exc) {
@@ -660,7 +668,7 @@ bool TessngDBTools::deleteVehicleDetector(QList<long> ids) {
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "remove VehicleDetector failed! Unknow Error.";
+		qWarning() << "remove VehicleTravelDetector failed! Unknow Error.";
 		result = false;
 	}
 failed:
