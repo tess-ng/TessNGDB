@@ -19,15 +19,36 @@ public:
     /// 相位：相位信号颜色，相位
     bool deleteSignalPhase(QList<long> ids);
 
-    /// 删除信号灯组
-    bool deleteSignalGroup(QList<long> ids);
-    //--------------------------------------公交------------------------------------
+	/// 删除信号灯组
+	bool deleteSignalGroup(QList<long> ids);
 
-    //---------------------------------车辆运行及检测-------------------------------
-    bool deleteVehicleType(QList<long> ids);
-    //-----------------------------------道路及连接---------------------------------
-    /// 删除路径
-    bool deleteRouting(QList<long> ids);
+	//--------------------------------------公交------------------------------------
+	bool deleteBusStationPassengerArriving(QList<long> ids);
+
+	bool deleteBusStationLine(QList<long> ids);
+
+	bool deleteBusStation(QList<long> ids);
+
+	bool deleteBusLine(QList<long> ids);
+
+	//---------------------------------车辆运行及检测-------------------------------
+	/**删除车辆信息采集器**/
+	bool deleteDrivInfoCollector(QList<long> ids);
+
+	/**删除计数器**/
+	bool deleteVehicleQueueCounter(QList<long> ids);
+
+	/**删除行程时间检测器**/
+	bool deleteVehicleTravelDetector(QList<long> ids);
+
+	/**删除检测器**/
+	bool deleteVehicleDetector(QList<long> ids);
+
+	/**删除限速区**/
+	bool deleteReduceSpeedArea(QList<long> ids);
+	//-----------------------------------道路及连接---------------------------------
+	/// 删除路径
+	bool deleteRouting(QList<long> ids);
 
     /// 删除连接段
     bool deleteConnectors(QList<long> ids);
