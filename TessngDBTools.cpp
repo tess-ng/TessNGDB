@@ -341,7 +341,31 @@ failed:
 	}
 	return result;
 }
+bool TessngDBTools::deleteVehicleType(QList<long> ids) {
+	bool result = true;
+	try {
 
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove Routes failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
 bool TessngDBTools::deleteConnectors(QList<long> ids) 
 {
 	bool result = true;
