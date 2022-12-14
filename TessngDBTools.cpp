@@ -137,12 +137,14 @@ bool TessngDBTools::deleteSignalColor(long id, QList<int> colors)
 		//开启事务
 		gDB.transaction();
 
-		SignalPhase* dPhase;
+		SignalPhase* dPhase = NULL;
 		for(auto& group : gpScene->mlSignalGroup) {
 			for (auto& phase : group->mlPhase) {
 				if (phase->id() == id) dPhase = phase;
 			}
 		}
+		if (!dPhase || dPhase->mlSignalColor.size() < 1) return false;
+
 		//删除相位颜色
 		result = removeSignalColor(dPhase, colors);
 		if (!result)goto failed;
@@ -192,6 +194,7 @@ bool TessngDBTools::deleteSignalPhase(QList<long> ids)
 		gDB.transaction();
 
 		QList<SignalPhase*> rmSignalPhases;
+		QList<GSignalLamp*> rmSignalLamp;
 		for(SignalGroup * group : gpScene->mlSignalGroup) {
 			for (SignalPhase* phase : group->mlPhase) {
 				if (!ids.contains(phase->id())) continue;
@@ -199,8 +202,17 @@ bool TessngDBTools::deleteSignalPhase(QList<long> ids)
 				rmSignalPhases.push_back(phase);
 			}
 		}
-		
+		for(GSignalLamp * it : gpScene->mlGSignalLamp) {
+			if (!ids.contains(it->signalPhase()->id())) continue;
+			if (rmSignalLamp.contains(it)) continue;
+			rmSignalLamp.push_back(it);
+		}
+
 		//删除信号灯
+		result = removeSignalLamp(rmSignalLamp);
+		if (!result)goto failed;
+
+		//删除相位
 		result = removeSignalPhase(rmSignalPhases);
 		if (!result)goto failed;
 
