@@ -74,34 +74,12 @@ bool TessngDBToolsBase::removeSignalLamp(const QList<GSignalLamp*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeSignalLamp(const QList<ISignalLamp*>& list)
-{
-    bool result = true;
-    for (auto& it : list) {
-        result = removeSignalLamp(it);
-        if (!result) return false;
-    }
-    return result;
-}
-
 bool TessngDBToolsBase::removeSignalLamp(GSignalLamp* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
 
     QString deleteSql = QString(R"(delete from SignalLamp where signalLampID=%1;)").arg(it->mpSignalLamp->signalLampID);
-    result = slQuery.exec(deleteSql);
-    if (!result) throw PH::Exception(gDB.lastError().text().toStdString());
-
-    return result;
-}
-
-bool TessngDBToolsBase::removeSignalLamp(ISignalLamp* it)
-{
-    QSqlQuery slQuery(gDB);
-    bool result = true;
-
-    QString deleteSql = QString(R"(delete from SignalLamp where signalLampID=%1;)").arg(it->id());
     result = slQuery.exec(deleteSql);
     if (!result) throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -216,13 +194,11 @@ bool TessngDBToolsBase::removeBusStationPassengerArriving(PassengerArriving* it)
 }
 
 /// 公交站点-线路
-bool TessngDBToolsBase::removeBusStationLine(const QList<IBusStationLine*>& list)
+bool TessngDBToolsBase::removeBusStationLine(const QList<BusStationLine*>& list)
 {
     bool result = true;
     for (auto& it : list) {
-        BusStationLine* bl = dynamic_cast<BusStationLine*>(it);
-        if (!bl) continue;
-        result = removeBusStationLine(bl);
+        result = removeBusStationLine(it);
         if (!result) return false;
     }
     return result;

@@ -564,37 +564,6 @@ bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
 		QList<GVehicleDrivInfoCollector*> rmTemps;
 		foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
 		{
-			gpScene->removeGBusLine(it);
-		}
-	}
-	catch (QException& exc) {
-		qWarning() << exc.what();
-		result = false;
-	}
-	catch (const std::exception& exc)
-	{
-		qWarning() << exc.what();
-		result = false;
-	}
-	catch (...) {
-		qWarning() << "remove BusLine failed! Unknow Error.";
-		result = false;
-	}
-failed:
-	result = gDB.commit() && result;
-	if (!result) {
-		gDB.rollback();
-	}
-	return result;
-}
-/**删除采集器**/
-bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
-	bool result = true;
-	try {
-		gDB.transaction();
-		QList<GVehicleDrivInfoCollector*> rmTemps;
-		foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
-		{
 			if (!ids.contains(it->id())) continue;
 			if (rmTemps.contains(it)) continue;
 			rmTemps.push_back(it);
