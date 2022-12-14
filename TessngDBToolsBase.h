@@ -15,6 +15,7 @@ class PassengerArriving;
 class BusStationLine;
 class GBusLine;
 class GBusStation;
+class IBusStationLine;
 
 class GVehicleDrivInfoCollector;
 class GVehicleQueueCounter;
@@ -68,7 +69,7 @@ protected:
     bool removeBusStationPassengerArriving(const QList<PassengerArriving*>& list);
 
     /// 公交站点-线路：乘客到站，公交站点-线路
-    bool removeBusStationLine(const QList<BusStationLine*>& list);
+    bool removeBusStationLine(const QList<IBusStationLine*>& list);
 
     /// 公交线路的路段或连接段序列
     bool removeBusLineRoad(const QList<GBusLine*>& list);

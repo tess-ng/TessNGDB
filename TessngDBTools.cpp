@@ -43,6 +43,7 @@
 #include "Link.h"
 #include "ILink.h"
 #include "Vehicletype.h"
+#include "GVehicleDetector.h"
 
 #include <QException>
 #include <QDebug>
@@ -298,9 +299,321 @@ failed:
 }
 
 //--------------------------------------公交------------------------------------
+bool TessngDBTools::deleteBusStation(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GBusStation*> rmBusTstation;
+		QList<GBusLine*> rmBusLine;
+		QList<IBusStationLine*> rmBSLine;
+		foreach (auto it , gpScene->mlGBusStation)
+		{
+			if (!ids.contains(it->id())) continue;
+			if (rmBusTstation.contains(it)) continue;
+			rmBusTstation.push_back(it);
+		}
+		foreach (auto it , rmBusTstation)
+		{
+			foreach(auto bline, gpScene->mlGBusLine) {
+				if (!bline->stations().contains(it)) continue;
+				if (rmBusLine.contains(bline)) continue;
+				rmBusLine.push_back(bline);
+				foreach(auto sline, bline->stationLines()) {
+					if (rmBSLine.contains(sline)) continue;
+					rmBSLine.push_back(sline);
+				}
+			}
+		}
+		
+		///删除公交站线路
+		result = removeBusStationLine(rmBSLine);
+		if (!result) goto failed;
 
-//---------------------------------车辆运行及检测-------------------------------
+		///删除公交站
+		result = removeBusStation(rmBusTstation);
+		if (!result) goto failed;
+		foreach(auto  it, rmBusLine)
+		{
+			gpScene->removeGBusLine(it);
+		}
+		foreach (auto  it , rmBusTstation)
+		{
+			gpScene->removeGBusStation(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove BusStation failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+bool TessngDBTools::deleteBusLine(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GBusLine*> rmBusLine;
+		QList<IBusStationLine*> rmBSLine;
+		foreach(auto bline, gpScene->mlGBusLine) {
+			if (!ids.contains(bline->id())) continue;
+			if (rmBusLine.contains(bline)) continue;
+			rmBusLine.push_back(bline);
+			foreach(auto sline, bline->stationLines()) {
+				if (rmBSLine.contains(sline)) continue;
+				rmBSLine.push_back(sline);
+			}
+		}
 
+		///删除公交站线路
+		result = removeBusStationLine(rmBSLine);
+		if (!result) goto failed;
+
+		///删除公交线
+		result = removeBusLine(rmBusLine);
+		if (!result) goto failed;
+		foreach(auto  it, rmBusLine)
+		{
+			gpScene->removeGBusLine(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove BusLine failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+/**删除采集器**/
+bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GVehicleDrivInfoCollector*> rmTemps;
+		foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
+		{
+			if (!ids.contains(it->id())) continue;
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
+		}
+
+		result = removeDrivInfoCollector(rmTemps);
+		if (!result) goto failed;
+
+		foreach(auto it, rmTemps) {
+			gpScene->removeGCollector(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**删除计数器**/
+bool TessngDBTools::deleteVehicleQueueCounter(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+
+		QList<GVehicleQueueCounter*> rmTemps;
+		foreach(auto it, gpScene->mlGVehicleQueueCounter)
+		{
+			if (!ids.contains(it->mpVehicleQueueCounter->queueCounterID)) continue;
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
+		}
+
+		result = removeVehicleQueueCounter(rmTemps);
+		if (!result) goto failed;
+
+		foreach(auto it, rmTemps) {
+			gpScene->removeGQueueCounter(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove VehicleQueueCounter failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**删除行程时间检测器**/
+bool TessngDBTools::deleteVehicleTravelDetector(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GVehicleTravelDetector*> rmTemps;
+		foreach(auto it, gpScene->mlGVehicleTravelDetector)
+		{
+			if (!ids.contains(it->mpVehicleTravelDetector->detectorId)) continue;
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
+		}
+
+		result = removeVehicleTravelDetector(rmTemps);
+		if (!result) goto failed;
+
+		foreach(auto it, rmTemps) {
+			gpScene->removeGTravelDetector(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove VehicleTravelDetector failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**删除检测器**/
+bool TessngDBTools::deleteVehicleDetector(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GVehicleDetector*> rmTemps;
+		foreach(auto it, gpScene->mlGVehicleDetector)
+		{
+			if (!ids.contains(it->mpVehicleDetector->vehicleDetectorId)) continue;
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
+		}
+
+		//result = removeVehicleConsDetail(rmTemps);
+		if (!result) goto failed;
+
+		foreach(auto it, rmTemps) {
+			gpScene->removeGVehicleDetector(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove VehicleDetector failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**删除限速区**/
+bool TessngDBTools::deleteReduceSpeedArea(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GReduceSpeedArea*> rmTemps;
+		foreach(auto it, gpScene->mlGReduceSpeedArea)
+		{
+			if (!ids.contains(it->mpReduceSpeedArea->reduceSpeedAreaID)) continue;
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
+		}
+
+		result = removeReduceSpeedArea(rmTemps);
+		if (!result) goto failed;
+
+		foreach(auto it, rmTemps) {
+			gpScene->removeGReduceSpeedArea(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
 //-----------------------------------道路及连接---------------------------------
 bool TessngDBTools::deleteRouting(QList<long> ids) 
 {
@@ -341,31 +654,7 @@ failed:
 	}
 	return result;
 }
-bool TessngDBTools::deleteVehicleType(QList<long> ids) {
-	bool result = true;
-	try {
 
-	}
-	catch (QException& exc) {
-		qWarning() << exc.what();
-		result = false;
-	}
-	catch (const std::exception& exc)
-	{
-		qWarning() << exc.what();
-		result = false;
-	}
-	catch (...) {
-		qWarning() << "remove Routes failed! Unknow Error.";
-		result = false;
-	}
-failed:
-	result = gDB.commit() && result;
-	if (!result) {
-		gDB.rollback();
-	}
-	return result;
-}
 bool TessngDBTools::deleteConnectors(QList<long> ids) 
 {
 	bool result = true;

@@ -227,11 +227,13 @@ bool TessngDBToolsBase::removeBusStationPassengerArriving(PassengerArriving* it)
 }
 
 /// 公交站点-线路
-bool TessngDBToolsBase::removeBusStationLine(const QList<BusStationLine*>& list)
+bool TessngDBToolsBase::removeBusStationLine(const QList<IBusStationLine*>& list)
 {
     bool result = true;
     for (auto& it : list) {
-        result = removeBusStationLine(it);
+        BusStationLine* bl = dynamic_cast<BusStationLine*>(it);
+        if (!bl) continue;
+        result = removeBusStationLine(bl);
         if (!result) return false;
     }
     return result;
