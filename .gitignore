@@ -1,0 +1,17 @@
+TESSNG_Plugin
+OutPut
+.vs
+*.mdb
+*.ldb
+*.sln
+
+
+*.o
+*.dll
+*.exe
+*.qmake.stash
+*.pro.user
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
