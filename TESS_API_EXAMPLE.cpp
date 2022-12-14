@@ -74,7 +74,6 @@ void TESS_API_EXAMPLE::on_btnSignalLamp_released()
 
 void TESS_API_EXAMPLE::on_btnPhaseGreen_released()
 {
-    QList<struct SignalColor> colors = { {"Green", 1} };
     bool result = TessngDBTools::getInstance()->deleteSignalColor(1, {1});
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除相位颜色", "删除成功");

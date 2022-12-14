@@ -109,16 +109,6 @@ bool TessngDBToolsBase::removeSignalLamp(ISignalLamp* it)
 }
 
 ///  相位信号颜色
-bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, QList<struct SignalColor> colors)
-{
-    bool result = true;
-    for (auto& it : colors) {
-        result = removeSignalColor(signalPhase, it);
-        if (!result) return false;
-    }
-    return result;
-}
-
 bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, QList<int> serialNumbers)
 {
     bool result = true;
@@ -126,16 +116,11 @@ bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, QList<
         result = removeSignalColor(signalPhase, it);
         if (!result) return false;
     }
-    return result;
-}
 
-bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, struct SignalColor color)
-{
     QSqlQuery slQuery(gDB);
-    bool result = true;
-
-    QString deleteSql = QString(R"(delete from SignalColor where signalPhaseID=%1 and color=%2;)").arg(signalPhase->signalPhaseID).arg(color.color);
-    result = slQuery.exec(deleteSql);
+    QString updateSql = QString(R"(update SignalColor set serialNumber=serialNumber-%1 where signalPhaseID=%2 and serialNumber>%3;)")
+        .arg(serialNumbers.size()).arg(signalPhase->signalPhaseID).arg(serialNumbers.back());
+    result = slQuery.exec(updateSql);
     if (!result) throw PH::Exception(gDB.lastError().text().toStdString());
 
     return result;
@@ -168,7 +153,11 @@ bool TessngDBToolsBase::removeSignalPhase(SignalPhase* it)
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    result = removeSignalColor(it, it->mlSignalColor);
+    QList<int> serialNumbers;
+    for (int i = 1; i <= it->mlSignalColor.size(); i++) {
+        serialNumbers.push_back(i);
+    }
+    result = removeSignalColor(it, serialNumbers);
 
     QString deleteSql = QString(R"(delete from SignalPhase where signalPhaseID=%1;)").arg(it->signalPhaseID);
     result = slQuery.exec(deleteSql) && result;

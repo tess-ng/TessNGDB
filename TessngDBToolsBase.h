@@ -54,7 +54,6 @@ protected:
     bool removeSignalLamp(const QList<ISignalLamp*>& list);
 
     /// 相位信号颜色
-    bool removeSignalColor(const SignalPhase* signalPhase, QList<struct SignalColor> colors);
     bool removeSignalColor(const SignalPhase* signalPhase, QList<int> serialNumbers);
 
     /// 相位：相位信号颜色，相位
@@ -156,7 +155,6 @@ private:
     bool removeSignalLamp(ISignalLamp* it);
 
     /// 相位信号颜色
-    bool removeSignalColor(const SignalPhase* signalPhase, struct SignalColor color);
     bool removeSignalColor(const SignalPhase* signalPhase, int serialNumber);
 
     /// 相位
