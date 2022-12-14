@@ -496,6 +496,7 @@ failed:
 	}
 	return result;
 }
+
 bool TessngDBTools::deleteBusLine(QList<long> ids) {
 	bool result = true;
 	try {
@@ -544,6 +545,8 @@ failed:
 	}
 	return result;
 }
+
+//---------------------------------车辆运行及检测-------------------------------
 /**删除采集器**/
 bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
 	bool result = true;
@@ -708,6 +711,7 @@ failed:
 	}
 	return result;
 }
+
 //-----------------------------------道路及连接---------------------------------
 bool TessngDBTools::deleteRouting(QList<long> ids) 
 {
@@ -748,6 +752,7 @@ failed:
 	}
 	return result;
 }
+
 bool TessngDBTools::deleteConnectors(QList<long> ids) 
 {
 	bool result = true;
