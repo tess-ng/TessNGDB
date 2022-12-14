@@ -11,6 +11,7 @@
 #include "BusStationLine.h"
 #include "GBusLine.h"
 #include "GBusStation.h"
+#include "BusStation.h"
 
 #include "GVehicleDrivInfoCollector.h"
 #include "VehicleDrivInfoCollector.h"
@@ -311,29 +312,152 @@ failed:
 }
 
 //--------------------------------------公交------------------------------------
+bool TessngDBTools::deleteBusStationPassengerArriving(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		//需要删除的乘客到站
+		QList<PassengerArriving*> rmPassengerArriving;
+
+		for (auto& busLine : gpScene->mlGBusLine) {
+			for (auto& stationLine : busLine->mpBusLine->mlBusStationLine) {
+				for (auto& passengerArriving : stationLine->mlPassengerArriving) {
+					if (!ids.contains(passengerArriving->passengerArrivingID))continue;
+					if (rmPassengerArriving.contains(passengerArriving))continue;
+
+					rmPassengerArriving.push_back(passengerArriving);
+				}
+			}
+		}
+
+		///删除乘客到站
+		result = removeBusStationPassengerArriving(rmPassengerArriving);
+		if (!result) goto failed;
+
+		///删除乘客到站内存
+		for (auto& busLine : gpScene->mlGBusLine) {
+			for (auto& stationLine : busLine->mpBusLine->mlBusStationLine) {
+				for (int i = 0; i < stationLine->mlPassengerArriving.size();) {
+					if (!ids.contains(stationLine->mlPassengerArriving[i]->passengerArrivingID)) {
+						i++;
+					}
+					else {
+						stationLine->mlPassengerArriving.removeOne(stationLine->mlPassengerArriving[i]);
+					}
+				}
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove BusStation failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteBusStationLine(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		//需要删除的公交站点线路
+		QList<BusStationLine*> rmBusStationLine;
+
+		for (auto& busLine : gpScene->mlGBusLine) {
+			for (auto& stationLine : busLine->mpBusLine->mlBusStationLine) {
+				if (!ids.contains(stationLine->id()))continue;
+				if (rmBusStationLine.contains(stationLine))continue;
+
+				rmBusStationLine.push_back(stationLine);
+			}
+		}
+
+		///删除公交站点线路
+		result = removeBusStationLine(rmBusStationLine);
+		if (!result) goto failed;
+
+		///删除公交站点线路内存
+		for (auto& busLine : gpScene->mlGBusLine) {
+			for (int i = 0; i < busLine->mpBusLine->mlBusStationLine.size();) {
+				if (!ids.contains(busLine->mpBusLine->mlBusStationLine[i]->id())) {
+					i++;
+				}
+				else {
+					busLine->mpBusLine->mlBusStationLine.removeAt(i);
+				}
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove BusStation failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
 bool TessngDBTools::deleteBusStation(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
+		//需要删除的公交站
 		QList<GBusStation*> rmBusTstation;
-		QList<GBusLine*> rmBusLine;
-		QList<IBusStationLine*> rmBSLine;
-		foreach (auto it , gpScene->mlGBusStation)
+		//需要调整内存数据的公交线路
+		QList<GBusLine*> updateBusLine;
+		//需要删除的公交线路
+		QList<BusStationLine*> rmBSLine;
+		
+		//得到所有需要删除的公交站
+		foreach (auto& station, gpScene->mlGBusStation)
 		{
-			if (!ids.contains(it->id())) continue;
-			if (rmBusTstation.contains(it)) continue;
-			rmBusTstation.push_back(it);
+			if (!ids.contains(station->id())) continue;
+			if (rmBusTstation.contains(station)) continue;
+			rmBusTstation.push_back(station);
 		}
-		foreach (auto it , rmBusTstation)
-		{
-			foreach(auto bline, gpScene->mlGBusLine) {
-				if (!bline->stations().contains(it)) continue;
-				if (rmBusLine.contains(bline)) continue;
-				rmBusLine.push_back(bline);
-				foreach(auto sline, bline->stationLines()) {
-					if (rmBSLine.contains(sline)) continue;
-					rmBSLine.push_back(sline);
-				}
+
+		//遍历所有场景中的公交站-线路关系
+		foreach(auto bline, gpScene->mlGBusLine) {
+			//检查该线路中是否存在要被删除的公交站，并记录该线路，等待修改内存数据
+			foreach(auto& station, bline->stations()) {
+				if (!ids.contains(station->id())) continue;
+				if (updateBusLine.contains(bline)) continue;
+
+				updateBusLine.push_back(bline);
+			}
+			//搜索该线路存在的所有公交站-线路关系中，所有与当前lineId相同，且stationId包含在ids里的关系记录
+			foreach(auto& sline, bline->mpBusLine->mlBusStationLine) {
+				if (rmBSLine.contains(sline)) continue;
+				if(sline->lineId() != bline->id() || !ids.contains(sline->stationId())) continue;
+
+				rmBSLine.push_back(sline);
 			}
 		}
 		
@@ -344,11 +468,21 @@ bool TessngDBTools::deleteBusStation(QList<long> ids) {
 		///删除公交站
 		result = removeBusStation(rmBusTstation);
 		if (!result) goto failed;
-		foreach(auto  it, rmBusLine)
-		{
-			gpScene->removeGBusLine(it);
+
+		foreach(auto busLine, gpScene->mlGBusLine) {
+			for (int i = 0; i < busLine->mpBusLine->mlBusStationLine.size();) {
+				if (busLine->mpBusLine->mlBusStationLine[i]->lineId() != busLine->id()
+					|| !ids.contains(busLine->mpBusLine->mlBusStationLine[i]->stationId())) 
+				{
+					i++;
+				}
+				else 
+				{
+					busLine->mpBusLine->mlBusStationLine.removeAt(i);
+				}
+			}
 		}
-		foreach (auto  it , rmBusTstation)
+		foreach (auto it , rmBusTstation)
 		{
 			gpScene->removeGBusStation(it);
 		}
@@ -373,30 +507,62 @@ failed:
 	}
 	return result;
 }
+
 bool TessngDBTools::deleteBusLine(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
 		QList<GBusLine*> rmBusLine;
-		QList<IBusStationLine*> rmBSLine;
+		QList<BusStationLine*> rmBSLine;
 		foreach(auto bline, gpScene->mlGBusLine) {
 			if (!ids.contains(bline->id())) continue;
 			if (rmBusLine.contains(bline)) continue;
 			rmBusLine.push_back(bline);
-			foreach(auto sline, bline->stationLines()) {
-				if (rmBSLine.contains(sline)) continue;
-				rmBSLine.push_back(sline);
-			}
+			rmBSLine.append(bline->mpBusLine->mlBusStationLine);
 		}
 
 		///删除公交站线路
 		result = removeBusStationLine(rmBSLine);
 		if (!result) goto failed;
 
-		///删除公交线
+		///删除公交线路
 		result = removeBusLine(rmBusLine);
 		if (!result) goto failed;
-		foreach(auto  it, rmBusLine)
+
+		foreach(auto& it, rmBusLine)
+		{
+			gpScene->removeGBusLine(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove BusLine failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+//---------------------------------车辆运行及检测-------------------------------
+/**删除采集器**/
+bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GVehicleDrivInfoCollector*> rmTemps;
+		foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
 		{
 			gpScene->removeGBusLine(it);
 		}
@@ -493,7 +659,7 @@ bool TessngDBTools::deleteVehicleQueueCounter(QList<long> ids) {
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "remove VehicleQueueCounter failed! Unknow Error.";
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
 		result = false;
 	}
 failed:
@@ -545,47 +711,6 @@ failed:
 	return result;
 }
 
-/**删除检测器**/
-bool TessngDBTools::deleteVehicleDetector(QList<long> ids) {
-	bool result = true;
-	try {
-		gDB.transaction();
-		QList<GVehicleDetector*> rmTemps;
-		foreach(auto it, gpScene->mlGVehicleDetector)
-		{
-			if (!ids.contains(it->mpVehicleDetector->vehicleDetectorId)) continue;
-			if (rmTemps.contains(it)) continue;
-			rmTemps.push_back(it);
-		}
-
-		//result = removeVehicleConsDetail(rmTemps);
-		if (!result) goto failed;
-
-		foreach(auto it, rmTemps) {
-			gpScene->removeGVehicleDetector(it);
-		}
-	}
-	catch (QException& exc) {
-		qWarning() << exc.what();
-		result = false;
-	}
-	catch (const std::exception& exc)
-	{
-		qWarning() << exc.what();
-		result = false;
-	}
-	catch (...) {
-		qWarning() << "remove VehicleDetector failed! Unknow Error.";
-		result = false;
-	}
-failed:
-	result = gDB.commit() && result;
-	if (!result) {
-		gDB.rollback();
-	}
-	return result;
-}
-
 /**删除限速区**/
 bool TessngDBTools::deleteReduceSpeedArea(QList<long> ids) {
 	bool result = true;
@@ -626,6 +751,7 @@ failed:
 	}
 	return result;
 }
+
 //-----------------------------------道路及连接---------------------------------
 bool TessngDBTools::deleteRouting(QList<long> ids) 
 {
