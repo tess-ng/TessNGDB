@@ -35,9 +35,17 @@ private slots:
 
     void on_btnGuideArrow_released();
 
+    void on_btnReduceSpeedInterval_released();
+
+    void on_btnReduceSpeedVehiType_released();
+
     void on_btnReduceSpeedArea_released();
 
+    void on_btnDepartureInterval_released();
+
     void on_btnDeparturePoint_released();
+
+    void on_btnVehicleConsDetail_released();
 
     void on_btnVehicleConstitutent_released();
 

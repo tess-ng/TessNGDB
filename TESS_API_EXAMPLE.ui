@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>279</width>
+    <width>306</width>
     <height>802</height>
    </rect>
   </property>
@@ -113,24 +113,10 @@
        <string>车辆运行及检测</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btnVehicleTravelDetector">
-         <property name="text">
-          <string>删除行程时间检测器</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="1" colspan="2">
         <widget class="QPushButton" name="btnVehicleQueueCounter">
          <property name="text">
           <string>删除排队计数器</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="btnVehicleDrivInfoCollecter">
-         <property name="text">
-          <string>删除车辆信息采集器</string>
          </property>
         </widget>
        </item>
@@ -141,6 +127,27 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btnVehicleDrivInfoCollecter">
+         <property name="text">
+          <string>删除车辆信息采集器</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="btnDepartureInterval">
+         <property name="text">
+          <string>删除发车间隔</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnVehicleTravelDetector">
+         <property name="text">
+          <string>删除行程时间检测器</string>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QPushButton" name="btnReduceSpeedArea">
          <property name="text">
@@ -148,7 +155,35 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="2">
+       <item row="5" column="0">
+        <widget class="QPushButton" name="btnVehicleConsDetail">
+         <property name="text">
+          <string>删除车型组成与车型占比</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QPushButton" name="btnVehicleType">
+         <property name="text">
+          <string>删除车型</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="btnVehicleConstitutent">
+         <property name="text">
+          <string>删除车型组成</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="btnReduceSpeedInterval">
+         <property name="text">
+          <string>删除限速区时间间隔</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
         <widget class="QPushButton" name="btnDeparturePoint">
          <property name="text">
           <string>删除发车点</string>
@@ -156,16 +191,9 @@
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="QPushButton" name="btnVehicleConstitutent">
+        <widget class="QPushButton" name="btnReduceSpeedVehiType">
          <property name="text">
-          <string>删除车型组成</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="2">
-        <widget class="QPushButton" name="btnVehicleType">
-         <property name="text">
-          <string>删除车型</string>
+          <string>删除限速区限速车型</string>
          </property>
         </widget>
        </item>
@@ -269,7 +297,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>279</width>
+     <width>306</width>
      <height>23</height>
     </rect>
    </property>
@@ -286,24 +314,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnLink</sender>
-   <signal>released()</signal>
-   <receiver>TESS_API_EXAMPLEClass</receiver>
-   <slot>on_btnLink_released()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>122</x>
-     <y>623</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>329</x>
-     <y>672</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>test_remove_link_slot()</slot>
   <slot>on_btnLink_released()</slot>
