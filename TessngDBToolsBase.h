@@ -52,7 +52,6 @@ protected:
     //------------------------------------信号控制----------------------------------
     /// 信号灯
     bool removeSignalLamp(const QList<GSignalLamp*>& list);
-    bool removeSignalLamp(const QList<ISignalLamp*>& list);
 
     /// 相位信号颜色
     bool removeSignalColor(const SignalPhase* signalPhase, QList<int> serialNumbers);
@@ -68,7 +67,7 @@ protected:
     bool removeBusStationPassengerArriving(const QList<PassengerArriving*>& list);
 
     /// 公交站点-线路：乘客到站，公交站点-线路
-    bool removeBusStationLine(const QList<IBusStationLine*>& list);
+    bool removeBusStationLine(const QList<BusStationLine*>& list);
 
     /// 公交线路的路段或连接段序列
     bool removeBusLineRoad(const QList<GBusLine*>& list);
@@ -153,7 +152,6 @@ private:
     //------------------------------------信号控制----------------------------------
     /// 信号灯
     bool removeSignalLamp(GSignalLamp* it);
-    bool removeSignalLamp(ISignalLamp* it);
 
     /// 相位信号颜色
     bool removeSignalColor(const SignalPhase* signalPhase, int serialNumber);

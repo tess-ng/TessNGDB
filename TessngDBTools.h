@@ -21,20 +21,25 @@ public:
 
 	/// 删除信号灯组
 	bool deleteSignalGroup(QList<long> ids);
+
 	//--------------------------------------公交------------------------------------
+	bool deleteBusStationPassengerArriving(QList<long> ids);
+
+	bool deleteBusStationLine(QList<long> ids);
+
 	bool deleteBusStation(QList<long> ids);
+
 	bool deleteBusLine(QList<long> ids);
-	/**删除采集器**/
+
+	//---------------------------------车辆运行及检测-------------------------------
+	/**删除车辆信息采集器**/
 	bool deleteDrivInfoCollector(QList<long> ids);
 
-	/**删除计数器**/
+	/**删除排队计数器**/
 	bool deleteVehicleQueueCounter(QList<long> ids);
 
 	/**删除行程时间检测器**/
 	bool deleteVehicleTravelDetector(QList<long> ids);
-
-	/**删除检测器**/
-	bool deleteVehicleDetector(QList<long> ids);
 
 	/**删除限速区**/
 	bool deleteReduceSpeedArea(QList<long> ids);
