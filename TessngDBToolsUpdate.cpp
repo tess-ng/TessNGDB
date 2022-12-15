@@ -25,6 +25,14 @@
 #include "signalphase.h"
 #include "signalgroup.h"
 #include "gsignallamp.h"
+#include "gvehicledrivinfocollector.h"
+#include "VehicleDrivInfoCollector.h"
+#include "gvehiclequeuecounter.h"
+#include "VehicleQueueCounter.h"
+#include "gvehicletraveldetector.h"
+#include "VehicleTravelDetector.h"
+#include "GVehicleDetector.h"
+#include "VehicleDetector.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
@@ -711,6 +719,200 @@ bool TessngDBToolsUpdate::updateSignalLamps(const QList<GSignalLamp*>& list){
         result = false;
     }
 failed:
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateVehicleDrivInfoCollectors(const QList<GVehicleDrivInfoCollector*>& list){
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        QSqlQuery  query(gDB);
+        foreach (auto it, list) {
+            QString sql="UPDATE VehicleDrivInfoCollecter set ";
+            sql+=QString("name='%1'").arg(it->mpVehicleDrivInfoCollector->name);
+            sql+=QString(",roadID=%1").arg(it->mpVehicleDrivInfoCollector->roadID);
+            sql+=QString(",laneNumber=%1").arg(it->mpVehicleDrivInfoCollector->laneNumber);
+            sql+=QString(",toLaneNumber=%1").arg(it->mpVehicleDrivInfoCollector->toLaneNumber);
+            sql+=QString(",x=%1").arg(it->mpVehicleDrivInfoCollector->x);
+            sql+=QString(",y=%1").arg(it->mpVehicleDrivInfoCollector->y);
+            sql+=QString(",z=%1").arg(it->mpVehicleDrivInfoCollector->x);
+            sql+=QString(",distance=%1").arg(it->mpVehicleDrivInfoCollector->distance);
+            sql+=QString(",dataInterval=%1").arg(it->mpVehicleDrivInfoCollector->dataInterval);
+            sql+=QString(",startTime=%1").arg(it->mpVehicleDrivInfoCollector->startTime);
+            sql+=QString(",endTime=%1").arg(it->mpVehicleDrivInfoCollector->endTime);
+            sql+=QString(" WHERE collecterID=%1").arg(it->mpVehicleDrivInfoCollector->collecterID);
+            query.prepare(sql);
+            result=query.exec();
+            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update VehicleDrivInfoCollectors failed! Unknow Error.";
+        result = false;
+    }
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateVehicleQueueCounters(const QList<GVehicleQueueCounter*>& list){
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        QSqlQuery  query(gDB);
+        foreach (auto it, list) {
+            QString sql="UPDATE VehicleQueueCounter set ";
+            sql+=QString("name='%1'").arg(it->mpVehicleQueueCounter->name);
+            sql+=QString(",roadID=%1").arg(it->mpVehicleQueueCounter->roadID);
+            sql+=QString(",laneNumber=%1").arg(it->mpVehicleQueueCounter->laneNumber);
+            sql+=QString(",toLaneNumber=%1").arg(it->mpVehicleQueueCounter->toLaneNumber);
+            sql+=QString(",x=%1").arg(it->mpVehicleQueueCounter->x);
+            sql+=QString(",y=%1").arg(it->mpVehicleQueueCounter->y);
+            sql+=QString(",z=%1").arg(it->mpVehicleQueueCounter->x);
+            sql+=QString(",speedLowLimit=%1").arg(it->mpVehicleQueueCounter->speedLowLimit);
+            sql+=QString(",speedUpLimit=%1").arg(it->mpVehicleQueueCounter->speedUpLimit);
+            sql+=QString(",maxDistInterval=%1").arg(it->mpVehicleQueueCounter->maxDistInterval);
+            sql+=QString(",maxQueueLength=%1").arg(it->mpVehicleQueueCounter->maxQueueLength);
+            sql+=QString(",distance=%1").arg(it->mpVehicleQueueCounter->distance);
+            sql+=QString(",dataInterval=%1").arg(it->mpVehicleQueueCounter->dataInterval);
+            sql+=QString(",startTime=%1").arg(it->mpVehicleQueueCounter->startTime);
+            sql+=QString(",endTime=%1").arg(it->mpVehicleQueueCounter->endTime);
+            sql+=QString(",countInterval=%1").arg(it->mpVehicleQueueCounter->countInterval);
+            sql+=QString(" WHERE QueueCounterID=%1").arg(it->mpVehicleQueueCounter->queueCounterID);
+            query.prepare(sql);
+            result=query.exec();
+            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update VehicleQueueCounters failed! Unknow Error.";
+        result = false;
+    }
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateVehicleTravelDetectors(const QList<GVehicleTravelDetector*>& list){
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        QSqlQuery  query(gDB);
+        foreach (auto it, list) {
+            QString sql="UPDATE VehicleTravelDetector set ";
+            sql+=QString("name='%1'").arg(it->mpVehicleTravelDetector->name);
+            sql+=QString(",startRoadId=%1").arg(it->mpVehicleTravelDetector->startRoadId);
+            sql+=QString(",start_laneNumber=%1").arg(it->mpVehicleTravelDetector->start_laneNumber);
+            sql+=QString(",start_toLaneNumber=%1").arg(it->mpVehicleTravelDetector->start_toLaneNumber);
+            sql+=QString(",startDist=%1").arg(it->mpVehicleTravelDetector->startDist);
+            sql+=QString(",startX=%1").arg(it->mpVehicleTravelDetector->startX);
+            sql+=QString(",startY=%1").arg(it->mpVehicleTravelDetector->startY);
+            sql+=QString(",teminalRoadId=%1").arg(it->mpVehicleTravelDetector->teminalRoadId);
+            sql+=QString(",teminal_laneNumber=%1").arg(it->mpVehicleTravelDetector->teminal_laneNumber);
+            sql+=QString(",teminal_toLaneNumber=%1").arg(it->mpVehicleTravelDetector->teminal_toLaneNumber);
+            sql+=QString(",teminalDist=%1").arg(it->mpVehicleTravelDetector->teminalDist);
+            sql+=QString(",teminalX=%1").arg(it->mpVehicleTravelDetector->teminalX);
+            sql+=QString(",teminalY=%1").arg(it->mpVehicleTravelDetector->teminalY);
+            sql+=QString(",startTime=%1").arg(it->mpVehicleTravelDetector->startTime);
+            sql+=QString(",endTime=%1").arg(it->mpVehicleTravelDetector->endTime);
+            sql+=QString(",dataInterval=%1").arg(it->mpVehicleTravelDetector->dataInterval);
+            sql+=QString(",shortestDistance=%1").arg(it->mpVehicleTravelDetector->shortestDistance);
+            sql+=QString(" WHERE detectorId=%1").arg(it->mpVehicleTravelDetector->detectorId);
+            query.prepare(sql);
+            result=query.exec();
+            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update VehicleTravelDetectors failed! Unknow Error.";
+        result = false;
+    }
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateVehicleDetectors(const QList<GVehicleDetector*>& list){
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        QSqlQuery  query(gDB);
+        foreach (auto it, list) {
+            QString sql="UPDATE VehicleDetector set ";
+            sql+=QString("name='%1'").arg(it->mpVehicleDetector->name);
+            sql+=QString(",roadType='%1'").arg(it->mpVehicleDetector->roadType);
+            sql+=QString(",type='%1'").arg(it->mpVehicleDetector->type);
+            sql+=QString(",phaseNumber=%1").arg(it->mpVehicleDetector->phaseNumber);
+            sql+=QString(",roadId=%1").arg(it->mpVehicleDetector->roadId);
+            sql+=QString(",laneNumber=%1").arg(it->mpVehicleDetector->laneNumber);
+            sql+=QString(",toLaneNumber=%1").arg(it->mpVehicleDetector->toLaneNumber);
+            sql+=QString(",length=%1").arg(it->mpVehicleDetector->length);
+            sql+=QString(",distToTerminal=%1").arg(it->mpVehicleDetector->distToTerminal);
+            sql+=QString(",maxGreen=%1").arg(it->mpVehicleDetector->maxGreen);
+            sql+=QString(" WHERE vehicleDetectorId=%1").arg(it->mpVehicleDetector->vehicleDetectorId);
+            query.prepare(sql);
+            result=query.exec();
+            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update VehicleDetectors failed! Unknow Error.";
+        result = false;
+    }
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();

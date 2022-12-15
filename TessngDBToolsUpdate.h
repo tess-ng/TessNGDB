@@ -31,6 +31,18 @@ public:
 
     ///update SignalLamp
     bool updateSignalLamps(const QList<GSignalLamp*>& list);
+
+    ///update VehicleDrivInfoCollector
+    bool updateVehicleDrivInfoCollectors(const QList<GVehicleDrivInfoCollector*>& list);
+
+    ///update VehicleQueueCounter
+    bool updateVehicleQueueCounters(const QList<GVehicleQueueCounter*>& list);
+
+    ///update VehicleTravelDetector
+    bool updateVehicleTravelDetectors(const QList<GVehicleTravelDetector*>& list);
+
+    ///update VehicleDetector
+    bool updateVehicleDetectors(const QList<GVehicleDetector*>& list);
 protected:
     TessngDBToolsUpdate();
 
