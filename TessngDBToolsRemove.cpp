@@ -144,14 +144,14 @@ bool TessngDBToolsRemove::deleteSignalColor(long id, QList<int> serialNnumbers)
                 if (phase->id() == id) dPhase = phase;
             }
         }
-        if (!dPhase || dPhase->mlSignalColor.size() < 1) return false;
+        if (!dPhase || dPhase->mlSignalColor.size() < 1 || serialNnumbers.size() < 1) return false;
 
         //删除相位颜色
         result = removeSignalColor(dPhase, serialNnumbers);
         if (!result)goto failed;
 
         for (auto& serialNnumber : serialNnumbers) {
-            dPhase->mlSignalColor.removeAt(serialNnumber);
+            dPhase->mlSignalColor.removeAt(serialNnumber - 1);
         }
     }
     catch (QException& exc) {
@@ -250,7 +250,7 @@ bool TessngDBToolsRemove::deleteSignalGroup(QList<long> ids)
 
         QList<SignalGroup*> rmSignalGroup;
         QList<GSignalLamp*> rmSignalLamp;
-        foreach(SignalGroup * pGSl, gpScene->mlSignalGroup) {
+        foreach(SignalGroup* pGSl, gpScene->mlSignalGroup) {
             if (!ids.contains(pGSl->signalGroupID)) continue;
             if (rmSignalGroup.contains(pGSl)) continue;
             rmSignalGroup.push_back(pGSl);
@@ -269,11 +269,11 @@ bool TessngDBToolsRemove::deleteSignalGroup(QList<long> ids)
         result = removeSignalGroup(rmSignalGroup) && result;
         if (!result)goto failed;
 
-        foreach(auto it, rmSignalLamp)
+        foreach(auto& it, rmSignalLamp)
         {
             gpScene->removeGSignalLamp(it);
         }
-        foreach(auto it, rmSignalGroup)
+        foreach(auto& it, rmSignalGroup)
         {
             gpScene->removeSignalGroup(it);
         }
@@ -549,18 +549,18 @@ bool TessngDBToolsRemove::deleteDrivInfoCollector(QList<long> ids) {
     bool result = true;
     try {
         gDB.transaction();
-        QList<GVehicleDrivInfoCollector*> rmTemps;
+        QList<GVehicleDrivInfoCollector*> rmVDICollector;
         foreach(auto& it, gpScene->mlGVehicleDrivInfoCollector)
         {
             if (!ids.contains(it->id())) continue;
-            if (rmTemps.contains(it)) continue;
-            rmTemps.push_back(it);
+            if (rmVDICollector.contains(it)) continue;
+            rmVDICollector.push_back(it);
         }
 
-        result = removeDrivInfoCollector(rmTemps);
+        result = removeDrivInfoCollector(rmVDICollector);
         if (!result) goto failed;
 
-        foreach(auto& it, rmTemps) {
+        foreach(auto& it, rmVDICollector) {
             gpScene->removeGCollector(it);
         }
     }
@@ -590,18 +590,18 @@ bool TessngDBToolsRemove::deleteVehicleQueueCounter(QList<long> ids) {
     try {
         gDB.transaction();
 
-        QList<GVehicleQueueCounter*> rmTemps;
+        QList<GVehicleQueueCounter*> rmVQCounter;
         foreach(auto& it, gpScene->mlGVehicleQueueCounter)
         {
             if (!ids.contains(it->mpVehicleQueueCounter->queueCounterID)) continue;
-            if (rmTemps.contains(it)) continue;
-            rmTemps.push_back(it);
+            if (rmVQCounter.contains(it)) continue;
+            rmVQCounter.push_back(it);
         }
 
-        result = removeVehicleQueueCounter(rmTemps);
+        result = removeVehicleQueueCounter(rmVQCounter);
         if (!result) goto failed;
 
-        foreach(auto& it, rmTemps) {
+        foreach(auto& it, rmVQCounter) {
             gpScene->removeGQueueCounter(it);
         }
     }
@@ -630,18 +630,18 @@ bool TessngDBToolsRemove::deleteVehicleTravelDetector(QList<long> ids) {
     bool result = true;
     try {
         gDB.transaction();
-        QList<GVehicleTravelDetector*> rmTemps;
+        QList<GVehicleTravelDetector*> rmVTDetector;
         foreach(auto& it, gpScene->mlGVehicleTravelDetector)
         {
             if (!ids.contains(it->mpVehicleTravelDetector->detectorId)) continue;
-            if (rmTemps.contains(it)) continue;
-            rmTemps.push_back(it);
+            if (rmVTDetector.contains(it)) continue;
+            rmVTDetector.push_back(it);
         }
 
-        result = removeVehicleTravelDetector(rmTemps);
+        result = removeVehicleTravelDetector(rmVTDetector);
         if (!result) goto failed;
 
-        foreach(auto& it, rmTemps) {
+        foreach(auto& it, rmVTDetector) {
             gpScene->removeGTravelDetector(it);
         }
     }
@@ -1156,9 +1156,10 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
         for (int i = 0; i < gpScene->mlGRouting.size(); i++) {
             if (gpScene->mlGRouting[i]->id() != routingID) continue;
 
-            for (auto& lcStruct : gpScene->mlGRouting[i]->mhLCStruct.values(connID)) {
+            QList<LCStruct*> lcStructs = gpScene->mlGRouting[i]->mhLCStruct.values(connID);
+            for (auto& lcStruct : lcStructs) {
                 if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
-                    gpScene->mlGRouting[i]->mhLCStruct.removeValue(lcStruct);
+                    gpScene->mlGRouting[i]->mhLCStruct.remove(connID, lcStruct);
                 }
             }
         }
@@ -1275,8 +1276,19 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
     bool result = true;
     try {
         gDB.transaction();
-
+        //需要删除的限速区
+        QList<GReduceSpeedArea*> rmArea;
+        //需要删除的行程时间检测器
+        QList<GVehicleTravelDetector*> rmVTDetector;
+        //需要删除的排队计数器
+        QList<GVehicleQueueCounter*> rmVQCounter;
+        //需要删除的车辆信息采集器
+        QList<GVehicleDrivInfoCollector*> rmVDICollector;
+        //需要删除的信号灯
+        QList<GSignalLamp*> rmSignalLamp;
+        //需要删除的车道连接
         QList<GLaneConnector*> rmLaneConnector;
+
         foreach(auto& it, gpScene->mlGLaneConnector)
         {
             if (it->connector()->id() == connID && it->fromLane()->id() == fromLaneId && it->toLane()->id()) {
@@ -1284,12 +1296,60 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
             }
         }
 
+        //删除车道连接数据库记录
         result = removeLaneConnector(rmLaneConnector);
         if (!result) goto failed;
 
+        //同步车道连接内存
         foreach(auto& it, rmLaneConnector)
         {
             gpScene->mlGLaneConnector.removeOne(it);
+        }
+
+        //删除并保护路径车道连接
+        for (int i = 0; i < gpScene->mlGRouting.size(); i++) 
+        {
+            QList<LCStruct*> lcStructs = gpScene->mlGRouting[i]->mhLCStruct.values(connID);
+            for (auto& lcStruct : lcStructs) 
+            {
+                if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) 
+                {
+
+                    //删除路径车道连接
+                    result = removeRoutingLaneConnector(gpScene->mlGRouting[i]->id(), connID, fromLaneId, toLaneId);
+                    if (!result) goto failed;
+
+                    if (lcStructs.size() == 1) {
+                        //路径保护
+                        for (auto& connector : gpScene->mlGConnector) {
+                            if (connector->id() == connID && !connector->mlGLaneConnector.isEmpty())
+                            {
+                                //寻找From最小车道序号
+                                GLaneConnector* laneConMin = connector->mlGLaneConnector[0];
+                                for (auto& laneConnector : connector->mlGLaneConnector)
+                                {
+                                    if (laneConMin->fromLane()->number() > laneConnector->fromLane()->number())
+                                    {
+                                        laneConMin = laneConnector;
+                                    }
+                                }
+
+                                //插入路径车道连接数据库记录
+                                //result = insertRoutingLaneConnector(gpScene->mlGRouting[i]->id(), connID, laneConMin->fromLane()->id(), laneConMin->toLane()->id());
+
+                                //修改路径车道连接
+                                gpScene->mlGRouting[i]->mhLCStruct.value(connID)->fromLaneId = laneConMin->fromLane()->id();
+                                gpScene->mlGRouting[i]->mhLCStruct.value(connID)->toLaneId = laneConMin->toLane()->id();
+                            }
+                        }
+                        break;
+                    }
+                    else {
+                        //同步内存
+                        gpScene->mlGRouting[i]->mhLCStruct.remove(connID, lcStruct);
+                    }
+                }
+            }
         }
     }
     catch (QException& exc) {

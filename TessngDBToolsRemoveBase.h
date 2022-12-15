@@ -195,7 +195,6 @@ private:
     /// 决策点
     bool removeDecisionPoint(GDecisionPoint* it);
 
-
     /// 车道连接
     bool removeLaneConnector(GLaneConnector* it);
 
