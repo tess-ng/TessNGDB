@@ -1,4 +1,4 @@
-#include "TessngDBToolsBase.h"
+#include "TessngDBToolsRemoveBase.h"
 #include "DbGlobal.h"
 #include "exception.h"
 
@@ -52,19 +52,19 @@
 #include <QSqlRecord>
 #include <QSet>
 #include <QSqlDatabase>
-TessngDBToolsBase::TessngDBToolsBase()
+TessngDBToolsRemoveBase::TessngDBToolsRemoveBase()
 {
 
 }
 
-TessngDBToolsBase::~TessngDBToolsBase()
+TessngDBToolsRemoveBase::~TessngDBToolsRemoveBase()
 {
 
 }
 
 //------------------------------------信号控制----------------------------------
 /// 信号灯
-bool TessngDBToolsBase::removeSignalLamp(const QList<GSignalLamp*>& list)
+bool TessngDBToolsRemoveBase::removeSignalLamp(const QList<GSignalLamp*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -74,7 +74,7 @@ bool TessngDBToolsBase::removeSignalLamp(const QList<GSignalLamp*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeSignalLamp(GSignalLamp* it)
+bool TessngDBToolsRemoveBase::removeSignalLamp(GSignalLamp* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -87,7 +87,7 @@ bool TessngDBToolsBase::removeSignalLamp(GSignalLamp* it)
 }
 
 ///  相位信号颜色
-bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, QList<int> serialNumbers)
+bool TessngDBToolsRemoveBase::removeSignalColor(const SignalPhase* signalPhase, QList<int> serialNumbers)
 {
     bool result = true;
     for (auto& it : serialNumbers) {
@@ -104,7 +104,7 @@ bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, QList<
     return result;
 }
 
-bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, int serialNumber)
+bool TessngDBToolsRemoveBase::removeSignalColor(const SignalPhase* signalPhase, int serialNumber)
 {
     QSqlQuery slQuery(gDB);
     QString deleteSql = QString(R"(delete from SignalColor where signalPhaseID=%1 and serialNumber=%2;)").arg(signalPhase->signalPhaseID).arg(serialNumber);
@@ -115,7 +115,7 @@ bool TessngDBToolsBase::removeSignalColor(const SignalPhase* signalPhase, int se
 }
 
 /// 相位
-bool TessngDBToolsBase::removeSignalPhase(const QList<SignalPhase*>& list)
+bool TessngDBToolsRemoveBase::removeSignalPhase(const QList<SignalPhase*>& list)
 {
     bool result = true;
     QSqlQuery slQuery(gDB);
@@ -126,7 +126,7 @@ bool TessngDBToolsBase::removeSignalPhase(const QList<SignalPhase*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeSignalPhase(SignalPhase* it)
+bool TessngDBToolsRemoveBase::removeSignalPhase(SignalPhase* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -145,7 +145,7 @@ bool TessngDBToolsBase::removeSignalPhase(SignalPhase* it)
 }
 
 /// 信号灯组
-bool TessngDBToolsBase::removeSignalGroup(const QList<SignalGroup*>& list)
+bool TessngDBToolsRemoveBase::removeSignalGroup(const QList<SignalGroup*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -155,7 +155,7 @@ bool TessngDBToolsBase::removeSignalGroup(const QList<SignalGroup*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeSignalGroup(SignalGroup* it)
+bool TessngDBToolsRemoveBase::removeSignalGroup(SignalGroup* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -171,7 +171,7 @@ bool TessngDBToolsBase::removeSignalGroup(SignalGroup* it)
 
 //--------------------------------------公交------------------------------------
 /// 乘客到站
-bool TessngDBToolsBase::removeBusStationPassengerArriving(const QList<PassengerArriving*>& list)
+bool TessngDBToolsRemoveBase::removeBusStationPassengerArriving(const QList<PassengerArriving*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -181,7 +181,7 @@ bool TessngDBToolsBase::removeBusStationPassengerArriving(const QList<PassengerA
     return result;
 }
 
-bool TessngDBToolsBase::removeBusStationPassengerArriving(PassengerArriving* it)
+bool TessngDBToolsRemoveBase::removeBusStationPassengerArriving(PassengerArriving* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -194,7 +194,7 @@ bool TessngDBToolsBase::removeBusStationPassengerArriving(PassengerArriving* it)
 }
 
 /// 公交站点-线路
-bool TessngDBToolsBase::removeBusStationLine(const QList<BusStationLine*>& list)
+bool TessngDBToolsRemoveBase::removeBusStationLine(const QList<BusStationLine*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -204,7 +204,7 @@ bool TessngDBToolsBase::removeBusStationLine(const QList<BusStationLine*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeBusStationLine(BusStationLine* it)
+bool TessngDBToolsRemoveBase::removeBusStationLine(BusStationLine* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -219,7 +219,7 @@ bool TessngDBToolsBase::removeBusStationLine(BusStationLine* it)
 }
 
 /// 公交线路的路段或连接段序列
-bool TessngDBToolsBase::removeBusLineRoad(const QList<GBusLine*>& list)
+bool TessngDBToolsRemoveBase::removeBusLineRoad(const QList<GBusLine*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -229,7 +229,7 @@ bool TessngDBToolsBase::removeBusLineRoad(const QList<GBusLine*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeBusLineRoad(GBusLine* it)
+bool TessngDBToolsRemoveBase::removeBusLineRoad(GBusLine* it)
 {
     bool result = true;
     QSqlQuery slQuery(gDB);
@@ -242,7 +242,7 @@ bool TessngDBToolsBase::removeBusLineRoad(GBusLine* it)
 }
 
 /// 公交线路
-bool TessngDBToolsBase::removeBusLine(const QList<GBusLine*>& list)
+bool TessngDBToolsRemoveBase::removeBusLine(const QList<GBusLine*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -252,7 +252,7 @@ bool TessngDBToolsBase::removeBusLine(const QList<GBusLine*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeBusLine(GBusLine* it)
+bool TessngDBToolsRemoveBase::removeBusLine(GBusLine* it)
 {
     bool result = true;
     QSqlQuery slQuery(gDB);
@@ -267,7 +267,7 @@ bool TessngDBToolsBase::removeBusLine(GBusLine* it)
 }
 
 /// 公交站
-bool TessngDBToolsBase::removeBusStation(const QList<GBusStation*>& list)
+bool TessngDBToolsRemoveBase::removeBusStation(const QList<GBusStation*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -277,7 +277,7 @@ bool TessngDBToolsBase::removeBusStation(const QList<GBusStation*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeBusStation(GBusStation* it)
+bool TessngDBToolsRemoveBase::removeBusStation(GBusStation* it)
 {
     bool result = true;
     QSqlQuery slQuery(gDB);
@@ -291,7 +291,7 @@ bool TessngDBToolsBase::removeBusStation(GBusStation* it)
 
 //---------------------------------车辆运行及检测-------------------------------
 /// 车辆信息采集器
-bool TessngDBToolsBase::removeDrivInfoCollector(const QList<GVehicleDrivInfoCollector*>& list)
+bool TessngDBToolsRemoveBase::removeDrivInfoCollector(const QList<GVehicleDrivInfoCollector*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -301,7 +301,7 @@ bool TessngDBToolsBase::removeDrivInfoCollector(const QList<GVehicleDrivInfoColl
     return result;
 }
 
-bool TessngDBToolsBase::removeDrivInfoCollector(GVehicleDrivInfoCollector* it)
+bool TessngDBToolsRemoveBase::removeDrivInfoCollector(GVehicleDrivInfoCollector* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -314,7 +314,7 @@ bool TessngDBToolsBase::removeDrivInfoCollector(GVehicleDrivInfoCollector* it)
 }
 
 /// 排队计数器
-bool TessngDBToolsBase::removeVehicleQueueCounter(const QList<GVehicleQueueCounter*>& list)
+bool TessngDBToolsRemoveBase::removeVehicleQueueCounter(const QList<GVehicleQueueCounter*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -324,7 +324,7 @@ bool TessngDBToolsBase::removeVehicleQueueCounter(const QList<GVehicleQueueCount
     return result;
 }
 
-bool TessngDBToolsBase::removeVehicleQueueCounter(GVehicleQueueCounter* it)
+bool TessngDBToolsRemoveBase::removeVehicleQueueCounter(GVehicleQueueCounter* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -337,7 +337,7 @@ bool TessngDBToolsBase::removeVehicleQueueCounter(GVehicleQueueCounter* it)
 }
 
 /// 行程时间检测器
-bool TessngDBToolsBase::removeVehicleTravelDetector(const QList<GVehicleTravelDetector*>& list)
+bool TessngDBToolsRemoveBase::removeVehicleTravelDetector(const QList<GVehicleTravelDetector*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -347,7 +347,7 @@ bool TessngDBToolsBase::removeVehicleTravelDetector(const QList<GVehicleTravelDe
     return result;
 }
 
-bool TessngDBToolsBase::removeVehicleTravelDetector(GVehicleTravelDetector* it)
+bool TessngDBToolsRemoveBase::removeVehicleTravelDetector(GVehicleTravelDetector* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -360,7 +360,7 @@ bool TessngDBToolsBase::removeVehicleTravelDetector(GVehicleTravelDetector* it)
 }
 
 /// 导向箭头
-bool TessngDBToolsBase::removeGuideArrow(const QList<GGuideArrow*>& list)
+bool TessngDBToolsRemoveBase::removeGuideArrow(const QList<GGuideArrow*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -370,7 +370,7 @@ bool TessngDBToolsBase::removeGuideArrow(const QList<GGuideArrow*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeGuideArrow(GGuideArrow* it)
+bool TessngDBToolsRemoveBase::removeGuideArrow(GGuideArrow* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -383,7 +383,7 @@ bool TessngDBToolsBase::removeGuideArrow(GGuideArrow* it)
 }
 
 /// 限速区时间间隔
-bool TessngDBToolsBase::removeReduceSpeedInterval(const QList<ReduceSpeedInterval*>& list)
+bool TessngDBToolsRemoveBase::removeReduceSpeedInterval(const QList<ReduceSpeedInterval*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -393,7 +393,7 @@ bool TessngDBToolsBase::removeReduceSpeedInterval(const QList<ReduceSpeedInterva
     return result;
 }
 
-bool TessngDBToolsBase::removeReduceSpeedInterval(ReduceSpeedInterval* it)
+bool TessngDBToolsRemoveBase::removeReduceSpeedInterval(ReduceSpeedInterval* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -406,7 +406,7 @@ bool TessngDBToolsBase::removeReduceSpeedInterval(ReduceSpeedInterval* it)
 }
 
 /// 限速区车辆类型
-bool TessngDBToolsBase::removeReduceSpeedVehiType(const QList<ReduceSpeedVehiType*>& list)
+bool TessngDBToolsRemoveBase::removeReduceSpeedVehiType(const QList<ReduceSpeedVehiType*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -416,7 +416,7 @@ bool TessngDBToolsBase::removeReduceSpeedVehiType(const QList<ReduceSpeedVehiTyp
     return result;
 }
 
-bool TessngDBToolsBase::removeReduceSpeedVehiType(ReduceSpeedVehiType* it)
+bool TessngDBToolsRemoveBase::removeReduceSpeedVehiType(ReduceSpeedVehiType* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -429,7 +429,7 @@ bool TessngDBToolsBase::removeReduceSpeedVehiType(ReduceSpeedVehiType* it)
 }
 
 /// 限速区
-bool TessngDBToolsBase::removeReduceSpeedArea(const QList<GReduceSpeedArea*>& list)
+bool TessngDBToolsRemoveBase::removeReduceSpeedArea(const QList<GReduceSpeedArea*>& list)
 {
     bool result = true;
     for(auto& it : list) {
@@ -439,7 +439,7 @@ bool TessngDBToolsBase::removeReduceSpeedArea(const QList<GReduceSpeedArea*>& li
     return result;
 }
 
-bool TessngDBToolsBase::removeReduceSpeedArea(GReduceSpeedArea* it)
+bool TessngDBToolsRemoveBase::removeReduceSpeedArea(GReduceSpeedArea* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -456,7 +456,7 @@ bool TessngDBToolsBase::removeReduceSpeedArea(GReduceSpeedArea* it)
 }
 
 /// 发车间隔
-bool TessngDBToolsBase::removeDepartureInterval(const QList<DepaInterval>& list)
+bool TessngDBToolsRemoveBase::removeDepartureInterval(const QList<DepaInterval>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -466,7 +466,7 @@ bool TessngDBToolsBase::removeDepartureInterval(const QList<DepaInterval>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeDepartureInterval(DepaInterval it)
+bool TessngDBToolsRemoveBase::removeDepartureInterval(DepaInterval it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -478,7 +478,7 @@ bool TessngDBToolsBase::removeDepartureInterval(DepaInterval it)
     return result;
 }
 
-bool TessngDBToolsBase::removeDepartureInterval(GDeparturePoint* it)
+bool TessngDBToolsRemoveBase::removeDepartureInterval(GDeparturePoint* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -490,7 +490,7 @@ bool TessngDBToolsBase::removeDepartureInterval(GDeparturePoint* it)
     return result;
 }
 
-bool TessngDBToolsBase::removeDepartureInterval(VehicleComposition* it)
+bool TessngDBToolsRemoveBase::removeDepartureInterval(VehicleComposition* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -503,7 +503,7 @@ bool TessngDBToolsBase::removeDepartureInterval(VehicleComposition* it)
 }
 
 /// 发车点
-bool TessngDBToolsBase::removeDeparturePoint(const QList<GDeparturePoint*>& list)
+bool TessngDBToolsRemoveBase::removeDeparturePoint(const QList<GDeparturePoint*>& list)
 {
     bool result = true;
     for(auto& it : list) {
@@ -513,7 +513,7 @@ bool TessngDBToolsBase::removeDeparturePoint(const QList<GDeparturePoint*>& list
     return result;
 }
 
-bool TessngDBToolsBase::removeDeparturePoint(GDeparturePoint* it)
+bool TessngDBToolsRemoveBase::removeDeparturePoint(GDeparturePoint* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -528,7 +528,7 @@ bool TessngDBToolsBase::removeDeparturePoint(GDeparturePoint* it)
 }
 
 /// 车型组成和占比
-bool TessngDBToolsBase::removeVehicleConsDetail(QList<VehicleConsDetail> list)
+bool TessngDBToolsRemoveBase::removeVehicleConsDetail(QList<VehicleConsDetail> list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -537,7 +537,7 @@ bool TessngDBToolsBase::removeVehicleConsDetail(QList<VehicleConsDetail> list)
     return result;
 }
 
-bool TessngDBToolsBase::removeVehicleConsDetail(VehicleConsDetail it)
+bool TessngDBToolsRemoveBase::removeVehicleConsDetail(VehicleConsDetail it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -550,7 +550,7 @@ bool TessngDBToolsBase::removeVehicleConsDetail(VehicleConsDetail it)
 }
 
 /// 车型组成
-bool TessngDBToolsBase::removeVehicleConstitutent(const QList<VehicleComposition*>& list)
+bool TessngDBToolsRemoveBase::removeVehicleConstitutent(const QList<VehicleComposition*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -560,7 +560,7 @@ bool TessngDBToolsBase::removeVehicleConstitutent(const QList<VehicleComposition
     return result;
 }
 
-bool TessngDBToolsBase::removeVehicleConstitutent(VehicleComposition* it)
+bool TessngDBToolsRemoveBase::removeVehicleConstitutent(VehicleComposition* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -579,7 +579,7 @@ bool TessngDBToolsBase::removeVehicleConstitutent(VehicleComposition* it)
 
 //-----------------------------------道路及连接---------------------------------
 /// 路径流量分配
-bool TessngDBToolsBase::removeRoutingFLowRatio(const QList<RoutingFLowRatio*>& list)
+bool TessngDBToolsRemoveBase::removeRoutingFLowRatio(const QList<RoutingFLowRatio*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -589,7 +589,7 @@ bool TessngDBToolsBase::removeRoutingFLowRatio(const QList<RoutingFLowRatio*>& l
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingFLowRatio(const QList<GRouting*>& list)
+bool TessngDBToolsRemoveBase::removeRoutingFLowRatio(const QList<GRouting*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -599,7 +599,7 @@ bool TessngDBToolsBase::removeRoutingFLowRatio(const QList<GRouting*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingFLowRatio(GRouting* it)
+bool TessngDBToolsRemoveBase::removeRoutingFLowRatio(GRouting* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -611,7 +611,7 @@ bool TessngDBToolsBase::removeRoutingFLowRatio(GRouting* it)
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingFLowRatio(RoutingFLowRatio* it)
+bool TessngDBToolsRemoveBase::removeRoutingFLowRatio(RoutingFLowRatio* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -624,7 +624,7 @@ bool TessngDBToolsBase::removeRoutingFLowRatio(RoutingFLowRatio* it)
 }
 
 /// 路径车道连接
-bool TessngDBToolsBase::removeRoutingLaneConnector(GRouting* routing, const SafeHash<long, LCStruct*>& lcStructs)
+bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing, const SafeHash<long, LCStruct*>& lcStructs)
 {
     bool result = true;
     QList<long> connIDs = lcStructs.keys();
@@ -639,7 +639,7 @@ bool TessngDBToolsBase::removeRoutingLaneConnector(GRouting* routing, const Safe
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId)
+bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -652,7 +652,7 @@ bool TessngDBToolsBase::removeRoutingLaneConnector(long routingID, long connID, 
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingLaneConnector(GRouting* routing)
+bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing)
 {
     bool result = true;
     QList<long> connIDs = routing->mhLCStruct.keys();
@@ -667,7 +667,7 @@ bool TessngDBToolsBase::removeRoutingLaneConnector(GRouting* routing)
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingLaneConnector(GRouting* routing, long connID, LCStruct* it)
+bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing, long connID, LCStruct* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -681,7 +681,7 @@ bool TessngDBToolsBase::removeRoutingLaneConnector(GRouting* routing, long connI
 }
 
 /// 路径路段
-bool TessngDBToolsBase::removeRoutingLink(const QList<GRouting*>& list)
+bool TessngDBToolsRemoveBase::removeRoutingLink(const QList<GRouting*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -691,7 +691,7 @@ bool TessngDBToolsBase::removeRoutingLink(const QList<GRouting*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingLink(GRouting* routing, const QList<ILink*> list)
+bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* routing, const QList<ILink*> list)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -715,7 +715,7 @@ bool TessngDBToolsBase::removeRoutingLink(GRouting* routing, const QList<ILink*>
     return result;
 }
 
-bool TessngDBToolsBase::removeRoutingLink(GRouting* it)
+bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -728,7 +728,7 @@ bool TessngDBToolsBase::removeRoutingLink(GRouting* it)
 }
 
 /// 路径
-bool TessngDBToolsBase::removeRouting(const QList<GRouting*>& list)
+bool TessngDBToolsRemoveBase::removeRouting(const QList<GRouting*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -738,7 +738,7 @@ bool TessngDBToolsBase::removeRouting(const QList<GRouting*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeRouting(GRouting* it)
+bool TessngDBToolsRemoveBase::removeRouting(GRouting* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -757,7 +757,7 @@ bool TessngDBToolsBase::removeRouting(GRouting* it)
 }
 
 /// 决策点
-bool TessngDBToolsBase::removeDecisionPoint(const QList<GDecisionPoint*>& list)
+bool TessngDBToolsRemoveBase::removeDecisionPoint(const QList<GDecisionPoint*>& list)
 {
     bool result = true;
     for(auto& it : list) {
@@ -767,7 +767,7 @@ bool TessngDBToolsBase::removeDecisionPoint(const QList<GDecisionPoint*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeDecisionPoint(GDecisionPoint* it)
+bool TessngDBToolsRemoveBase::removeDecisionPoint(GDecisionPoint* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -782,7 +782,7 @@ bool TessngDBToolsBase::removeDecisionPoint(GDecisionPoint* it)
 }
 
 /// 车道连接
-bool TessngDBToolsBase::removeLaneConnector(const QList<GLaneConnector*>& list) {
+bool TessngDBToolsRemoveBase::removeLaneConnector(const QList<GLaneConnector*>& list) {
     bool result = true;
     for (auto& it : list) {
         result = removeLaneConnector(it);
@@ -791,7 +791,7 @@ bool TessngDBToolsBase::removeLaneConnector(const QList<GLaneConnector*>& list) 
     return result;
 }
 
-bool TessngDBToolsBase::removeLaneConnector(GLaneConnector* it) {
+bool TessngDBToolsRemoveBase::removeLaneConnector(GLaneConnector* it) {
     QSqlQuery slQuery(gDB);
     bool result = true;
 
@@ -804,7 +804,7 @@ bool TessngDBToolsBase::removeLaneConnector(GLaneConnector* it) {
 }
 
 /// 连接段
-bool TessngDBToolsBase::removeConnector(const QList<GConnector*>& list)
+bool TessngDBToolsRemoveBase::removeConnector(const QList<GConnector*>& list)
 {
     bool result = true;
     for(auto& it : list) {
@@ -815,7 +815,7 @@ bool TessngDBToolsBase::removeConnector(const QList<GConnector*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeConnector(GConnector* it)
+bool TessngDBToolsRemoveBase::removeConnector(GConnector* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -830,7 +830,7 @@ bool TessngDBToolsBase::removeConnector(GConnector* it)
 }
 
 /// 顶点
-bool TessngDBToolsBase::removeVertex(const QList<GVertex*>& list)
+bool TessngDBToolsRemoveBase::removeVertex(const QList<GVertex*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -840,7 +840,7 @@ bool TessngDBToolsBase::removeVertex(const QList<GVertex*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeVertex(GVertex* it)
+bool TessngDBToolsRemoveBase::removeVertex(GVertex* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -853,7 +853,7 @@ bool TessngDBToolsBase::removeVertex(GVertex* it)
 }
 
 /// 路段顶点
-bool TessngDBToolsBase::removeLinkVertex(const QList<GVertex*>& list)
+bool TessngDBToolsRemoveBase::removeLinkVertex(const QList<GVertex*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -863,7 +863,7 @@ bool TessngDBToolsBase::removeLinkVertex(const QList<GVertex*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeLinkVertex(GVertex* it)
+bool TessngDBToolsRemoveBase::removeLinkVertex(GVertex* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -876,7 +876,7 @@ bool TessngDBToolsBase::removeLinkVertex(GVertex* it)
 }
 
 /// 车道
-bool TessngDBToolsBase::removeLane(const QList<GLane*>& list)
+bool TessngDBToolsRemoveBase::removeLane(const QList<GLane*>& list)
 {
     bool result = true;
     for(auto it: list) {
@@ -886,7 +886,7 @@ bool TessngDBToolsBase::removeLane(const QList<GLane*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeLane(Lane* it)
+bool TessngDBToolsRemoveBase::removeLane(Lane* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -899,7 +899,7 @@ bool TessngDBToolsBase::removeLane(Lane* it)
 }
 
 /// 节点
-bool TessngDBToolsBase::removeNode(const QList<Node*>& list)
+bool TessngDBToolsRemoveBase::removeNode(const QList<Node*>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -909,7 +909,7 @@ bool TessngDBToolsBase::removeNode(const QList<Node*>& list)
     return result;
 }
 
-bool TessngDBToolsBase::removeNode(Node* it)
+bool TessngDBToolsRemoveBase::removeNode(Node* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
@@ -922,7 +922,7 @@ bool TessngDBToolsBase::removeNode(Node* it)
 }
 
 /// 路段
-bool TessngDBToolsBase::removeLink(const QList<GLink*>& list) {
+bool TessngDBToolsRemoveBase::removeLink(const QList<GLink*>& list) {
     bool result = true;
     for (auto& it : list) {
         result = removeLink(it);
@@ -931,7 +931,7 @@ bool TessngDBToolsBase::removeLink(const QList<GLink*>& list) {
     return result;
 }
 
-bool TessngDBToolsBase::removeLink(GLink* it) {
+bool TessngDBToolsRemoveBase::removeLink(GLink* it) {
     QSqlQuery slQuery(gDB);
     bool result = true;
 

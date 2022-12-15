@@ -18,14 +18,15 @@ SOURCES += \
     InterestRectItem.cpp \
     TessngDBCopy.cpp \
     TessngDBNet.cpp \
-    TessngDBTools.cpp \
-    TessngDBToolsBase.cpp \
+    TessngDBToolsRemove.cpp \
+    TessngDBToolsUpdate.cpp \
     exception.cpp \
     TESS_API_EXAMPLE.cpp \
-    TessngDBToolsBase.cpp \
+    TessngDBToolsRemoveBase.cpp \
     main.cpp
 
 HEADERS += \
+    DBClassDefine.h \
     DBPluginGui.h \
     GraphicsBaseItem.h \
     InterestElliseItem.h \
@@ -33,11 +34,11 @@ HEADERS += \
     InterestRectItem.h \
     TessngDBCopy.h \
     TessngDBNet.h \
-    TessngDBTools.h \
-    TessngDBToolsBase.h \
+    TessngDBToolsRemove.h \
+    TessngDBToolsRemoveBase.h \
+    TessngDBToolsUpdate.h \
     exception.h \
     TESS_API_EXAMPLE.h \
-    TessngDBToolsBase.h \
     pch \
     singleholder.h
 

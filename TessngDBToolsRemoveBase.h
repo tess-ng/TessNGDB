@@ -5,50 +5,13 @@
 #define TESSNGDBTOOLSBASE_H
 
 #include "SafeHash.h"
-class GSignalLamp;
-class SignalColor;
-class SignalPhase;
-class SignalGroup;
-class ISignalLamp;
+#include "DBClassDefine.h"
 
-class PassengerArriving;
-class BusStationLine;
-class GBusLine;
-class GBusStation;
-class IBusStationLine;
-
-class GVehicleDrivInfoCollector;
-class GVehicleQueueCounter;
-class GVehicleTravelDetector;
-class GReduceSpeedArea;
-class ReduceSpeedInterval;
-class ReduceSpeedVehiType;
-class GGuideArrow;
-class DepaInterval;
-class GDeparturePoint;
-class VehicleComposition;
-class VehicleConsDetail;
-
-class RoutingFLowRatio;
-class GRouting;
-class RoutingLink;
-
-class GLink;
-class ILink;
-class GConnector;
-class GVertex;
-class Node;
-class GLane;
-class GLaneConnector;
-class GDecisionPoint;
-class LCStruct;
-class Lane;
-
-class TessngDBToolsBase
+class TessngDBToolsRemoveBase
 {
 protected:
-    TessngDBToolsBase();
-    virtual ~TessngDBToolsBase();
+    TessngDBToolsRemoveBase();
+    virtual ~TessngDBToolsRemoveBase();
     //------------------------------------信号控制----------------------------------
     /// 信号灯
     bool removeSignalLamp(const QList<GSignalLamp*>& list);
@@ -147,7 +110,8 @@ protected:
     /// 路段：结点，车道，顶点，路段顶点，路段
     bool removeLink(const QList<GLink*>& list);
 private:
-    TessngDBToolsBase(const TessngDBToolsBase&) = delete;
+    friend class TessngDBToolsUpdate;
+    TessngDBToolsRemoveBase(const TessngDBToolsRemoveBase&) = delete;
 
     //------------------------------------信号控制----------------------------------
     /// 信号灯

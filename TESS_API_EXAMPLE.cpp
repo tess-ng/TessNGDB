@@ -1,5 +1,5 @@
 #include "TESS_API_EXAMPLE.h"
-#include "TessngDBTools.h"
+#include "TessngDBToolsRemove.h"
 
 #include <QPushButton>
 #include <QFileDialog>
@@ -65,7 +65,7 @@ void TESS_API_EXAMPLE::on_btnSignalLamp_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteSignalLamp(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteSignalLamp(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除信号灯", "删除成功");
     }
@@ -79,7 +79,7 @@ void TESS_API_EXAMPLE::on_btnPhaseGreen_released()
     long id = ui.inputID->text().toInt();
     QList<int> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteSignalColor(1, list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteSignalColor(1, list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除相位颜色", "删除成功");
     }
@@ -93,7 +93,7 @@ void TESS_API_EXAMPLE::on_btnPhase_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteSignalPhase(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteSignalPhase(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除相位", "删除成功");
     }
@@ -107,7 +107,7 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteSignalGroup(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteSignalGroup(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除信号灯组", "删除成功");
     }
@@ -121,7 +121,7 @@ void TESS_API_EXAMPLE::on_btnPassengerArriving_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteBusStationPassengerArriving(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteBusStationPassengerArriving(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除乘客到站", "删除成功");
     }
@@ -135,7 +135,7 @@ void TESS_API_EXAMPLE::on_btnBusStationLine_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteBusStationLine(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteBusStationLine(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除公交站点-线路", "删除成功");
     }
@@ -149,7 +149,7 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteBusLine(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteBusLine(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除公交线路", "删除成功");
     }
@@ -163,7 +163,7 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    bool result = TessngDBTools::getInstance()->deleteBusStation(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteBusStation(list);
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除公交站", "删除成功");
     }
