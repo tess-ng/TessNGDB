@@ -775,13 +775,6 @@ failed:
 	return result;
 }
 
-/**
-	 * @brief 删除限速区车辆类型
-	 * @param id					[限速区ID]
-	 * @param departureIntervalDs	[车型编码]
-	 *
-	 * @return bool
-*/
 bool TessngDBTools::deleteReduceSpeedVehiType(long id, QList<long> vehicleTypeCodes)
 {
 	bool result = true;
@@ -877,13 +870,6 @@ failed:
 	return result;
 }
 
-/**
-	 * @brief 删除发车间隔
-	 * @param id					[发车点ID]
-	 * @param ids					[发车间隔ID]
-	 *
-	 * @return bool
-*/
 bool TessngDBTools::deleteDepartureInterval(long id, QList<long> departureIntervalDs)
 {
 	bool result = true;
@@ -978,13 +964,6 @@ failed:
 	return result;
 }
 
-/**
-	 * @brief 删除车型组成和占比
-	 * @param id					[车型组成编号]
-	 * @param vehicleTypeCodes		[车型编码]
-	 *
-	 * @return bool
-*/
 bool TessngDBTools::deleteVehicleConsDetail(long id, QList<long> vehicleTypeCodes)
 {
 	bool result = true;
@@ -1107,21 +1086,123 @@ failed:
 }
 
 //-----------------------------------道路及连接---------------------------------
+bool TessngDBTools::deleteRoutingFLowRatio(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<RoutingFLowRatio*> rmTemps;
+		//决策点
+		foreach(auto& point, gpScene->mlGDecisionPoint) {
+			//时间段
+			foreach(auto& routingFlowByInterval, point->mpDecisionPoint->mlRoutingFlowByInterval) {
+				//流量分配
+				foreach(auto& routingFLowRatio, routingFlowByInterval->mlRoutingFlowRatio) {
+					if (!ids.contains(routingFLowRatio->RoutingFLowRatioID)) continue;
+					if (rmTemps.contains(routingFLowRatio)) continue;
+
+					rmTemps.push_back(routingFLowRatio);
+				}
+			}
+		}
+
+		//删除路径流量分配的数据库记录
+		result = removeRoutingFLowRatio(rmTemps);
+		if (!result) goto failed;
+
+		//同步内存
+		foreach(auto& point, gpScene->mlGDecisionPoint) {
+			foreach(auto& routingFlowByInterval, point->mpDecisionPoint->mlRoutingFlowByInterval) {
+				for (int i = 0; i < routingFlowByInterval->mlRoutingFlowRatio.size();) {
+					if (!ids.contains(routingFlowByInterval->mlRoutingFlowRatio[i]->RoutingFLowRatioID)) {
+						i++;
+					}
+					else {
+						routingFlowByInterval->mlRoutingFlowRatio.removeAt(i);
+					}
+				}
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+
+		result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
+		if (!result) goto failed;
+
+		for (int i = 0; i < gpScene->mlGRouting.size(); i++) {
+			if (gpScene->mlGRouting[i]->id() != routingID) continue;
+
+			for (auto& lcStruct : gpScene->mlGRouting[i]->mhLCStruct.values(connID)) {
+				if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
+					gpScene->mlGRouting[i]->mhLCStruct.removeValue(lcStruct);
+				}
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
 bool TessngDBTools::deleteRouting(QList<long> ids) 
 {
 	bool result = true;
 	try {
+		gDB.transaction();
+
 		QList<GRouting*> rmRouteings;
-		foreach(auto it, gpScene->mlGRouting)
+		foreach(auto& it, gpScene->mlGRouting)
 		{
 			if (!ids.contains(it->id())) continue;
 			if (rmRouteings.contains(it)) continue;
 			rmRouteings.push_back(it);
 		}
 
-		result = removeRouting(rmRouteings) && result;
+		result = removeRouting(rmRouteings);
 		if (!result)goto failed;
-		foreach(auto it, rmRouteings)
+
+		foreach(auto& it, rmRouteings)
 		{
 			gpScene->removeGRouting(it);
 		}
@@ -1137,6 +1218,92 @@ bool TessngDBTools::deleteRouting(QList<long> ids)
 	}
 	catch (...) {
 		qWarning() << "remove Routes failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteDecisionPoint(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+
+		QList<GDecisionPoint*> rmDecisionPoint;
+		foreach(auto& it, gpScene->mlGDecisionPoint)
+		{
+			if (!ids.contains(it->id())) continue;
+			if (rmDecisionPoint.contains(it)) continue;
+			rmDecisionPoint.push_back(it);
+		}
+
+		result = removeDecisionPoint(rmDecisionPoint);
+		if (!result)goto failed;
+
+		foreach(auto & it, rmDecisionPoint)
+		{
+			gpScene->removeGDecisionPoint(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove Routes failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteLaneConnector(long connID, long fromLaneId, long toLaneId)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+
+		QList<GLaneConnector*> rmLaneConnector;
+		foreach(auto& it, gpScene->mlGLaneConnector)
+		{
+			if (it->connector()->id() == connID && it->fromLane()->id() == fromLaneId && it->toLane()->id()) {
+				rmLaneConnector.push_back(it);
+			}
+		}
+
+		result = removeLaneConnector(rmLaneConnector);
+		if (!result) goto failed;
+
+		foreach(auto& it, rmLaneConnector)
+		{
+			gpScene->mlGLaneConnector.removeOne(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
 		result = false;
 	}
 failed:
@@ -1189,6 +1356,7 @@ bool TessngDBTools::deleteConnectors(QList<long> ids)
 
 		result = removeConnector(rmConnects) && result;
 		if (!result)goto failed;
+
 		foreach(auto it, rmConnects)
 		{
 			gpScene->removeGConnector(it);
@@ -1324,6 +1492,8 @@ bool TessngDBTools::deleteLink(QList<long> ids)
 	bool result = true;
 	try
 	{
+		gDB.transaction();
+
 		QList<GLink*> rmLinks;
 		QList<GConnector*> rmConnects;
 		QList<GDecisionPoint*> rmDecisionPoints;

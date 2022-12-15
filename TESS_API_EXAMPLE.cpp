@@ -333,37 +333,60 @@ void TESS_API_EXAMPLE::on_btnVehicleType_released()
 }
 
 //-----------------------------------道路及连接---------------------------------
-void TESS_API_EXAMPLE::on_btnRouting_released()
+void TESS_API_EXAMPLE::on_btnRoutingFLowRatio_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteRoutingFLowRatio(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除路径流量分配", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除路径流量分配"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnRoutingLaneConnector_released()
 {
-
+    bool result = TessngDBTools::getInstance()->deleteRoutingLaneConnector(2,1,13,10);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除路径车道连接", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除路径车道连接"), "删除失败");
+    }
 }
 
-void TESS_API_EXAMPLE::on_btnRoutingFLowRatio_released()
+void TESS_API_EXAMPLE::on_btnRouting_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteRouting(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除路径", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除路径"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnDecisionPoint_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteDecisionPoint(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除发车点", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除发车点"), "删除失败");
+    }
 }
 
-void TESS_API_EXAMPLE::on_btnLink_released()
-{
-
-}
-
-void TESS_API_EXAMPLE::on_btnLinkVertex_released()
-{
-
-}
-
-void TESS_API_EXAMPLE::on_btnLane_released()
+void TESS_API_EXAMPLE::on_btnLaneConnector_released()
 {
 
 }
@@ -373,7 +396,17 @@ void TESS_API_EXAMPLE::on_btnConnector_released()
 
 }
 
-void TESS_API_EXAMPLE::on_btnLaneConnector_released()
+void TESS_API_EXAMPLE::on_btnLane_released()
+{
+
+}
+
+void TESS_API_EXAMPLE::on_btnLinkVertex_released()
+{
+
+}
+
+void TESS_API_EXAMPLE::on_btnLink_released()
 {
 
 }

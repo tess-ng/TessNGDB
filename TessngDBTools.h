@@ -165,12 +165,49 @@ public:
 
 	//-----------------------------------道路及连接---------------------------------
 	/**
+	 * @brief 删除路径流量分配
+	 * @param ids					[路径流量分配ID]
+	 *
+	 * @return bool
+	 */
+	bool deleteRoutingFLowRatio(QList<long> ids);
+
+	/**
+	 * @brief 删除路径车道连接
+	 * @param id					[路径ID]
+	 * @param connID				[连接段ID]
+	 * @param fromLaneId			[From车道ID]
+	 * @param toLaneId				[To车道ID]
+	 *
+	 * @return bool
+	 */
+	bool deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId);
+
+	/**
 	 * @brief 删除路径
 	 * @param ids					[路径ID]
 	 *
 	 * @return bool
 	 */
 	bool deleteRouting(QList<long> ids);
+
+	/**
+	 * @brief 删除决策点
+	 * @param ids					[决策点ID]
+	 *
+	 * @return bool
+	 */
+	bool deleteDecisionPoint(QList<long> ids);
+
+	/**
+	 * @brief 删除车道连接
+	 * @param connID				[连接段ID]
+	 * @param fromLaneId			[From车道ID]
+	 * @param toLaneId				[To车道ID]
+	 *
+	 * @return bool
+	 */
+	bool deleteLaneConnector(long connID, long fromLaneId, long toLaneId);
 
 	/**
 	 * @brief 删除连接段

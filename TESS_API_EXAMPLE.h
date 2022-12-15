@@ -51,11 +51,11 @@ private slots:
 
     void on_btnVehicleType_released();
     //-----------------------------------道路及连接---------------------------------
-    void on_btnRouting_released();
+    void on_btnRoutingFLowRatio_released();
 
     void on_btnRoutingLaneConnector_released();
 
-    void on_btnRoutingFLowRatio_released();
+    void on_btnRouting_released();
 
     void on_btnDecisionPoint_released();
 
