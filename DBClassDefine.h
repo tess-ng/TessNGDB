@@ -19,6 +19,7 @@ class IBusStationLine;
 class GVehicleDrivInfoCollector;
 class GVehicleQueueCounter;
 class GVehicleTravelDetector;
+class GVehicleDetector;
 class GReduceSpeedArea;
 class ReduceSpeedInterval;
 class ReduceSpeedVehiType;
