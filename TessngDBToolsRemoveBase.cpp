@@ -421,7 +421,7 @@ bool TessngDBToolsRemoveBase::removeReduceSpeedVehiType(ReduceSpeedVehiType* it)
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from ReduceSpeedInterval where reduceSpeedAreaID=%1,vehicleTypeCode=%2;)").arg(it->reduceSpeedAreaID).arg(it->vehicleTypeCode);
+    QString deleteSql = QString(R"(delete from ReduceSpeedVehiType where reduceSpeedAreaID=%1 and vehicleTypeCode=%2;)").arg(it->reduceSpeedAreaID).arg(it->vehicleTypeCode);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -542,7 +542,7 @@ bool TessngDBToolsRemoveBase::removeVehicleConsDetail(VehicleConsDetail it)
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from VehicleConsDetail where vehicleConsCode=%1,vehicleTypeCode=%2;)").arg(it.vehicleConsCode).arg(it.vehicleTypeCode);
+    QString deleteSql = QString(R"(delete from VehicleConsDetail where vehicleConsCode=%1 and vehicleTypeCode=%2;)").arg(it.vehicleConsCode).arg(it.vehicleTypeCode);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -550,7 +550,7 @@ bool TessngDBToolsRemoveBase::removeVehicleConsDetail(VehicleConsDetail it)
 }
 
 /// 车型组成
-bool TessngDBToolsRemoveBase::removeVehicleConstitutent(const QList<VehicleComposition*>& list)
+bool TessngDBToolsRemoveBase::removeVehicleConstitutent(const QList<VehicleComposition>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -560,17 +560,17 @@ bool TessngDBToolsRemoveBase::removeVehicleConstitutent(const QList<VehicleCompo
     return result;
 }
 
-bool TessngDBToolsRemoveBase::removeVehicleConstitutent(VehicleComposition* it)
+bool TessngDBToolsRemoveBase::removeVehicleConstitutent(VehicleComposition it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    result = removeVehicleConsDetail(it->mlVehicleConsDetail);
+    result = removeVehicleConsDetail(it.mlVehicleConsDetail);
 
     //result = removeDepartureInterval(it);
     //if (!result)return false;
 
-    QString deleteSql = QString(R"(delete from VehicleConstitutent where vehicleConsCode=%1;)").arg(it->vehicleConsCode);
+    QString deleteSql = QString(R"(delete from VehicleConstitutent where vehicleConsCode=%1;)").arg(it.vehicleConsCode);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -629,7 +629,7 @@ bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing, cons
     bool result = true;
     QList<long> connIDs = lcStructs.keys();
     for (auto& connID : connIDs) {
-        QList<LCStruct*> lcStructs = routing->mhLCStruct.takeValues(connID);
+        QList<LCStruct*> lcStructs = routing->mhLCStruct.values(connID);
 
         for (auto& lcStruct : lcStructs) {
             result = removeRoutingLaneConnector(routing, connID, lcStruct);
@@ -644,7 +644,7 @@ bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(long routingID, long co
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from RoutingFLowRatio where routingID=%1 and connID=%2 and laneID1=%3 and laneID2=%4;)")
+    QString deleteSql = QString(R"(delete from RoutingLaneConnector where routingID=%1 and connID=%2 and laneID1=%3 and laneID2=%4;)")
         .arg(routingID).arg(connID).arg(fromLaneId).arg(toLaneId);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -657,7 +657,7 @@ bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing)
     bool result = true;
     QList<long> connIDs = routing->mhLCStruct.keys();
     for (auto& connID : connIDs) {
-        QList<LCStruct*> lcStructs = routing->mhLCStruct.takeValues(connID);
+        QList<LCStruct*> lcStructs = routing->mhLCStruct.values(connID);
 
         for (auto& lcStruct : lcStructs) {
             result = removeRoutingLaneConnector(routing, connID, lcStruct);
@@ -672,7 +672,7 @@ bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing, long
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from RoutingFLowRatio where routingID=%1,connID=%2,laneID1=%3,laneID2=%4;)")
+    QString deleteSql = QString(R"(delete from RoutingLaneConnector where routingID=%1 and connID=%2 and laneID1=%3 and laneID2=%4;)")
         .arg(routing->routingID).arg(connID).arg(it->fromLaneId).arg(it->toLaneId);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -698,7 +698,7 @@ bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* routing, const QList<I
     try
     {
         for (auto& link : list) {
-            QString deleteSql = QString(R"(delete from RoutingLink where routingID=%1,linkID=&2;)").arg(routing->routingID).arg(link->id());
+            QString deleteSql = QString(R"(delete from RoutingLink where routingID=%1 and linkID=&2;)").arg(routing->routingID).arg(link->id());
             result = slQuery.exec(deleteSql);
             if (!result) return false;
         }
@@ -795,7 +795,7 @@ bool TessngDBToolsRemoveBase::removeLaneConnector(GLaneConnector* it) {
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from LaneConnector where connID=%1,StartLaneID=%2,EndLaneID=%3;)")
+    QString deleteSql = QString(R"(delete from LaneConnector where connID=%1 and StartLaneID=%2 and EndLaneID=%3;)")
         .arg(it->mpGConnector->id()).arg(it->mpLaneConnector->mpFromLane->laneID).arg(it->mpLaneConnector->mpToLane->laneID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());

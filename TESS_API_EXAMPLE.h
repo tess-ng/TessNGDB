@@ -35,19 +35,27 @@ private slots:
 
     void on_btnGuideArrow_released();
 
+    void on_btnReduceSpeedInterval_released();
+
+    void on_btnReduceSpeedVehiType_released();
+
     void on_btnReduceSpeedArea_released();
 
+    void on_btnDepartureInterval_released();
+
     void on_btnDeparturePoint_released();
+
+    void on_btnVehicleConsDetail_released();
 
     void on_btnVehicleConstitutent_released();
 
     void on_btnVehicleType_released();
     //-----------------------------------道路及连接---------------------------------
-    void on_btnRouting_released();
+    void on_btnRoutingFLowRatio_released();
 
     void on_btnRoutingLaneConnector_released();
 
-    void on_btnRoutingFLowRatio_released();
+    void on_btnRouting_released();
 
     void on_btnDecisionPoint_released();
 
