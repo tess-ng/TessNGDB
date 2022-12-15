@@ -94,7 +94,7 @@ protected:
     /// 限速区：限速区时间间隔，限速区车辆类型，限速区
     bool removeReduceSpeedArea(const QList<GReduceSpeedArea*>& list);
 
-    /// 限速区间隔
+    /// 限速区时间间隔
     bool removeReduceSpeedInterval(const QList<ReduceSpeedInterval*>& list);
 
     /// 限速区车辆类型
@@ -110,7 +110,7 @@ protected:
     bool removeVehicleConsDetail(QList<VehicleConsDetail> list);
 
     /// 车型组成：车型组成和占比，车型组成
-    bool removeVehicleConstitutent(const QList<VehicleComposition*>& list);
+    bool removeVehicleConstitutent(const QList<VehicleComposition>& list);
 
     //-----------------------------------道路及连接---------------------------------
     /// 路径流量分配
@@ -191,14 +191,14 @@ private:
     /// 导向箭头
     bool removeGuideArrow(GGuideArrow* it);
 
-    /// 限速区
-    bool removeReduceSpeedArea(GReduceSpeedArea* it);
-
     /// 限速区间隔
     bool removeReduceSpeedInterval(ReduceSpeedInterval* it);
 
     /// 限速区车辆类型
     bool removeReduceSpeedVehiType(ReduceSpeedVehiType* it);
+
+    /// 限速区
+    bool removeReduceSpeedArea(GReduceSpeedArea* it);
 
     /// 发车间隔
     bool removeDepartureInterval(DepaInterval it);
@@ -212,7 +212,7 @@ private:
     bool removeVehicleConsDetail(VehicleConsDetail it);
 
     /// 车型组成
-    bool removeVehicleConstitutent(VehicleComposition* it);
+    bool removeVehicleConstitutent(VehicleComposition it);
 
     //-----------------------------------道路及连接---------------------------------
     /// 路径流量分配

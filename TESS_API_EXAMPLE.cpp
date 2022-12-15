@@ -175,42 +175,161 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
 //---------------------------------车辆运行及检测-------------------------------
 void TESS_API_EXAMPLE::on_btnVehicleTravelDetector_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteVehicleTravelDetector(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除行程时间检测器", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除行程时间检测器"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnVehicleQueueCounter_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteVehicleQueueCounter(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除排队计数器", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除排队计数器"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnVehicleDrivInfoCollecter_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteDrivInfoCollector(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除车辆信息采集器", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除车辆信息采集器"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnGuideArrow_released()
 {
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteGuideArrow(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除导向箭头", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除导向箭头"), "删除失败");
+    }
+}
 
+void TESS_API_EXAMPLE::on_btnReduceSpeedInterval_released()
+{
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteReduceSpeedInterval(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除减速区时间间隔", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除减速区时间间隔"), "删除失败");
+    }
+}
+
+void TESS_API_EXAMPLE::on_btnReduceSpeedVehiType_released()
+{
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteReduceSpeedVehiType(1, list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除减速区限速车型", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除减速区限速车型"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnReduceSpeedArea_released()
 {
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteReduceSpeedArea(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除减速区", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除减速区"), "删除失败");
+    }
+}
 
+void TESS_API_EXAMPLE::on_btnDepartureInterval_released()
+{
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteDepartureInterval(1, list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除发车间隔", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除发车间隔"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnDeparturePoint_released()
 {
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteDeparturePoint(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除发车点", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除发车点"), "删除失败");
+    }
+}
 
+void TESS_API_EXAMPLE::on_btnVehicleConsDetail_released()
+{
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteVehicleConsDetail(1, list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除车型组成与占比", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除车型组成与占比"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnVehicleConstitutent_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBTools::getInstance()->deleteVehicleConstitutent(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除车型组成", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除车型组成"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnVehicleType_released()
 {
-
+    QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除车型"), "未开发");
 }
 
 //-----------------------------------道路及连接---------------------------------

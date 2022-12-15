@@ -421,7 +421,7 @@ bool TessngDBToolsBase::removeReduceSpeedVehiType(ReduceSpeedVehiType* it)
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from ReduceSpeedInterval where reduceSpeedAreaID=%1,vehicleTypeCode=%2;)").arg(it->reduceSpeedAreaID).arg(it->vehicleTypeCode);
+    QString deleteSql = QString(R"(delete from ReduceSpeedVehiType where reduceSpeedAreaID=%1 and vehicleTypeCode=%2;)").arg(it->reduceSpeedAreaID).arg(it->vehicleTypeCode);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -542,7 +542,7 @@ bool TessngDBToolsBase::removeVehicleConsDetail(VehicleConsDetail it)
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    QString deleteSql = QString(R"(delete from VehicleConsDetail where vehicleConsCode=%1,vehicleTypeCode=%2;)").arg(it.vehicleConsCode).arg(it.vehicleTypeCode);
+    QString deleteSql = QString(R"(delete from VehicleConsDetail where vehicleConsCode=%1 and vehicleTypeCode=%2;)").arg(it.vehicleConsCode).arg(it.vehicleTypeCode);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -550,7 +550,7 @@ bool TessngDBToolsBase::removeVehicleConsDetail(VehicleConsDetail it)
 }
 
 /// 车型组成
-bool TessngDBToolsBase::removeVehicleConstitutent(const QList<VehicleComposition*>& list)
+bool TessngDBToolsBase::removeVehicleConstitutent(const QList<VehicleComposition>& list)
 {
     bool result = true;
     for (auto& it : list) {
@@ -560,17 +560,17 @@ bool TessngDBToolsBase::removeVehicleConstitutent(const QList<VehicleComposition
     return result;
 }
 
-bool TessngDBToolsBase::removeVehicleConstitutent(VehicleComposition* it)
+bool TessngDBToolsBase::removeVehicleConstitutent(VehicleComposition it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
 
-    result = removeVehicleConsDetail(it->mlVehicleConsDetail);
+    result = removeVehicleConsDetail(it.mlVehicleConsDetail);
 
     //result = removeDepartureInterval(it);
     //if (!result)return false;
 
-    QString deleteSql = QString(R"(delete from VehicleConstitutent where vehicleConsCode=%1;)").arg(it->vehicleConsCode);
+    QString deleteSql = QString(R"(delete from VehicleConstitutent where vehicleConsCode=%1;)").arg(it.vehicleConsCode);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 

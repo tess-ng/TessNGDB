@@ -12,6 +12,7 @@
 #include "GBusLine.h"
 #include "GBusStation.h"
 #include "BusStation.h"
+#include "VehicleConsDetail.h"
 
 #include "GVehicleDrivInfoCollector.h"
 #include "VehicleDrivInfoCollector.h"
@@ -131,7 +132,7 @@ failed:
 	return result;
 }
 
-bool TessngDBTools::deleteSignalColor(long id, QList<int> colors)
+bool TessngDBTools::deleteSignalColor(long id, QList<int> serialNnumbers)
 {
 	bool result = true;
 	try {
@@ -147,22 +148,11 @@ bool TessngDBTools::deleteSignalColor(long id, QList<int> colors)
 		if (!dPhase || dPhase->mlSignalColor.size() < 1) return false;
 
 		//删除相位颜色
-		result = removeSignalColor(dPhase, colors);
+		result = removeSignalColor(dPhase, serialNnumbers);
 		if (!result)goto failed;
 
-		/*for (auto& dColor : colors) {
-			for (int i = 0; i < dPhase->mlSignalColor.size();) {
-				if (dColor.color == dPhase->mlSignalColor[i].color) {
-					dPhase->mlSignalColor.removeAt(i);
-					break;
-				}
-				else {
-					i++;
-				}
-			}
-		}*/
-		for (auto& color : colors) {
-			dPhase->mlSignalColor.removeAt(color);
+		for (auto& serialNnumber : serialNnumbers) {
+			dPhase->mlSignalColor.removeAt(serialNnumber);
 		}
 	}
 	catch (QException& exc) {
@@ -556,13 +546,12 @@ failed:
 }
 
 //---------------------------------车辆运行及检测-------------------------------
-/**删除采集器**/
 bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
 		QList<GVehicleDrivInfoCollector*> rmTemps;
-		foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
+		foreach(auto& it, gpScene->mlGVehicleDrivInfoCollector)
 		{
 			if (!ids.contains(it->id())) continue;
 			if (rmTemps.contains(it)) continue;
@@ -572,7 +561,7 @@ bool TessngDBTools::deleteDrivInfoCollector(QList<long> ids) {
 		result = removeDrivInfoCollector(rmTemps);
 		if (!result) goto failed;
 
-		foreach(auto it, rmTemps) {
+		foreach(auto& it, rmTemps) {
 			gpScene->removeGCollector(it);
 		}
 	}
@@ -597,14 +586,13 @@ failed:
 	return result;
 }
 
-/**删除计数器**/
 bool TessngDBTools::deleteVehicleQueueCounter(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
 
 		QList<GVehicleQueueCounter*> rmTemps;
-		foreach(auto it, gpScene->mlGVehicleQueueCounter)
+		foreach(auto& it, gpScene->mlGVehicleQueueCounter)
 		{
 			if (!ids.contains(it->mpVehicleQueueCounter->queueCounterID)) continue;
 			if (rmTemps.contains(it)) continue;
@@ -614,7 +602,7 @@ bool TessngDBTools::deleteVehicleQueueCounter(QList<long> ids) {
 		result = removeVehicleQueueCounter(rmTemps);
 		if (!result) goto failed;
 
-		foreach(auto it, rmTemps) {
+		foreach(auto& it, rmTemps) {
 			gpScene->removeGQueueCounter(it);
 		}
 	}
@@ -639,13 +627,12 @@ failed:
 	return result;
 }
 
-/**删除行程时间检测器**/
 bool TessngDBTools::deleteVehicleTravelDetector(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
 		QList<GVehicleTravelDetector*> rmTemps;
-		foreach(auto it, gpScene->mlGVehicleTravelDetector)
+		foreach(auto& it, gpScene->mlGVehicleTravelDetector)
 		{
 			if (!ids.contains(it->mpVehicleTravelDetector->detectorId)) continue;
 			if (rmTemps.contains(it)) continue;
@@ -655,7 +642,7 @@ bool TessngDBTools::deleteVehicleTravelDetector(QList<long> ids) {
 		result = removeVehicleTravelDetector(rmTemps);
 		if (!result) goto failed;
 
-		foreach(auto it, rmTemps) {
+		foreach(auto& it, rmTemps) {
 			gpScene->removeGTravelDetector(it);
 		}
 	}
@@ -680,24 +667,422 @@ failed:
 	return result;
 }
 
-/**删除限速区**/
-bool TessngDBTools::deleteReduceSpeedArea(QList<long> ids) {
+bool TessngDBTools::deleteGuideArrow(QList<long> ids) {
 	bool result = true;
 	try {
 		gDB.transaction();
-		QList<GReduceSpeedArea*> rmTemps;
-		foreach(auto it, gpScene->mlGReduceSpeedArea)
+		QList<GGuideArrow*> rmTemps;
+		foreach(auto& it, gpScene->mlGGuideArrow)
 		{
-			if (!ids.contains(it->mpReduceSpeedArea->reduceSpeedAreaID)) continue;
+			if (!ids.contains(it->mpGuideArrow->guideArrowID)) continue;
 			if (rmTemps.contains(it)) continue;
 			rmTemps.push_back(it);
 		}
 
-		result = removeReduceSpeedArea(rmTemps);
+		result = removeGuideArrow(rmTemps);
 		if (!result) goto failed;
 
-		foreach(auto it, rmTemps) {
+		foreach(auto& it, rmTemps) {
+			gpScene->removeGGuideArrow(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove GuideArrow failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteReduceSpeedInterval(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GReduceSpeedArea*> updateArea;
+		QList<ReduceSpeedInterval*> rmInterval;
+		foreach(auto area, gpScene->mlGReduceSpeedArea)
+		{
+			bool find = false;
+			//找到需要更改的限速区
+			foreach(auto& it, area->mpReduceSpeedArea->mlReduceSpeedInterval) {
+				if(!ids.contains(it->intervalID)) continue;
+				if (updateArea.contains(area)) continue;
+
+				find = true;
+				updateArea.push_back(area);
+				break;
+			}
+
+			if (!find) continue;
+
+			//找到需要删除的时间间隔
+			foreach(auto& it, area->mpReduceSpeedArea->mlReduceSpeedInterval) {
+				if (!ids.contains(it->intervalID)) continue;
+				if (rmInterval.contains(it)) continue;
+
+				rmInterval.push_back(it);
+			}
+		}
+
+		//删除时间间隔的数据库记录
+		result = removeReduceSpeedInterval(rmInterval);
+		if (!result) goto failed;
+
+		//同步内存
+		foreach(auto& area, updateArea) {
+			for (int i = 0; i < area->mpReduceSpeedArea->mlReduceSpeedInterval.size();) {
+				if (!ids.contains(area->mpReduceSpeedArea->mlReduceSpeedInterval[i]->intervalID)) {
+					i++;
+				}
+				else {
+					area->mpReduceSpeedArea->mlReduceSpeedInterval.removeAt(i);
+				}
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**
+	 * @brief 删除限速区车辆类型
+	 * @param id					[限速区ID]
+	 * @param departureIntervalDs	[车型编码]
+	 *
+	 * @return bool
+*/
+bool TessngDBTools::deleteReduceSpeedVehiType(long id, QList<long> vehicleTypeCodes)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		GReduceSpeedArea* updateArea = NULL;
+		QList<ReduceSpeedVehiType*> rmReduceSpeedVehiTypes;
+		foreach(auto& area, gpScene->mlGReduceSpeedArea)
+		{
+			if (id != area->mpReduceSpeedArea->reduceSpeedAreaID) continue;
+			updateArea = area;
+
+			foreach(auto& type, updateArea->mpReduceSpeedArea->mlReduceSpeedVehiType) {
+				if (!vehicleTypeCodes.contains(type->vehicleTypeCode)) continue;
+
+				rmReduceSpeedVehiTypes.push_back(type);
+			}
+		}
+		if (!updateArea || vehicleTypeCodes.size() < 1) return false;
+
+		//删除时间间隔的数据库记录
+		result = removeReduceSpeedVehiType(rmReduceSpeedVehiTypes);
+		if (!result) goto failed;
+
+		//同步内存
+		for (int i = 0; i < updateArea->mpReduceSpeedArea->mlReduceSpeedVehiType.size();) {
+			if (!vehicleTypeCodes.contains(updateArea->mpReduceSpeedArea->mlReduceSpeedVehiType[i]->vehicleTypeCode)) {
+				i++;
+			}
+			else {
+				updateArea->mpReduceSpeedArea->mlReduceSpeedVehiType.removeAt(i);
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteReduceSpeedArea(QList<long> departureIntervalDs) {
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GReduceSpeedArea*> rmArea;
+		foreach(auto& it, gpScene->mlGReduceSpeedArea)
+		{
+			if (!departureIntervalDs.contains(it->mpReduceSpeedArea->reduceSpeedAreaID)) continue;
+			if (rmArea.contains(it)) continue;
+			rmArea.push_back(it);
+		}
+
+		result = removeReduceSpeedArea(rmArea);
+		if (!result) goto failed;
+
+		foreach(auto& it, rmArea) {
 			gpScene->removeGReduceSpeedArea(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**
+	 * @brief 删除发车间隔
+	 * @param id					[发车点ID]
+	 * @param ids					[发车间隔ID]
+	 *
+	 * @return bool
+*/
+bool TessngDBTools::deleteDepartureInterval(long id, QList<long> departureIntervalDs)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		GDeparturePoint* updateTemp = NULL;
+		QList<DepaInterval> rmTemps;
+		foreach(auto& it, gpScene->mlGDeparturePoint)
+		{
+			if (id != it->id()) continue;
+			updateTemp = it;
+
+			for (auto& depaInterval : updateTemp->mpDeparturePoint->mlDepaInterval) {
+				if (!departureIntervalDs.contains(depaInterval.departureIntervalD)) continue;
+				rmTemps.push_back(depaInterval);
+			}
+		}
+		if (!updateTemp || departureIntervalDs.size() < 1)return false;
+
+		result = removeDepartureInterval(rmTemps);
+		if (!result) goto failed;
+
+		//同步内存
+		for (int i = 0; i < updateTemp->mpDeparturePoint->mlDepaInterval.size();) {
+			if (!departureIntervalDs.contains(updateTemp->mpDeparturePoint->mlDepaInterval.at(i).departureIntervalD)) {
+				i++;
+			}
+			else {
+				updateTemp->mpDeparturePoint->mlDepaInterval.removeAt(i);
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteDeparturePoint(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<GDeparturePoint*> rmTemps;
+		foreach(auto& it, gpScene->mlGDeparturePoint)
+		{
+			if (!ids.contains(it->mpDeparturePoint->departurePointID)) continue;
+			if (rmTemps.contains(it)) continue;
+			rmTemps.push_back(it);
+		}
+
+		result = removeDeparturePoint(rmTemps);
+		if (!result) goto failed;
+
+		foreach(auto& it, rmTemps) {
+			gpScene->removeGDeparturePoint(it);
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+/**
+	 * @brief 删除车型组成和占比
+	 * @param id					[车型组成编号]
+	 * @param vehicleTypeCodes		[车型编码]
+	 *
+	 * @return bool
+*/
+bool TessngDBTools::deleteVehicleConsDetail(long id, QList<long> vehicleTypeCodes)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		VehicleComposition updateVCposition;
+		QList<VehicleConsDetail> rmTemps;
+		foreach(auto& it, ghVehicleComposition)
+		{
+			if (id != it.vehicleConsCode) continue;
+			updateVCposition = it;
+
+			foreach(auto& detail, updateVCposition.mlVehicleConsDetail) {
+				if (!vehicleTypeCodes.contains(detail.vehicleTypeCode)) continue;
+
+				rmTemps.push_back(detail);
+			}
+		}
+		if (updateVCposition.mlVehicleConsDetail.size() < 1 || vehicleTypeCodes.size() < 1) return false;
+
+		result = removeVehicleConsDetail(rmTemps);
+		if (!result) goto failed;
+
+		//同步内存
+		for (int i = 0; i < updateVCposition.mlVehicleConsDetail.size();) {
+			if (!vehicleTypeCodes.contains(updateVCposition.mlVehicleConsDetail.at(i).vehicleTypeCode)) {
+				i++;
+			}
+			else {
+				updateVCposition.mlVehicleConsDetail.removeAt(i);
+			}
+		}
+	}
+	catch (QException& exc) {
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (const std::exception& exc)
+	{
+		qWarning() << exc.what();
+		result = false;
+	}
+	catch (...) {
+		qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+		result = false;
+	}
+failed:
+	result = gDB.commit() && result;
+	if (!result) {
+		gDB.rollback();
+	}
+	return result;
+}
+
+bool TessngDBTools::deleteVehicleConstitutent(QList<long> ids)
+{
+	bool result = true;
+	try {
+		gDB.transaction();
+		QList<DepaInterval> rmDepaInterval;
+		QList<VehicleComposition> rmTemps;
+		
+		foreach(auto& point, gpScene->mlGDeparturePoint)
+		{
+			foreach(auto& depaInterval, point->mpDeparturePoint->mlDepaInterval) {
+				if(!ids.contains(depaInterval.vehiCons.vehicleConsCode)) continue;
+
+				rmDepaInterval.push_back(depaInterval);
+			}
+		}
+		foreach(auto it, ghVehicleComposition)
+		{
+			if (!ids.contains(it.vehicleConsCode)) continue;
+			rmTemps.push_back(it);
+		}
+
+		//删除发车间隔
+		result = removeDepartureInterval(rmDepaInterval);
+		if (!result) goto failed;
+
+		//删除车型组成
+		result = removeVehicleConstitutent(rmTemps);
+		if (!result) goto failed;
+
+		//同步内存
+		foreach(auto& point, gpScene->mlGDeparturePoint)
+		{
+			for (int i = 0; i < point->mpDeparturePoint->mlDepaInterval.size();) {
+				if (!ids.contains(point->mpDeparturePoint->mlDepaInterval[i].vehiCons.vehicleConsCode)) {
+					i++;
+				}
+				else {
+					point->mpDeparturePoint->mlDepaInterval.removeAt(i);
+				}
+			}
+		}
+		foreach(auto it, rmTemps) {
+			ghVehicleComposition.remove(it.vehicleConsCode);
 		}
 	}
 	catch (QException& exc) {
