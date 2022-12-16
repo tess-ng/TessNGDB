@@ -82,7 +82,7 @@ private:
 
     bool updateRoutingLinks(GRouting* routing);
 
-    bool updateRoutingFlowByInterval(const QList<RoutingFlowByInterval*> pRPIs,const QList<Routing*> routes);
+    bool updateRoutingFlowByInterval(const QList<RoutingFlowByInterval*> &pRPIs,const QList<Routing*> &routes);
 
     bool updateDecisionPoint(DecisionPoint* pDecisionPoint);
 

@@ -243,7 +243,7 @@ private:
          *
          * @return bool
          */
-    bool checkContansLane(const QList<GLink*>& hash, long laneId);
+    bool checkContansLane(const QList<GLink*>& , long laneId);
 
     /**
          * @brief 检查这些连接段里是否包含该车道连接
@@ -253,7 +253,7 @@ private:
          *
          * @return bool
          */
-    bool checkContansLane(const QList<GConnector*>& hash, long fromlaneId, long tolaneId);
+    bool checkContansLane(const QList<GConnector*>& , long fromlaneId, long tolaneId);
 
     /**
          * @brief 检查这些连接段里是否包含该连接段
