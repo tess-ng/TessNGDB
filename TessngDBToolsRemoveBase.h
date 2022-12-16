@@ -81,13 +81,16 @@ protected:
     bool removeRoutingFLowRatio(const QList<GRouting*>& list);
 
     /// 路径车道连接
+    bool insertRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId);
+
     bool removeRoutingLaneConnector(GRouting* routing, const SafeHash<long, LCStruct*>& lcStructs);
     bool removeRoutingLaneConnector(GRouting* routing);
+    bool removeRoutingLaneConnector(long routingID, long connID);
     bool removeRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId);
 
     /// 路径路段
     bool removeRoutingLink(const QList<GRouting*>& list);
-    bool removeRoutingLink(GRouting* routing, const QList<ILink*> list);
+    bool removeRoutingLink(long routingID, const QList<ILink*> list);
 
     /// 路径：路径流量分配，路径车道连接，路径路段，路径
     bool removeRouting(const QList<GRouting*>& list);
