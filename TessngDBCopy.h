@@ -19,6 +19,7 @@ class VehicleQueueCounter;
 class ReduceSpeedArea;
 class BusStation;
 class VehicleTravelDetector;
+class BusLine;
 class TessngDBCopy :public PH::SingleHolder<TessngDBCopy>
 {
 public:
@@ -43,6 +44,7 @@ public:
     bool insertVehicleTravelDetector(VehicleTravelDetector* pTravelDetector);
     bool insertReduceSpeedArea(ReduceSpeedArea* pReduceSpeedArea);
     bool insertBusStation(BusStation* pBusStation);
+    bool insertBusLine(BusLine* pBusLine);
     void test();
 private:
     TessngDBCopy();

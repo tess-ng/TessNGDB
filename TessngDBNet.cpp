@@ -127,6 +127,8 @@ void TessngDBNet::saveScenesData()
     QPainterPath pathShape=m_graphicsBaseItem->shape();
     QHash<int, GLink*> hashLink;
     QHash<int, GLink*> allGLinkCatch;
+    QList<BusLine*> bsList;
+    QList<SignalGroup*> listSignalGroup;
     foreach(GLink * pGLink, gpScene->mlGLink) {
         allGLinkCatch.insert(pGLink->id(), pGLink);
         QPainterPath temp = pGLink->shape();
@@ -155,22 +157,28 @@ void TessngDBNet::saveScenesData()
     QString path=QFileDialog::getSaveFileName(pWin,tr("Save File"),"","*.tess");
     if(path.isEmpty()) return;
     bool result = true;
-    result = result && TessngDBCopy::getInstance()->copyDb(path);
+    result = TessngDBCopy::getInstance()->copyDb(path);
+    if (!result) return;
     TessngDBCopy::getInstance()->getSqlDatabase()->transaction();
-    result = result && TessngDBCopy::getInstance()->saveConfiguration();
-    result = result && TessngDBCopy::getInstance()->insertNet();
+    result =TessngDBCopy::getInstance()->saveConfiguration();
+    if (!result) goto exit;
+    result =TessngDBCopy::getInstance()->insertNet();
+    if (!result) goto exit;
     ///保存路段相关数据
     foreach (auto it, hashLink) {
-        result = result && TessngDBCopy::getInstance()->insertLink(it->mpLink);
+        result = TessngDBCopy::getInstance()->insertLink(it->mpLink);
+        if (!result) goto exit;
     }
     ///保存连接段相关数据
     foreach (auto it, hashConnector) {
-        result = result && TessngDBCopy::getInstance()->insertConnector(it->mpConnector);
+        result = TessngDBCopy::getInstance()->insertConnector(it->mpConnector);
+        if (!result) goto exit;
     }
     ///保存决策点
     foreach(GDecisionPoint* pGDecisionPoint, gpScene->mlGDecisionPoint){
         if (!hashLink.contains(pGDecisionPoint->link()->id())) continue;
-        result = result && TessngDBCopy::getInstance()->insertDecisionPoint(pGDecisionPoint->mpDecisionPoint);
+        result = TessngDBCopy::getInstance()->insertDecisionPoint(pGDecisionPoint->mpDecisionPoint);
+        if (!result) goto exit;
         foreach(GRouting * pGRouting, pGDecisionPoint->mlGRouting) {
             foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
                 if (oneRouting.mlGLink.size() == 0)
@@ -187,8 +195,8 @@ void TessngDBNet::saveScenesData()
                             QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
                             foreach(LCStruct * pLc, lLC)
                             {
-                                result = result && TessngDBCopy::getInstance()->insertRoutingLaneConnector(pGRouting->routingID,
-                                    pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId);
+                                result = TessngDBCopy::getInstance()->insertRoutingLaneConnector(pGRouting->routingID,pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId);
+                                if (!result) goto exit;
                             }
                             break;
                         }
@@ -202,9 +210,10 @@ void TessngDBNet::saveScenesData()
     {
         if (!pOne->validate()) continue;
         if (!hashLink.contains(pOne->mpGLane->link()->id())) continue;
-        result = result && TessngDBCopy::getInstance()->insertGuideArrow(pOne->mpGuideArrow);
+        result = TessngDBCopy::getInstance()->insertGuideArrow(pOne->mpGuideArrow);
+        if (!result) goto exit;
     }
-    QList<SignalGroup*> listSignalGroup;
+    
     ///保存信号灯
     foreach(GSignalLamp* pGSl, gpScene->mlGSignalLamp){
         bool flag = false;
@@ -218,33 +227,40 @@ void TessngDBNet::saveScenesData()
         if (nullptr != group && !listSignalGroup.contains(group)) {
             listSignalGroup.append(group);
         }
-        result = result && TessngDBCopy::getInstance()->insertSignalLamp(pGSl->mpSignalLamp);
+        result = TessngDBCopy::getInstance()->insertSignalLamp(pGSl->mpSignalLamp);
+        if (!result) goto exit;
     }
     ///保存信号灯组
     foreach(SignalGroup* pSg, listSignalGroup) {
-        result = result && TessngDBCopy::getInstance()->insertSignalGroup(pSg);
+        result = TessngDBCopy::getInstance()->insertSignalGroup(pSg);
+        if (!result) goto exit;
     }
     ///保存车型
     foreach(const VehicleType& vt, ghVehicleType) {
-        result = result && TessngDBCopy::getInstance()->insertVehicleType(vt);
+        result = TessngDBCopy::getInstance()->insertVehicleType(vt);
+        if (!result) goto exit;
     }
     foreach(const VehicleComposition& vc, ghVehicleComposition) {
-        result = result && TessngDBCopy::getInstance()->insertVehicleConstitutent(vc);
+        result = TessngDBCopy::getInstance()->insertVehicleConstitutent(vc);
+        if (!result) goto exit;
     }
     ///保存发车点
     foreach(GDeparturePoint* pDp, gpScene->mlGDeparturePoint) {
         if (!hashLink.contains(pDp->link()->id())) continue;
-        result = result && TessngDBCopy::getInstance()->insertDeparturePoint(*pDp->mpDeparturePoint);
+        result = TessngDBCopy::getInstance()->insertDeparturePoint(*pDp->mpDeparturePoint);
+        if (!result) goto exit;
     }
     ///保存采集器
     foreach(GVehicleDrivInfoCollector* pGCollecter, gpScene->mlGVehicleDrivInfoCollector) {
         if (!hashLink.contains(pGCollecter->link()->id())) continue;
-        result = result && TessngDBCopy::getInstance()->insertDrivInfoCollector(*pGCollecter->mpVehicleDrivInfoCollector);
+        result = TessngDBCopy::getInstance()->insertDrivInfoCollector(*pGCollecter->mpVehicleDrivInfoCollector);
+        if (!result) goto exit;
     }
     ///保存排队计数器
     foreach(GVehicleQueueCounter* pGQueue, gpScene->mlGVehicleQueueCounter) {
         if (!hashLink.contains(pGQueue->mpGLane->link()->id())) continue;
-        result = result && TessngDBCopy::getInstance()->insertVehicleQueueCounter(pGQueue->mpVehicleQueueCounter);
+        result = TessngDBCopy::getInstance()->insertVehicleQueueCounter(pGQueue->mpVehicleQueueCounter);
+        if (!result) goto exit;
     }
     ///保存行程时间检测器
     foreach(GVehicleTravelDetector* pOne, gpScene->mlGVehicleTravelDetector){
@@ -264,7 +280,8 @@ void TessngDBNet::saveScenesData()
             flag = flag && hashConnector.contains(pOne->mpVehicleTravelDetector->teminalRoadId);
         }
         if (!flag) continue;
-        result = result && TessngDBCopy::getInstance()->insertVehicleTravelDetector(pOne->mpVehicleTravelDetector);
+        result =  TessngDBCopy::getInstance()->insertVehicleTravelDetector(pOne->mpVehicleTravelDetector);
+        if (!result) goto exit;
     }
     ///保存限速区
     foreach(GReduceSpeedArea* pOne, gpScene->mlGReduceSpeedArea) {
@@ -276,20 +293,32 @@ void TessngDBNet::saveScenesData()
             flag = hashConnector.contains(pOne->mpReduceSpeedArea->roadID);
         }
         if (!flag) continue;
-        result = result && TessngDBCopy::getInstance()->insertReduceSpeedArea(pOne->mpReduceSpeedArea);
+        result =  TessngDBCopy::getInstance()->insertReduceSpeedArea(pOne->mpReduceSpeedArea);
+        if (!result) goto exit;
     }
     ///保存公交站
     foreach(GBusStation* pGBusStation, gpScene->mlGBusStation) {
         if (!hashLink.contains(pGBusStation->link()->id())) continue;
-        result = result && TessngDBCopy::getInstance()->insertBusStation(pGBusStation->mpBusStation);
+        result = TessngDBCopy::getInstance()->insertBusStation(pGBusStation->mpBusStation);
+        if (!result) goto exit;
     }
     ///保存公交线路及相关站点线路，以及乘客到站
-    //foreach(GBusLine* pGBusLine, gpScene->mlGBusLine) {
-
-    //}
-    result = result && TessngDBCopy::getInstance()->updateIds();
-
-    result = result && TessngDBCopy::getInstance()->getSqlDatabase()->commit();
+    foreach(GBusLine* pGBusLine, gpScene->mlGBusLine) {
+        BusLine* bline = pGBusLine->mpBusLine;
+        for (int i = 0, size = bline->mlLink.size(); i < size; ++i){
+            Link* pLink = bline->mlLink.at(i);
+            if (!hashLink.contains(pLink->linkID)) continue;
+            if (bsList.contains(bline)) continue;
+            bsList.push_back(bline);
+        }
+    }
+    foreach(auto it, bsList) {
+        result = TessngDBCopy::getInstance()->insertBusLine(it);
+        if (!result) goto exit;
+    }
+    result = TessngDBCopy::getInstance()->updateIds();
+exit:
+    result =TessngDBCopy::getInstance()->getSqlDatabase()->commit()&&result;
     if (!result)
     {
         TessngDBCopy::getInstance()->getSqlDatabase()->rollback();

@@ -28,6 +28,9 @@
 #include "ReduceSpeedInterval.h"
 #include "ReduceSpeedVehiType.h"
 #include "BusStation.h"
+#include "BusLine.h"
+#include "BusStationLine.h"
+#include "PassengerArriving.h"
 #include <QDebug>
 #include <QUuid>
 bool TessngDBCopy::copyDb(const QString& dbFileName)
@@ -858,7 +861,100 @@ bool TessngDBCopy::insertBusStation(BusStation* pBusStation)
     query.bindValue(":type", type);
     return  query.exec();
 }
+bool TessngDBCopy::insertBusLine(BusLine* pBusLine) {
+    bool bResult = true;
+    QSqlQuery query(database);
 
+    //插入线路主表数据
+    QString sql = "insert into BusLine(busLineID, name, length, dischargeFreq, dischargeStartTime, dischargeEndTime, startX, startY, endX, endY, desirSpeed, speedSD, passCountAtStartTime) values(:busLineID, :name, :length, :dischargeFreq, :dischargeStartTime, :dischargeEndTime, :startX, :startY, :endX, :endY, :desirSpeed, :speedSD, :passCountAtStartTime)";
+    query.prepare(sql);
+    query.bindValue(":busLineID", QVariant::fromValue(pBusLine->busLineID));
+    query.bindValue(":name", pBusLine->name);
+    query.bindValue(":length", pBusLine->length);
+    query.bindValue(":dischargeFreq", pBusLine->dischargeFreq);
+    query.bindValue(":dischargeStartTime", pBusLine->dischargeStartTime);
+    query.bindValue(":dischargeEndTime", pBusLine->dischargeEndTime);
+    query.bindValue(":startX", pBusLine->startX);
+    query.bindValue(":startY", pBusLine->startY);
+    query.bindValue(":endX", pBusLine->endX);
+    query.bindValue(":endY", pBusLine->endY);
+    query.bindValue(":desirSpeed", pBusLine->desirSpeed);
+    query.bindValue(":speedSD", pBusLine->speedSD);
+    query.bindValue(":passCountAtStartTime", pBusLine->passCountAtStartTime);
+    bResult=query.exec();
+
+    //插入相关站点线路，以及乘客到站
+    if (bResult)
+    {
+        QString sqlInsBSL = "insert into BusStationLine(stationLineID, busStationID, busLineID, parkingTime, leavingPercent, getOnTimePerson, getOutTimePerson) values(:stationLineID, :busStationID, :busLineID, :parkingTime, :leavingPercent, :getOnTimePerson, :getOutTimePerson)";
+        QString sqlInsPassArriving = "insert into BusStationPassengerArriving(passengerArrivingID, stationLineID, startTime, endTime, passengerCount) values(:passengerArrivingID, :stationLineID, :startTime, :endTime, :passengerCount)";
+        QSqlQuery queryInsBSL;
+        QSqlQuery queryInsPA;
+        queryInsBSL.prepare(sqlInsBSL);
+        queryInsPA.prepare(sqlInsPassArriving);
+        foreach(BusStationLine * pBusStationLine, pBusLine->mlBusStationLine)
+        {
+            queryInsBSL.bindValue(":stationLineID", QVariant::fromValue(pBusStationLine->stationLineID));
+            queryInsBSL.bindValue(":busStationID", QVariant::fromValue(pBusStationLine->busStationID));
+            queryInsBSL.bindValue(":busLineID", QVariant::fromValue(pBusStationLine->busLineID));
+            queryInsBSL.bindValue(":parkingTime", pBusStationLine->parkingTime);
+            queryInsBSL.bindValue(":leavingPercent", pBusStationLine->leavingPercent);
+            queryInsBSL.bindValue(":getOnTimePerson", pBusStationLine->getOnTimePerson);
+            queryInsBSL.bindValue(":getOutTimePerson", pBusStationLine->getOutTimePerson);
+            bResult = queryInsBSL.exec();
+
+            if (!bResult)
+            {
+                break;
+            }
+            else
+            {
+                foreach(PassengerArriving * pPA, pBusStationLine->mlPassengerArriving)
+                {
+                    queryInsPA.bindValue(":passengerArrivingID", QVariant::fromValue(pPA->passengerArrivingID));
+                    queryInsPA.bindValue(":stationLineID", QVariant::fromValue(pBusStationLine->stationLineID));
+                    queryInsPA.bindValue(":startTime", QVariant::fromValue(pPA->startTime));
+                    queryInsPA.bindValue(":endTime", QVariant::fromValue(pPA->endTime));
+                    queryInsPA.bindValue(":passengerCount", pPA->passengerCount);
+                    bResult = queryInsPA.exec();
+                    if (!bResult)
+                    {
+                        break;
+                    }
+                }
+
+                if (!bResult)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    //插入线路相关路段
+    if (bResult)
+    {
+        QString sqlInsLinks = "insert into BusLineRoad(busLineID, serialNumber, roadID) values(:busLineID, :serialNumber, :roadID)";
+        QSqlQuery queryInsLinks;
+        queryInsLinks.prepare(sqlInsLinks);
+
+        for (int i = 0, size = pBusLine->mlLink.size(); i < size; ++i)
+        {
+            Link* pLink = pBusLine->mlLink.at(i);
+            queryInsLinks.bindValue(":busLineID", QVariant::fromValue(pBusLine->busLineID));
+            queryInsLinks.bindValue(":serialNumber", i + 1);
+            queryInsLinks.bindValue(":roadID", QVariant::fromValue(pLink->linkID));
+            bResult = queryInsLinks.exec();
+
+            if (!bResult)
+            {
+                break;
+            }
+        }
+    }
+
+    return bResult;
+}
 void TessngDBCopy::test(){
 
 }

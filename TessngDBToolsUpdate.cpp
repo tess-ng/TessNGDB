@@ -470,7 +470,7 @@ failed:
 
     return result;
 }
-bool TessngDBToolsUpdate::updateRoutingFlowByInterval(const QList<RoutingFlowByInterval*> pRPIs,const QList<Routing*> routes){
+bool TessngDBToolsUpdate::updateRoutingFlowByInterval(const QList<RoutingFlowByInterval*>& pRPIs,const QList<Routing*>& routes){
     long startDateTime = 1;
     bool result=true;
     QSqlQuery  query(gDB);
