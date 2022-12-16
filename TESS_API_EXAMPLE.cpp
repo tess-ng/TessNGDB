@@ -349,7 +349,7 @@ void TESS_API_EXAMPLE::on_btnRoutingFLowRatio_released()
 
 void TESS_API_EXAMPLE::on_btnRoutingLaneConnector_released()
 {
-    bool result = TessngDBToolsRemove::getInstance()->deleteRoutingLaneConnector(2,1,13,10);
+    bool result = TessngDBToolsRemove::getInstance()->deleteRoutingLaneConnector(2,1,13,10);//1,5,13,7
     if (result) {
         QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除路径车道连接", "删除成功");
     }
