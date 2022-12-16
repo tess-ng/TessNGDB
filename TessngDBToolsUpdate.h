@@ -43,6 +43,15 @@ public:
 
     ///update VehicleDetector
     bool updateVehicleDetectors(const QList<GVehicleDetector*>& list);
+
+    ///update ReduceSpeedArea
+    bool updateReduceSpeedAreas(const QList<GReduceSpeedArea*>& list);
+
+    ///update BusStation
+    bool updateBustation(const QList<GBusStation*>& list);
+
+    ///update BusLine
+    bool updateBusLine(const QList<GBusLine*>& list);
 protected:
     TessngDBToolsUpdate();
 
@@ -88,6 +97,20 @@ private:
     bool updateSignalColor(long phaseID,QList<SignalColor>& list);
 
     bool updateSignalGroup(SignalGroup* pSignalGroup);
+
+    bool updateReduceSpeedVehiTypes(const QList<ReduceSpeedVehiType*>& list);
+
+    bool updateReduceSpeedIntervals(const QList<ReduceSpeedInterval*>& list);
+
+    bool updateReduceSpeedArea(ReduceSpeedArea* pReduceSpeedArea);
+
+    bool updateBusLineRoads(BusLine* bline);
+
+    bool updatePassengerArriving(long stationLineID,const QList<PassengerArriving*>& list);
+
+    bool updateBusStationLine(const QList<BusStationLine*>& list);
+
+    bool updateBusLine(BusLine* pBusLine);
 
     QString jsonObjToStr(const QJsonObject& obj);
 };

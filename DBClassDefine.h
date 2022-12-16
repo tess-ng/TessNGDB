@@ -13,6 +13,7 @@ class ISignalLamp;
 class PassengerArriving;
 class BusStationLine;
 class GBusLine;
+class BusLine;
 class GBusStation;
 class IBusStationLine;
 
@@ -23,6 +24,7 @@ class GVehicleDetector;
 class GReduceSpeedArea;
 class ReduceSpeedInterval;
 class ReduceSpeedVehiType;
+class ReduceSpeedArea;
 class GGuideArrow;
 class GuideArrow;
 struct DepaInterval;

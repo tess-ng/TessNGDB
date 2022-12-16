@@ -5,6 +5,7 @@
 #include <QTextCodec>
 #include <QMainWindow>
 #include "DBPluginGui.h"
+#include <QException>
 int main(int argc, char *argv[])
 {
     const char* pAppFilePath = "C:\\TESSNG_2.1.0\\TESSNG.exe";
@@ -22,6 +23,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setFont(QFont("新宋体 ", 12, 2));
     int result = -1;
+
     QDir::setCurrent(a.applicationDirPath());
     QMainWindow* pWindow = tessng();
     if (pWindow) {

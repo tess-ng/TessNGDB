@@ -134,7 +134,7 @@ private:
     bool removeBusStationLine(BusStationLine* it);
 
     /// 公交线路的路段或连接段序列
-    bool removeBusLineRoad(GBusLine* it);
+    bool removeBusLineRoad(BusLine* it);
 
     /// 公交线路
     bool removeBusLine(GBusLine* it);

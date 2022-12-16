@@ -33,6 +33,15 @@
 #include "VehicleTravelDetector.h"
 #include "GVehicleDetector.h"
 #include "VehicleDetector.h"
+#include "ReduceSpeedArea.h"
+#include "greducespeedarea.h"
+#include "ReduceSpeedInterval.h"
+#include "ReduceSpeedVehiType.h"
+#include "gbusstation.h"
+#include "BusStation.h"
+#include "BusLine.h"
+#include "PassengerArriving.h"
+#include "gbusline.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
@@ -55,7 +64,10 @@ bool TessngDBToolsUpdate::updateVertex(const QList<Vertex *> &list)
                       .arg(pVertex->vertexID));
 
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -69,7 +81,10 @@ bool TessngDBToolsUpdate::updateNode(const QList<Node*> &list){
                       .arg(it->nodeID));
 
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -83,7 +98,10 @@ bool TessngDBToolsUpdate::updateLinkVertex(long linkId,const QList<Vertex*>& lis
                       .arg(it->vertexID));
 
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -167,7 +185,10 @@ bool TessngDBToolsUpdate::updateLaneLimitVehicle(long laneId,QList<VehicleType> 
     foreach (auto &it, list) {
         query.prepare(QString("UPDATE LaneLimitVehicle set VehicleTypeCode=%1 WHERE LaneID=%2").arg(it.vehicleTypeCode).arg(laneId));
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -291,7 +312,10 @@ bool TessngDBToolsUpdate::updateLaneConnectors(long connId,const QList<LaneConne
         sql+=QString(" WHERE connID=%1").arg(connId);
         query.prepare(sql);
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -306,7 +330,10 @@ bool TessngDBToolsUpdate::updateConnectorLimitVehicles(long connId, QList<Vehicl
         sql+=QString(" WHERE connID=%1").arg(connId);
         query.prepare(sql);
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -371,6 +398,7 @@ failed:
 }
 bool TessngDBToolsUpdate::updateRoutingLinks(GRouting* routing){
     bool result=TessngDBToolsRemove::getInstance()->removeRoutingLink(routing);
+    if(!result) return false;
     QSqlQuery  query(gDB);
     QString sql = "insert into RoutingLink(routingID, linkID, num1, num2) values(:routingID, :linkID, :num1, :num2)";
     query.prepare(sql);
@@ -385,7 +413,10 @@ bool TessngDBToolsUpdate::updateRoutingLinks(GRouting* routing){
             query.bindValue(":num1", num1);
             query.bindValue(":num2", num2);
             result =query.exec();
-            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                return result;
+            }
             num2++;
         }
         num1++;
@@ -472,7 +503,10 @@ bool TessngDBToolsUpdate::updateRoutingFlowByInterval(const QList<RoutingFlowByI
             sql+=QString(" WHERE RoutingFLowRatioID=%1").arg(pRoutingFLowRatio->RoutingFLowRatioID);
             query.prepare(sql);
             result=query.exec();
-            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                break;
+            }
         }
         startDateTime = pRPI->endDateTime + 1;
     }
@@ -543,7 +577,10 @@ bool TessngDBToolsUpdate::updateDepaInterval(long departurePointID,QList<DepaInt
         sql+=QString(" WHERE departureIntervalD=%1").arg(departurePointID);
         query.prepare(sql);
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -622,7 +659,10 @@ bool TessngDBToolsUpdate::updateSignalColor(long phaseID,QList<SignalColor>& lis
         sql+=QString(" WHERE signalPhaseID=%1").arg(phaseID);
         query.prepare(sql);
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
     return result;
 }
@@ -641,7 +681,10 @@ bool TessngDBToolsUpdate::updateSignalPhase(const QList<SignalPhase *> &list)
         sql+=QString(" WHERE signalPhaseID=%1").arg(it->signalPhaseID);
         query.prepare(sql);
         result=query.exec();
-        if(!result) throw PH::Exception(query.lastError().text().toStdString());
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
     }
 
     return result;
@@ -660,6 +703,8 @@ bool TessngDBToolsUpdate::updateSignalGroup(SignalGroup* pSignalGroup){
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
+
+
 bool TessngDBToolsUpdate::updateSignalGroups(const QList<SignalGroup *> &list)
 {
     bool result = true;
@@ -749,7 +794,10 @@ bool TessngDBToolsUpdate::updateVehicleDrivInfoCollectors(const QList<GVehicleDr
             sql+=QString(" WHERE collecterID=%1").arg(it->mpVehicleDrivInfoCollector->collecterID);
             query.prepare(sql);
             result=query.exec();
-            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                break;
+            }
         }
     }
     catch (QException& exc) {
@@ -800,7 +848,10 @@ bool TessngDBToolsUpdate::updateVehicleQueueCounters(const QList<GVehicleQueueCo
             sql+=QString(" WHERE QueueCounterID=%1").arg(it->mpVehicleQueueCounter->queueCounterID);
             query.prepare(sql);
             result=query.exec();
-            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                break;
+            }
         }
     }
     catch (QException& exc) {
@@ -852,7 +903,10 @@ bool TessngDBToolsUpdate::updateVehicleTravelDetectors(const QList<GVehicleTrave
             sql+=QString(" WHERE detectorId=%1").arg(it->mpVehicleTravelDetector->detectorId);
             query.prepare(sql);
             result=query.exec();
-            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                break;
+            }
         }
     }
     catch (QException& exc) {
@@ -868,6 +922,7 @@ bool TessngDBToolsUpdate::updateVehicleTravelDetectors(const QList<GVehicleTrave
         qWarning() << "update VehicleTravelDetectors failed! Unknow Error.";
         result = false;
     }
+
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -897,7 +952,10 @@ bool TessngDBToolsUpdate::updateVehicleDetectors(const QList<GVehicleDetector*>&
             sql+=QString(" WHERE vehicleDetectorId=%1").arg(it->mpVehicleDetector->vehicleDetectorId);
             query.prepare(sql);
             result=query.exec();
-            if(!result) throw PH::Exception(query.lastError().text().toStdString());
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                break;
+            }
         }
     }
     catch (QException& exc) {
@@ -913,6 +971,269 @@ bool TessngDBToolsUpdate::updateVehicleDetectors(const QList<GVehicleDetector*>&
         qWarning() << "update VehicleDetectors failed! Unknow Error.";
         result = false;
     }
+
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+bool TessngDBToolsUpdate::updateReduceSpeedVehiTypes(const QList<ReduceSpeedVehiType *> &list)
+{
+    bool result=true;
+    QSqlQuery  query(gDB);
+    foreach (auto it, list) {
+        QString sql="UPDATE ReduceSpeedVehiType set ";
+        sql+=QString(",avgSpeed=%1").arg(it->avgSpeed);
+        sql+=QString(",speedSD=%1").arg(it->speedSD);
+        sql+=QString(" WHERE vehicleTypeCode=%1 and reduceSpeedAreaID=%2").arg(it->vehicleTypeCode).arg(it->reduceSpeedAreaID);
+        query.prepare(sql);
+        result=query.exec();
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
+    }
+    return result;
+}
+bool TessngDBToolsUpdate::updateReduceSpeedIntervals(const QList<ReduceSpeedInterval*>& list){
+    bool result=true;
+    QSqlQuery  query(gDB);
+    foreach (auto it, list) {
+        QString sql="UPDATE ReduceSpeedInterval set ";
+        sql+=QString(",reduceSpeedAreaID=%1").arg(it->reduceSpeedAreaID);
+        sql+=QString(",startTime=%1").arg(it->startTime);
+        sql+=QString(",endTime=%1").arg(it->endTime);
+        sql+=QString(" WHERE intervalID=%1").arg(it->intervalID);
+        query.prepare(sql);
+        result=query.exec();
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
+    }
+    return result;
+}
+bool TessngDBToolsUpdate::updateReduceSpeedArea(ReduceSpeedArea* pReduceSpeedArea){
+    bool result=true;
+    QSqlQuery  query(gDB);
+    QString sql="UPDATE ReduceSpeedArea set ";
+    sql+=QString("name='%1'").arg(pReduceSpeedArea->name);
+    sql+=QString(",location=%1").arg(pReduceSpeedArea->location);
+    sql+=QString(",areaLength=%1").arg(pReduceSpeedArea->areaLength);
+    sql+=QString(",roadID=%1").arg(pReduceSpeedArea->roadID);
+    sql+=QString(",laneNumber=%1").arg(pReduceSpeedArea->laneNumber);
+    sql+=QString(",toLaneNumber=%1").arg(pReduceSpeedArea->toLaneNumber);
+    sql+=QString(" WHERE reduceSpeedAreaID=%1").arg(pReduceSpeedArea->reduceSpeedAreaID);
+    query.prepare(sql);
+    result=query.exec();
+    if(!result) throw PH::Exception(query.lastError().text().toStdString());
+    return result;
+}
+bool TessngDBToolsUpdate::updateReduceSpeedAreas(const QList<GReduceSpeedArea *> &list)
+{
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        foreach (auto it, list) {
+            result=updateReduceSpeedVehiTypes(it->mpReduceSpeedArea->mlReduceSpeedVehiType);
+            if(!result) goto failed;
+
+            result=updateReduceSpeedIntervals(it->mpReduceSpeedArea->mlReduceSpeedInterval);
+            if(!result) goto failed;
+
+            result=updateReduceSpeedArea(it->mpReduceSpeedArea);
+            if(!result) goto failed;
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update ReduceSpeedAreas failed! Unknow Error.";
+        result = false;
+    }
+failed:
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+bool TessngDBToolsUpdate::updateBustation(const QList<GBusStation*>& list){
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        QSqlQuery  query(gDB);
+        foreach (auto it, list) {
+            QString sql="UPDATE BusStation set ";
+            sql+=QString("name='%1'").arg(it->mpBusStation->name);
+            sql+=QString("type='%1'").arg(gSpecialWords.trZhToEn(it->mpBusStation->type));
+            sql+=QString(",linkID=%1").arg(it->mpBusStation->mpLink->linkID);
+            sql+=QString(",laneNumber=%1").arg(it->mpBusStation->laneNumber);
+            sql+=QString(",x=%1").arg(it->mpBusStation->x);
+            sql+=QString(",y=%1").arg(it->mpBusStation->y);
+            sql+=QString(",length=%1").arg(it->mpBusStation->length);
+            sql+=QString(" WHERE busStationID=%1").arg(it->mpBusStation->busStationID);
+            query.prepare(sql);
+            result=query.exec();
+            if(!result) {
+                throw PH::Exception(query.lastError().text().toStdString());
+                break;
+            }
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update Bustation failed! Unknow Error.";
+        result = false;
+    }
+    result = gDB.commit() && result;
+    if (!result) {
+        gDB.rollback();
+    }
+
+    return result;
+}
+bool TessngDBToolsUpdate::updateBusLineRoads(BusLine* bline){
+    bool result=TessngDBToolsRemove::getInstance()->removeBusLineRoad(bline);
+    if(!result) return false;
+    QSqlQuery  query(gDB);
+    QString sqlInsLinks = "insert into BusLineRoad(busLineID, serialNumber, roadID) values(:busLineID, :serialNumber, :roadID)";
+    query.prepare(sqlInsLinks);
+    for (int i = 0, size = bline->mlLink.size(); i < size; ++i)
+    {
+        Link* pLink = bline->mlLink.at(i);
+        query.bindValue(":busLineID", QVariant::fromValue(bline->busLineID));
+        query.bindValue(":serialNumber", i + 1);
+        query.bindValue(":roadID", QVariant::fromValue(pLink->linkID));
+        result=query.exec();
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updatePassengerArriving(long stationLineID,const QList<PassengerArriving*>& list){
+    bool result=true;
+    QSqlQuery  query(gDB);
+    foreach (auto it, list) {
+        QString sql="UPDATE PassengerArriving set ";
+        sql+=QString(",stationLineID=%1").arg(stationLineID);
+        sql+=QString(",startTime=%1").arg(it->startTime);
+        sql+=QString(",endTime=%1").arg(it->endTime);
+        sql+=QString(",passengerCount=%1").arg(it->passengerCount);
+        sql+=QString(" WHERE passengerID=%1").arg(it->passengerArrivingID);
+        query.prepare(sql);
+        result=query.exec();
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateBusStationLine(const QList<BusStationLine*>& list){
+    bool result=true;
+    QSqlQuery  query(gDB);
+    foreach (auto it, list) {
+        result=updatePassengerArriving(it->stationLineID,it->mlPassengerArriving);
+        if(!result) break;
+        QString sql="UPDATE BusStationLine set ";
+        sql+=QString(",busStationID=%1").arg(it->busStationID);
+        sql+=QString(",busLineID=%1").arg(it->busLineID);
+        sql+=QString(",parkingTime=%1").arg(it->parkingTime);
+        sql+=QString(",getOnTimePerson=%1").arg(it->getOnTimePerson);
+        sql+=QString(",getOutTimePerson=%1").arg(it->getOutTimePerson);
+        sql+=QString(",leavingPercent=%1").arg(it->leavingPercent);
+        sql+=QString(" WHERE stationLineID=%1").arg(it->stationLineID);
+        query.prepare(sql);
+        result=query.exec();
+        if(!result) {
+            throw PH::Exception(query.lastError().text().toStdString());
+            break;
+        }
+    }
+
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateBusLine(BusLine* pBusLine){
+    bool result=true;
+    QSqlQuery  query(gDB);
+    QString sql="UPDATE BusLine set ";
+    sql+=QString("name='%1'").arg(pBusLine->name);
+    sql+=QString(",length=%1").arg(pBusLine->length);
+    sql+=QString(",dischargeFreq=%1").arg(pBusLine->dischargeFreq);
+    sql+=QString(",dischargeStartTime=%1").arg(pBusLine->dischargeStartTime);
+    sql+=QString(",dischargeEndTime=%1").arg(pBusLine->dischargeEndTime);
+    sql+=QString(",startX=%1").arg(pBusLine->startX);
+    sql+=QString(",startY=%1").arg(pBusLine->startY);
+    sql+=QString(",endX=%1").arg(pBusLine->endX);
+    sql+=QString(",endY=%1").arg(pBusLine->endY);
+    sql+=QString(",desirSpeed=%1").arg(pBusLine->desirSpeed);
+    sql+=QString(",speedSD=%1").arg(pBusLine->speedSD);
+    sql+=QString(",passCountAtStartTime=%1").arg(pBusLine->passCountAtStartTime);
+    sql+=QString(" WHERE busLineID=%1").arg(pBusLine->busLineID);
+    query.prepare(sql);
+    result=query.exec();
+    if(!result) throw PH::Exception(query.lastError().text().toStdString());
+    return result;
+}
+
+bool TessngDBToolsUpdate::updateBusLine(const QList<GBusLine*>& list){
+    bool result = true;
+    try {
+        //开启事务
+        gDB.transaction();
+        foreach (auto it, list) {
+            result =updateBusLineRoads(it->mpBusLine);
+            if(!result) goto failed;
+
+            result =updateBusStationLine(it->mpBusLine->mlBusStationLine);
+            if(!result) goto failed;
+
+            result =updateBusLine(it->mpBusLine);
+            if(!result) goto failed;
+        }
+    }
+    catch (QException& exc) {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (const std::exception& exc)
+    {
+        qWarning() << exc.what();
+        result = false;
+    }
+    catch (...) {
+        qWarning() << "update GBusLine failed! Unknow Error.";
+        result = false;
+    }
+failed:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();

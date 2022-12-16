@@ -223,18 +223,18 @@ bool TessngDBToolsRemoveBase::removeBusLineRoad(const QList<GBusLine*>& list)
 {
     bool result = true;
     for (auto& it : list) {
-        result = removeBusLineRoad(it);
+        result = removeBusLineRoad(it->mpBusLine);
         if (!result) return false;
     }
     return result;
 }
 
-bool TessngDBToolsRemoveBase::removeBusLineRoad(GBusLine* it)
+bool TessngDBToolsRemoveBase::removeBusLineRoad(BusLine* it)
 {
     bool result = true;
     QSqlQuery slQuery(gDB);
 
-    QString deleteSql = QString(R"(delete from BusLineRoad where busLineID=%1;)").arg(it->mpBusLine->busLineID);
+    QString deleteSql = QString(R"(delete from BusLineRoad where busLineID=%1;)").arg(it->busLineID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -257,7 +257,7 @@ bool TessngDBToolsRemoveBase::removeBusLine(GBusLine* it)
     bool result = true;
     QSqlQuery slQuery(gDB);
 
-    result = removeBusLineRoad(it);
+    result = removeBusLineRoad(it->mpBusLine);
 
     QString deleteSql = QString(R"(delete from BusLine where busLineID=%1;)").arg(it->mpBusLine->busLineID);
     result = slQuery.exec(deleteSql);
@@ -695,22 +695,13 @@ bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* routing, const QList<I
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
-    try
-    {
-        for (auto& link : list) {
-            QString deleteSql = QString(R"(delete from RoutingLink where routingID=%1 and linkID=&2;)").arg(routing->routingID).arg(link->id());
-            result = slQuery.exec(deleteSql);
-            if (!result) return false;
+    for (auto& link : list) {
+        QString deleteSql = QString(R"(delete from RoutingLink where routingID=%1 and linkID=&2;)").arg(routing->routingID).arg(link->id());
+        result = slQuery.exec(deleteSql);
+        if(!result) {
+            throw PH::Exception(slQuery.lastError().text().toStdString());
+            break;
         }
-    }
-    catch (const QException& exc)
-    {
-        qWarning() << __FILE__ << __LINE__ << exc.what();
-        result = false;
-    }
-    catch (...) {
-        qWarning() << __FILE__ << __LINE__ << "Unknow Error.";
-        result = false;
     }
     return result;
 }
