@@ -1,4 +1,5 @@
 #include "TessngDBToolsRemove.h"
+#include "gitemtypes.hpp"
 #include "DbGlobal.h"
 
 #include "gsignallamp.h"
@@ -1144,7 +1145,7 @@ failed:
     return result;
 }
 
-bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId, bool isFix = false)
+bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId, bool isFix)
 {
     bool result = true;
     try {
@@ -1155,7 +1156,7 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
             //目标连接段的所有路径车道连接
             QList<LCStruct*> lcStructs = routing->mhLCStruct.values(connID);
 
-            //仅有一条路径车道连接，且调用方需要使用其他车道连接修复路径
+            //仅有一条，且需要使用其他车道连接修复路径
             if (isFix && lcStructs.size() == 1) {
                 for (auto& connector : gpScene->mlGConnector) {
                     if (connector->id() == connID && !connector->mlGLaneConnector.isEmpty())
@@ -1174,10 +1175,10 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
                         }
 
                         // 修改路径车道连接数据库记录
-                        // result = deleteRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
-                        // if (!result) goto failed;
-                        // result = insertRoutingLaneConnector(routingID, connID, laneConMin->fromLane()->id(), laneConMin->toLane()->id());
-                        // if (!result) goto failed;
+                        result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
+                        if (!result) goto failed;
+                        result = insertRoutingLaneConnector(routingID, connID, laneConMin->fromLane()->id(), laneConMin->toLane()->id());
+                        if (!result) goto failed;
 
                         //修改路径车道连接,同步内存数据一致
                         routing->mhLCStruct.value(connID)->fromLaneId = laneConMin->fromLane()->id();
@@ -1185,23 +1186,116 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
                     }
                 }
             }
+            //仅有一条，不需要修复，删除后续序列
+            else if (lcStructs.size() == 1) {
+                /*
+                //寻找要删除的车道连接所在的连接段
+                //TODO-仿真时mlRoad才有数据
+                foreach(auto & item, routing->mlRoad) {
+                    if (item->type() == GConnectorType && qgraphicsitem_cast<GConnector*>(item)->id() == connID) {
+                        rmBeginItem = item;
+                        rmRoutingConnectors.push_back(qgraphicsitem_cast<GConnector*>(item));
+                        break;
+                    }
+                }
+
+                //找到要清除的路径的连接段序列，路段序列
+                //TODO-仿真时nextRoad才有数据
+                bool isEndLink = false;
+                while (!isEndLink) {
+                    QGraphicsItem* nextRoad = routing->nextRoad(rmBeginConnector);
+
+                    if (nextRoad->type() == GConnectorType) {
+                        rmRoutingConnectors.push_back(qgraphicsitem_cast<GConnector*>(nextRoad));
+                    }
+                    else if (nextRoad->type() == GLinkType) {
+                        GLink* nextLink = qgraphicsitem_cast<GLink*>(nextRoad);
+                        rmRoutingLinks.push_back(nextLink);
+
+                        if (nextLink->id() == routing->mpLastGLink->id()) {
+                            isEndLink = true;
+                        }
+                    }
+
+                    rmRoutingRoads.push_back(nextRoad);
+                }*/
+                //1.找到目标连接段
+                GConnector* rmBeginConnector = NULL;
+                QList<GConnector*> rmRoutingConnectors;
+                foreach(auto& item, gpScene->mlGConnector) {
+                    if (item->id() == connID) {
+                        rmBeginConnector = item;
+                        rmRoutingConnectors.push_back(item);
+                        break;
+                    }
+                }
+                if (!rmBeginConnector) break;
+
+                //2.在路段序列中，从目标连接段的下游路段开始，到末尾，即要删除的序列
+                QList<ILink*> rmRoutingLinks = routing->getLinks();
+                for (int i = 0; i < rmRoutingLinks.size(); i++) {
+                    if (rmBeginConnector->toLink()->id() != rmRoutingLinks[i]->id()) {
+                        rmRoutingLinks.removeAt(i);
+                    }
+                    else {
+                        break;
+                    }
+                }
+                //3.场景里，上游路段和下游路段分别与两个需要删除的相邻序列路段相同的连接段，为需要删除的路径连接段序列
+                foreach(auto& con, gpScene->mlGConnector) {
+                    for (int i = 1; i < rmRoutingLinks.size(); i++) {
+                        if (con->fromLink()->id() == rmRoutingLinks[i-1]->id() && con->toLink()->id() == rmRoutingLinks[i]->id()) {
+                            rmRoutingConnectors.push_back(con);
+                        }
+                    }
+                }
+
+                //删除后续路径路段序列和路径车道连接的数据库记录
+                for (auto& connector : rmRoutingConnectors) {
+                    result = removeRoutingLaneConnector(routingID, connector->id());
+                    if (!result) goto failed;
+                }
+                result = removeRoutingLink(routingID, rmRoutingLinks);
+                if (!result) goto failed;
+
+                //同步内存
+                //删除连接段序列
+                for (auto& connector : rmRoutingConnectors) {
+                    routing->mhLCStruct.remove(connector->id());
+                }
+                //删除路段序列
+                for(int i = 0; i < routing->mlOneRouting.size();) {
+                    //该最短序列的所有路段
+                    foreach(auto& link, routing->mlOneRouting[i].mlGLink) {
+                        foreach(auto& rmLink, rmRoutingLinks) {
+                            if (rmLink->id() == link->id()) {
+                                routing->mlOneRouting[i].mlGLink.removeOne(link);
+                                break;
+                            }
+                        }
+                    }
+                    //如果删除后最短序列不存在路段
+                    if (routing->mlOneRouting[i].mlGLink.isEmpty()) {
+                        routing->mlOneRouting.removeAt(i);
+                    }
+                    else {
+                        i++;
+                    }
+                }
+                routing->adjust();
+                routing->mpGDecisionPoint->adjust();
+                //TODO
+                //是否判断序列里只存在一个路段，此时路径是否需要删除
+            }
+            //有多条，无需其他处理
             else {
                 //删除路径车道连接数据库记录
                 result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
                 if (!result) goto failed;
 
-                //同步内存
-                if (lcStructs.size() == 1) {
-                    routing->mhLCStruct.remove(connID);
-
-                    //删除后续路径路段序列和路径车道连接
-
-                }
-                else {
-                    for (auto& lcStruct : lcStructs) {
-                        if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
-                            routing->mhLCStruct.remove(connID, lcStruct);
-                        }
+                for (auto& lcStruct : lcStructs) {
+                    if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
+                        routing->mhLCStruct.remove(connID, lcStruct);
                     }
                 }
             }

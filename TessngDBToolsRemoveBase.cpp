@@ -624,6 +624,19 @@ bool TessngDBToolsRemoveBase::removeRoutingFLowRatio(RoutingFLowRatio* it)
 }
 
 /// 路径车道连接
+bool TessngDBToolsRemoveBase::insertRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId)
+{
+    QSqlQuery slQuery(gDB);
+    bool result = true;
+
+    QString insertSql = QString(R"(insert into RoutingLaneConnector (routingID,connID,laneID1,laneID2) values (%1,%2,%3,%4);)")
+        .arg(routingID).arg(connID).arg(fromLaneId).arg(toLaneId);
+    result = slQuery.exec(insertSql);
+    if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
+
+    return result;
+}
+
 bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(GRouting* routing, const SafeHash<long, LCStruct*>& lcStructs)
 {
     bool result = true;
@@ -646,6 +659,19 @@ bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(long routingID, long co
 
     QString deleteSql = QString(R"(delete from RoutingLaneConnector where routingID=%1 and connID=%2 and laneID1=%3 and laneID2=%4;)")
         .arg(routingID).arg(connID).arg(fromLaneId).arg(toLaneId);
+    result = slQuery.exec(deleteSql);
+    if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
+
+    return result;
+}
+
+bool TessngDBToolsRemoveBase::removeRoutingLaneConnector(long routingID, long connID)
+{
+    QSqlQuery slQuery(gDB);
+    bool result = true;
+
+    QString deleteSql = QString(R"(delete from RoutingLaneConnector where routingID=%1 and connID=%2;)")
+        .arg(routingID).arg(connID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
@@ -691,12 +717,12 @@ bool TessngDBToolsRemoveBase::removeRoutingLink(const QList<GRouting*>& list)
     return result;
 }
 
-bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* routing, const QList<ILink*> list)
+bool TessngDBToolsRemoveBase::removeRoutingLink(long routingID, const QList<ILink*> list)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
     for (auto& link : list) {
-        QString deleteSql = QString(R"(delete from RoutingLink where routingID=%1 and linkID=&2;)").arg(routing->routingID).arg(link->id());
+        QString deleteSql = QString(R"(delete from RoutingLink where routingID=%1 and linkID=%2;)").arg(routingID).arg(link->id());
         result = slQuery.exec(deleteSql);
         if(!result) {
             throw PH::Exception(slQuery.lastError().text().toStdString());
