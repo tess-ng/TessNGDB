@@ -136,7 +136,7 @@ bool TessngDBToolsRemoveBase::removeSignalPhase(SignalPhase* it)
         serialNumbers.push_back(i);
     }
     result = removeSignalColor(it, serialNumbers);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from SignalPhase where signalPhaseID=%1;)").arg(it->signalPhaseID);
     result = slQuery.exec(deleteSql) && result;
     if (!result) throw PH::Exception(gDB.lastError().text().toStdString());
@@ -161,7 +161,7 @@ bool TessngDBToolsRemoveBase::removeSignalGroup(SignalGroup* it)
     bool result = true;
 
     result = removeSignalPhase(it->mlPhase);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from SignalGroup where signalGroupID=%1;)").arg(it->signalGroupID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -210,7 +210,7 @@ bool TessngDBToolsRemoveBase::removeBusStationLine(BusStationLine* it)
     bool result = true;
 
     result = removeBusStationPassengerArriving(it->mlPassengerArriving);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from BusStationLine where stationLineID=%1;)").arg(it->stationLineID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -258,7 +258,7 @@ bool TessngDBToolsRemoveBase::removeBusLine(GBusLine* it)
     QSqlQuery slQuery(gDB);
 
     result = removeBusLineRoad(it->mpBusLine);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from BusLine where busLineID=%1;)").arg(it->mpBusLine->busLineID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -445,9 +445,9 @@ bool TessngDBToolsRemoveBase::removeReduceSpeedArea(GReduceSpeedArea* it)
     bool result = true;
 
     result = removeReduceSpeedInterval(it->mpReduceSpeedArea->mlReduceSpeedInterval);
-
+    if (!result) return false;
     result = removeReduceSpeedVehiType(it->mpReduceSpeedArea->mlReduceSpeedVehiType);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from ReduceSpeedInterval where reduceSpeedAreaID=%1;)").arg(it->mpReduceSpeedArea->reduceSpeedAreaID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -517,9 +517,8 @@ bool TessngDBToolsRemoveBase::removeDeparturePoint(GDeparturePoint* it)
 {
     QSqlQuery slQuery(gDB);
     bool result = true;
-
     result = removeDepartureInterval(it->mpDeparturePoint->mlDepaInterval);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from DeparturePoint where departurePointID=%1;)").arg(it->mpDeparturePoint->departurePointID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -566,9 +565,7 @@ bool TessngDBToolsRemoveBase::removeVehicleConstitutent(VehicleComposition it)
     bool result = true;
 
     result = removeVehicleConsDetail(it.mlVehicleConsDetail);
-
-    //result = removeDepartureInterval(it);
-    //if (!result)return false;
+    if (!result) return false;
 
     QString deleteSql = QString(R"(delete from VehicleConstitutent where vehicleConsCode=%1;)").arg(it.vehicleConsCode);
     result = slQuery.exec(deleteSql);
@@ -735,11 +732,11 @@ bool TessngDBToolsRemoveBase::removeRouting(GRouting* it)
     bool result = true;
 
     result = removeRoutingFLowRatio(it);
-
+    if (!result) return false;
     result = removeRoutingLaneConnector(it);
-
+    if (!result) return false;
     result = removeRoutingLink(it);
-
+    if (!result) return false;
     QString deleteSql = QString(R"(delete from Routing where routingID=%1;)").arg(it->routingID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
@@ -927,11 +924,11 @@ bool TessngDBToolsRemoveBase::removeLink(GLink* it) {
     bool result = true;
 
     result = removeLane(it->mlGLane);
-
+    if (!result) return false;
     result = removeVertex(it->mlGVertex);
-
+    if (!result) return false;
     result = removeLinkVertex(it->mlGVertex);
-
+    if (!result) return false;
     QList<Node*> nodes;
     nodes.push_back(it->mpLink->startNode);
     nodes.push_back(it->mpLink->endNode);
