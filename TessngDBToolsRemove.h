@@ -177,10 +177,11 @@ public:
          * @param connID				[连接段ID]
          * @param fromLaneId			[From车道ID]
          * @param toLaneId				[To车道ID]
+         * @param isFix				    [调用方是否需要在删除路径车道连接是最后一条的情况下，对路径进行保护处理]
          *
          * @return bool
          */
-    bool deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId);
+    bool deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId, bool isFix = false);
 
     /**
          * @brief 删除路径

@@ -1144,22 +1144,65 @@ failed:
     return result;
 }
 
-bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId)
+bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID, long fromLaneId, long toLaneId, bool isFix = false)
 {
     bool result = true;
     try {
         gDB.transaction();
 
-        result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
-        if (!result) goto failed;
+        for (auto& routing : gpScene->mlGRouting) {
+            if (routing->id() != routingID) continue;
+            //目标连接段的所有路径车道连接
+            QList<LCStruct*> lcStructs = routing->mhLCStruct.values(connID);
 
-        for (int i = 0; i < gpScene->mlGRouting.size(); i++) {
-            if (gpScene->mlGRouting[i]->id() != routingID) continue;
+            //仅有一条路径车道连接，且调用方需要使用其他车道连接修复路径
+            if (isFix && lcStructs.size() == 1) {
+                for (auto& connector : gpScene->mlGConnector) {
+                    if (connector->id() == connID && !connector->mlGLaneConnector.isEmpty())
+                    {
+                        //如果该连接段只有1条车道连接，则不对路径车道连接进行处理
+                        if (connector->mlGLaneConnector.size() <= 1) break;
 
-            QList<LCStruct*> lcStructs = gpScene->mlGRouting[i]->mhLCStruct.values(connID);
-            for (auto& lcStruct : lcStructs) {
-                if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
-                    gpScene->mlGRouting[i]->mhLCStruct.remove(connID, lcStruct);
+                        //如果该连接段有多条车道连接，则寻找From最小车道序号
+                        GLaneConnector* laneConMin = connector->mlGLaneConnector[0];
+                        for (auto& laneConnector : connector->mlGLaneConnector)
+                        {
+                            if (laneConMin->fromLane()->number() > laneConnector->fromLane()->number())
+                            {
+                                laneConMin = laneConnector;
+                            }
+                        }
+
+                        // 修改路径车道连接数据库记录
+                        // result = deleteRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
+                        // if (!result) goto failed;
+                        // result = insertRoutingLaneConnector(routingID, connID, laneConMin->fromLane()->id(), laneConMin->toLane()->id());
+                        // if (!result) goto failed;
+
+                        //修改路径车道连接,同步内存数据一致
+                        routing->mhLCStruct.value(connID)->fromLaneId = laneConMin->fromLane()->id();
+                        routing->mhLCStruct.value(connID)->toLaneId = laneConMin->toLane()->id();
+                    }
+                }
+            }
+            else {
+                //删除路径车道连接数据库记录
+                result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
+                if (!result) goto failed;
+
+                //同步内存
+                if (lcStructs.size() == 1) {
+                    routing->mhLCStruct.remove(connID);
+
+                    //删除后续路径路段序列和路径车道连接
+
+                }
+                else {
+                    for (auto& lcStruct : lcStructs) {
+                        if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
+                            routing->mhLCStruct.remove(connID, lcStruct);
+                        }
+                    }
                 }
             }
         }
