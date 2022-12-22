@@ -1670,9 +1670,29 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
 {
     bool result = true;
     try {
+        /// <summary>
+        /// 车道删除逻辑
+        /// 1.根据提供的车道id 删除信号灯(SignalLamp)
+        /// 2.根据车道id 删除公交站点(BusStation)
+        /// 3.根据车道id 删除限速区(ReduceSpeedArea)
+        /// 4.根据车道id 删除行程时间检测器(VehicleTravelDetector)
+        /// 5.根据车道id 删除排队计数器(VehicleQueueCounter)
+        /// 6.根据车道id 删除车辆信息采集器(VehicleDrivInfoCollecter)
+        /// 7.根据车道id 删除导向箭头(GuideArrow)
+        /// 8.根据车道id 删除车道连接(LaneConnector)
+        /// 9.根据车道id 删除路径车道连接(RoutingLaneConnector) 如果当前路径车道连接条数<=1 需要建立一条路径车道连接
+        /// 10.根据车道id 删除指定车道 同时车道序号重新排序 如果当前路段车道全部删除干净则还需要删除该路段
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
         QList<GGuideArrow*> rmGGuideArrows;
         QList<GSignalLamp*> rmGSignalLamps;
         QList<GLane*> rmLanes;
+        QList<GBusStation*> rmBusStations;
+        QList<GReduceSpeedArea*> rmGReduceSpeedAreas;
+        QList<GVehicleTravelDetector*> rmVehicleTravelDetector;
+        QList<GVehicleQueueCounter*> rmVehicleQueueCounters;
+        QList<GVehicleDrivInfoCollector*> rmVehicleDrivInfoCollectors;
         foreach(GLink * pGLink, gpScene->mlGLink) {
             foreach(auto lane, pGLink->mlGLane) {
                 if (!ids.contains(lane->id())) continue;
@@ -1680,6 +1700,68 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
                 rmLanes.push_back(lane);
             }
         }
+        foreach(auto bs, gpScene->mlGBusStation) {
+            if (rmBusStations.contains(bs)) continue;
+            if (!rmLanes.contains(bs->mpGLane)) continue;
+            int index=rmLanes.indexOf(bs->mpGLane);
+            if (index < 0) continue;
+            if (rmLanes[index]->mpGLink->mpLink->linkID != bs->mpGLink->mpLink->linkID) continue;
+            rmBusStations.append(bs);
+        }
+
+     
+        foreach(auto lane, rmLanes)
+        {
+            foreach(auto it, gpScene->mlGReduceSpeedArea)
+            {
+                if (rmGReduceSpeedAreas.contains(it))continue;
+                if (it->mpReduceSpeedArea->roadID != lane->mpGLink->mpLink->linkID) continue;
+                if (it->mpReduceSpeedArea->laneNumber == lane->mpLane->serialNumber ||
+                    it->mpReduceSpeedArea->toLaneNumber == lane->mpLane->serialNumber) {
+                    rmGReduceSpeedAreas.push_back(it);
+                    break;
+                }
+            } 
+        }
+        foreach(auto lane, rmLanes)
+        {
+            foreach(auto it, gpScene->mlGVehicleTravelDetector)
+            {
+                if (rmVehicleTravelDetector.contains(it))continue;
+                if (it->mpVehicleTravelDetector->startRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->start_laneNumber ==
+                    lane->mpLane->serialNumber || it->mpVehicleTravelDetector->start_toLaneNumber == lane->mpLane->serialNumber)) {
+                    rmVehicleTravelDetector.push_back(it);
+                    break;
+                }
+
+                if (it->mpVehicleTravelDetector->teminalRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->teminal_laneNumber ==
+                    lane->mpLane->serialNumber || it->mpVehicleTravelDetector->teminal_toLaneNumber == lane->mpLane->serialNumber)) {
+                    rmVehicleTravelDetector.push_back(it);
+                    break;
+                }
+            }
+
+        }
+        foreach(auto lane, rmLanes)
+        {
+            foreach(auto it, gpScene->mlGVehicleQueueCounter)
+            {
+                if (rmVehicleQueueCounters.contains(it))continue;
+                if (it->mpGLane != lane) continue;
+                rmVehicleQueueCounters.push_back(it);
+            }
+        }
+
+        foreach(auto lane, rmLanes)
+        {
+            foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
+            {
+                if (rmVehicleDrivInfoCollectors.contains(it))continue;
+                if (it->mpGLane != lane) continue;
+                rmVehicleDrivInfoCollectors.push_back(it);
+            }
+        }
+
         foreach(GGuideArrow * pOne, gpScene->mlGGuideArrow) {
             if (!pOne->validate()) continue;
             if (rmGGuideArrows.contains(pOne)) continue;
@@ -1692,39 +1774,36 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
                 rmGSignalLamps.push_back(pGSl);
             }
         }
-        foreach(GDecisionPoint * pGDecisionPoint, gpScene->mlGDecisionPoint) {
-            foreach(GRouting * pGRouting, pGDecisionPoint->mlGRouting) {
-                foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
-                    if (oneRouting.mlGLink.size() == 0) break;
-
-                    for (int i = 0, size = oneRouting.mlGLink.size(); i < size - 1; ++i) {
-                        GLink* pGLink1 = oneRouting.mlGLink.at(i);
-                        GLink* pGLink2 = oneRouting.mlGLink.at(i + 1);
-
-                        foreach(GConnector * pGConnector, pGLink1->mlToGConnector)
-                        {
-                            if (pGConnector->mpToGLink != pGLink2) continue;
-                            QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
-                            foreach(LCStruct * pLc, lLC)
-                            {
-                                if (ids.contains(pLc->fromLaneId) || ids.contains(pLc->toLaneId)) {
-                                    result = removeRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId) && result;
-                                    if (!result) goto failed;
-                                }
-                            }
-                            break;
-                        }
-                    }
-
-                }
-            }
-        }
         ///车道连接
-        foreach(GConnector * ptrConn, gpScene->mlGConnector) {
+        foreach(GConnector* ptrConn, gpScene->mlGConnector) {
             result = removeLaneConnector(ptrConn->mlGLaneConnector) && result;
             if (!result) goto failed;
         }
+        foreach(GRouting* pGRouting, gpScene->mlGRouting) {
+            foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
+                if (oneRouting.mlGLink.size() == 0) break;
 
+                for (int i = 0, size = oneRouting.mlGLink.size(); i < size - 1; ++i) {
+                    GLink* pGLink1 = oneRouting.mlGLink.at(i);
+                    GLink* pGLink2 = oneRouting.mlGLink.at(i + 1);
+
+                    foreach(GConnector * pGConnector, pGLink1->mlToGConnector)
+                    {
+                        if (pGConnector->mpToGLink != pGLink2) continue;
+                        QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
+                        foreach(LCStruct * pLc, lLC)
+                        {
+                            if (ids.contains(pLc->fromLaneId) || ids.contains(pLc->toLaneId)) {
+                                result = removeRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId) && result;
+                                if (!result) goto failed;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
         ///删除导向箭头
         result = removeGuideArrow(rmGGuideArrows) && result;
         if (!result)goto failed;
