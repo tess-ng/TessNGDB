@@ -1580,10 +1580,10 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         if (connector->mlGLaneConnector.isEmpty())
         {
             //删除连接段之前要删除经过这个连接段的所有路径的一部分序列
-            for (int i = 0; i < gpScene->mlGRouting; i++) {
+            for (int i = 0; i < gpScene->mlGRouting.size(); i++) {
                 QList<GLink*> rmLinks;
                 for (auto& it : gpScene->mlGRouting[i]->mlOneRouting) {
-                    rmLinks.append(it->mlGLink);
+                    rmLinks.append(it.mlGLink);
                 }
 
                 for (int j = 0; j < rmLinks.size() - 1;) {
@@ -1601,7 +1601,7 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
             }
 
             //删除连接段之前要删除经过这个连接段的所有公交线路的一部分序列
-            for (int i = 0; i < gpScene->mlGBusLine; i++) {
+            for (int i = 0; i < gpScene->mlGBusLine.size(); i++) {
                 QList<GLink*> tempBusLineLinks = gpScene->mlGBusLine[i]->mlGLink;
 
                 for (int j = 0; j < tempBusLineLinks.size() - 1;) {
