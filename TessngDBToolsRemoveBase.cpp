@@ -799,22 +799,32 @@ bool TessngDBToolsRemoveBase::removeDecisionPoint(GDecisionPoint* it)
 bool TessngDBToolsRemoveBase::removeLaneConnector(const QList<GLaneConnector*>& list) {
     bool result = true;
     for (auto& it : list) {
+        result = removeLaneConnector(it->mpLaneConnector);
+        if (!result) return false;
+    }
+    return result;
+}
+bool TessngDBToolsRemoveBase::removeLaneConnector(const QList<LaneConnector*>& list){
+    bool result = true;
+    for (auto& it : list) {
         result = removeLaneConnector(it);
         if (!result) return false;
     }
     return result;
 }
-
-bool TessngDBToolsRemoveBase::removeLaneConnector(GLaneConnector* it) {
+bool TessngDBToolsRemoveBase::removeLaneConnector(LaneConnector* it){
     QSqlQuery slQuery(gDB);
     bool result = true;
 
     QString deleteSql = QString(R"(delete from LaneConnector where connID=%1 and StartLaneID=%2 and EndLaneID=%3;)")
-        .arg(it->mpGConnector->id()).arg(it->mpLaneConnector->mpFromLane->laneID).arg(it->mpLaneConnector->mpToLane->laneID);
+        .arg(it->mpConnector->connID).arg(it->mpFromLane->laneID).arg(it->mpToLane->laneID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
     return result;
+}
+bool TessngDBToolsRemoveBase::removeLaneConnector(GLaneConnector* it) {
+    return removeLaneConnector(it->mpLaneConnector);
 }
 
 /// 连接段

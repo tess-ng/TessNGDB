@@ -223,7 +223,7 @@ public:
          *
          * @return bool
          */
-    bool deleteLane(QList<long> ids);
+    bool deleteLane(QList<long> ids,bool fixed=false);
 
     /**
          * @brief 删除路段
@@ -231,7 +231,7 @@ public:
          *
          * @return bool
          */
-    bool deleteLink(QList<long> ids);
+    bool deleteLink(QList<long> ids,bool clearCache=true);
 
 private:
     friend class PH::SingleHolder<TessngDBToolsRemove>;
@@ -263,7 +263,7 @@ private:
          *
          * @return bool
          */
-    bool checkContainsConnector(const QList<GConnector*>& list, long id);
+    bool checkContainsConnector(const QList<GConnector*>&, long id);
 };
 
 #endif // TESSNGDBTOOLSREMOVE_H

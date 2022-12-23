@@ -100,6 +100,7 @@ protected:
 
     /// 车道连接
     bool removeLaneConnector(const QList<GLaneConnector*>& list);
+    bool removeLaneConnector(const QList<LaneConnector*>& list);
 
     /// 连接段：车道连接，连接段
     bool removeConnector(const QList<GConnector*>& list);
@@ -200,6 +201,7 @@ private:
 
     /// 车道连接
     bool removeLaneConnector(GLaneConnector* it);
+    bool removeLaneConnector(LaneConnector* it);
 
     /// 连接段
     bool removeConnector(GConnector* it);

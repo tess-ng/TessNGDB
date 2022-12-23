@@ -46,7 +46,7 @@
 #include "ILink.h"
 #include "Vehicletype.h"
 #include "GVehicleDetector.h"
-
+#include "TessngDBToolsUpdate.h"
 #include <QException>
 #include <QDebug>
 TessngDBToolsRemove::TessngDBToolsRemove() :TessngDBToolsRemoveBase() {
@@ -103,7 +103,7 @@ bool TessngDBToolsRemove::deleteSignalLamp(QList<long> ids)
 
         //删除信号灯
         result = removeSignalLamp(rmSignalLamp);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         foreach(auto it, rmSignalLamp)
         {
@@ -120,10 +120,10 @@ bool TessngDBToolsRemove::deleteSignalLamp(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups failed! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -149,7 +149,7 @@ bool TessngDBToolsRemove::deleteSignalColor(long id, QList<int> serialNnumbers)
 
         //删除相位颜色
         result = removeSignalColor(dPhase, serialNnumbers);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         for (auto& serialNnumber : serialNnumbers) {
             dPhase->mlSignalColor.removeAt(serialNnumber - 1);
@@ -165,10 +165,10 @@ bool TessngDBToolsRemove::deleteSignalColor(long id, QList<int> serialNnumbers)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups failed! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -201,11 +201,11 @@ bool TessngDBToolsRemove::deleteSignalPhase(QList<long> ids)
 
         //删除信号灯
         result = removeSignalLamp(rmSignalLamp);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         //删除相位
         result = removeSignalPhase(rmSignalPhases);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         for (int i = 0; i < gpScene->mlSignalGroup.size(); i++) {
             SignalGroup* group = gpScene->mlSignalGroup[i];
@@ -230,10 +230,10 @@ bool TessngDBToolsRemove::deleteSignalPhase(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups failed! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -264,11 +264,11 @@ bool TessngDBToolsRemove::deleteSignalGroup(QList<long> ids)
 
         //删除信号灯
         result = removeSignalLamp(rmSignalLamp);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         //删除信号灯组
         result = removeSignalGroup(rmSignalGroup) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         foreach(auto& it, rmSignalLamp)
         {
@@ -289,10 +289,10 @@ bool TessngDBToolsRemove::deleteSignalGroup(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups failed! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -323,7 +323,7 @@ bool TessngDBToolsRemove::deleteBusStationPassengerArriving(QList<long> ids)
 
         ///删除乘客到站
         result = removeBusStationPassengerArriving(rmPassengerArriving);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         ///删除乘客到站内存
         for (auto& busLine : gpScene->mlGBusLine) {
@@ -349,10 +349,10 @@ bool TessngDBToolsRemove::deleteBusStationPassengerArriving(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove BusStation failed! Unknow Error.";
+        qWarning() << "remove BusStation exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -379,7 +379,7 @@ bool TessngDBToolsRemove::deleteBusStationLine(QList<long> ids)
 
         ///删除公交站点线路
         result = removeBusStationLine(rmBusStationLine);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         ///删除公交站点线路内存
         for (auto& busLine : gpScene->mlGBusLine) {
@@ -403,10 +403,10 @@ bool TessngDBToolsRemove::deleteBusStationLine(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove BusStation failed! Unknow Error.";
+        qWarning() << "remove BusStation exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -453,11 +453,11 @@ bool TessngDBToolsRemove::deleteBusStation(QList<long> ids) {
 
         ///删除公交站线路
         result = removeBusStationLine(rmBSLine);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         ///删除公交站
         result = removeBusStation(rmBusTstation);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto busLine, gpScene->mlGBusLine) {
             for (int i = 0; i < busLine->mpBusLine->mlBusStationLine.size();) {
@@ -487,10 +487,10 @@ bool TessngDBToolsRemove::deleteBusStation(QList<long> ids) {
         result = false;
     }
     catch (...) {
-        qWarning() << "remove BusStation failed! Unknow Error.";
+        qWarning() << "remove BusStation exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -513,11 +513,11 @@ bool TessngDBToolsRemove::deleteBusLine(QList<long> ids) {
 
         ///删除公交站线路
         result = removeBusStationLine(rmBSLine);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         ///删除公交线路
         result = removeBusLine(rmBusLine);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmBusLine)
         {
@@ -534,10 +534,10 @@ bool TessngDBToolsRemove::deleteBusLine(QList<long> ids) {
         result = false;
     }
     catch (...) {
-        qWarning() << "remove BusLine failed! Unknow Error.";
+        qWarning() << "remove BusLine exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -559,7 +559,7 @@ bool TessngDBToolsRemove::deleteDrivInfoCollector(QList<long> ids) {
         }
 
         result = removeDrivInfoCollector(rmVDICollector);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmVDICollector) {
             gpScene->removeGCollector(it);
@@ -575,10 +575,10 @@ bool TessngDBToolsRemove::deleteDrivInfoCollector(QList<long> ids) {
         result = false;
     }
     catch (...) {
-        qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+        qWarning() << "remove DrivInfoCollector exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -600,7 +600,7 @@ bool TessngDBToolsRemove::deleteVehicleQueueCounter(QList<long> ids) {
         }
 
         result = removeVehicleQueueCounter(rmVQCounter);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmVQCounter) {
             gpScene->removeGQueueCounter(it);
@@ -616,10 +616,10 @@ bool TessngDBToolsRemove::deleteVehicleQueueCounter(QList<long> ids) {
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -640,7 +640,7 @@ bool TessngDBToolsRemove::deleteVehicleTravelDetector(QList<long> ids) {
         }
 
         result = removeVehicleTravelDetector(rmVTDetector);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmVTDetector) {
             gpScene->removeGTravelDetector(it);
@@ -656,10 +656,10 @@ bool TessngDBToolsRemove::deleteVehicleTravelDetector(QList<long> ids) {
         result = false;
     }
     catch (...) {
-        qWarning() << "remove VehicleTravelDetector failed! Unknow Error.";
+        qWarning() << "remove VehicleTravelDetector exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -680,7 +680,7 @@ bool TessngDBToolsRemove::deleteGuideArrow(QList<long> ids) {
         }
 
         result = removeGuideArrow(rmTemps);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmTemps) {
             gpScene->removeGGuideArrow(it);
@@ -696,10 +696,10 @@ bool TessngDBToolsRemove::deleteGuideArrow(QList<long> ids) {
         result = false;
     }
     catch (...) {
-        qWarning() << "remove GuideArrow failed! Unknow Error.";
+        qWarning() << "remove GuideArrow exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -740,7 +740,7 @@ bool TessngDBToolsRemove::deleteReduceSpeedInterval(QList<long> ids)
 
         //删除时间间隔的数据库记录
         result = removeReduceSpeedInterval(rmInterval);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步内存
         foreach(auto& area, updateArea) {
@@ -764,10 +764,10 @@ bool TessngDBToolsRemove::deleteReduceSpeedInterval(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -797,7 +797,7 @@ bool TessngDBToolsRemove::deleteReduceSpeedVehiType(long id, QList<long> vehicle
 
         //删除时间间隔的数据库记录
         result = removeReduceSpeedVehiType(rmReduceSpeedVehiTypes);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步内存
         for (int i = 0; i < updateArea->mpReduceSpeedArea->mlReduceSpeedVehiType.size();) {
@@ -819,10 +819,10 @@ bool TessngDBToolsRemove::deleteReduceSpeedVehiType(long id, QList<long> vehicle
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -843,7 +843,7 @@ bool TessngDBToolsRemove::deleteReduceSpeedArea(QList<long> departureIntervalDs)
         }
 
         result = removeReduceSpeedArea(rmArea);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmArea) {
             gpScene->removeGReduceSpeedArea(it);
@@ -859,10 +859,10 @@ bool TessngDBToolsRemove::deleteReduceSpeedArea(QList<long> departureIntervalDs)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -890,7 +890,7 @@ bool TessngDBToolsRemove::deleteDepartureInterval(long id, QList<long> departure
         if (!updateTemp || departureIntervalDs.size() < 1)return false;
 
         result = removeDepartureInterval(rmTemps);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步内存
         for (int i = 0; i < updateTemp->mpDeparturePoint->mlDepaInterval.size();) {
@@ -912,10 +912,10 @@ bool TessngDBToolsRemove::deleteDepartureInterval(long id, QList<long> departure
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -937,7 +937,7 @@ bool TessngDBToolsRemove::deleteDeparturePoint(QList<long> ids)
         }
 
         result = removeDeparturePoint(rmTemps);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         foreach(auto& it, rmTemps) {
             gpScene->removeGDeparturePoint(it);
@@ -953,10 +953,10 @@ bool TessngDBToolsRemove::deleteDeparturePoint(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -985,7 +985,7 @@ bool TessngDBToolsRemove::deleteVehicleConsDetail(long id, QList<long> vehicleTy
         if (updateVCposition.mlVehicleConsDetail.size() < 1 || vehicleTypeCodes.size() < 1) return false;
 
         result = removeVehicleConsDetail(rmTemps);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步内存
         for (int i = 0; i < updateVCposition.mlVehicleConsDetail.size();) {
@@ -1007,10 +1007,10 @@ bool TessngDBToolsRemove::deleteVehicleConsDetail(long id, QList<long> vehicleTy
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1042,11 +1042,11 @@ bool TessngDBToolsRemove::deleteVehicleConstitutent(QList<long> ids)
 
         //删除发车间隔
         result = removeDepartureInterval(rmDepaInterval);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //删除车型组成
         result = removeVehicleConstitutent(rmTemps);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步内存
         foreach(auto& point, gpScene->mlGDeparturePoint)
@@ -1074,10 +1074,10 @@ bool TessngDBToolsRemove::deleteVehicleConstitutent(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove ReduceSpeedArea failed! Unknow Error.";
+        qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1108,7 +1108,7 @@ bool TessngDBToolsRemove::deleteRoutingFLowRatio(QList<long> ids)
 
         //删除路径流量分配的数据库记录
         result = removeRoutingFLowRatio(rmTemps);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步内存
         foreach(auto& point, gpScene->mlGDecisionPoint) {
@@ -1134,10 +1134,10 @@ bool TessngDBToolsRemove::deleteRoutingFLowRatio(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+        qWarning() << "remove DrivInfoCollector exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1176,9 +1176,9 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
 
                         // 修改路径车道连接数据库记录
                         result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
-                        if (!result) goto failed;
+                        if (!result) goto exitPoint;
                         result = insertRoutingLaneConnector(routingID, connID, laneConMin->fromLane()->id(), laneConMin->toLane()->id());
-                        if (!result) goto failed;
+                        if (!result) goto exitPoint;
 
                         //修改路径车道连接,同步内存数据一致
                         routing->mhLCStruct.value(connID)->fromLaneId = laneConMin->fromLane()->id();
@@ -1253,10 +1253,10 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
                 //删除后续路径路段序列和路径车道连接的数据库记录
                 for (auto& connector : rmRoutingConnectors) {
                     result = removeRoutingLaneConnector(routingID, connector->id());
-                    if (!result) goto failed;
+                    if (!result) goto exitPoint;
                 }
                 result = removeRoutingLink(routingID, rmRoutingLinks);
-                if (!result) goto failed;
+                if (!result) goto exitPoint;
 
                 //同步内存
                 //删除连接段序列
@@ -1291,7 +1291,7 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
             else {
                 //删除路径车道连接数据库记录
                 result = removeRoutingLaneConnector(routingID, connID, fromLaneId, toLaneId);
-                if (!result) goto failed;
+                if (!result) goto exitPoint;
 
                 for (auto& lcStruct : lcStructs) {
                     if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) {
@@ -1311,10 +1311,10 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
         result = false;
     }
     catch (...) {
-        qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+        qWarning() << "remove DrivInfoCollector exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1337,7 +1337,7 @@ bool TessngDBToolsRemove::deleteRouting(QList<long> ids)
         }
 
         result = removeRouting(rmRouteings);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         foreach(auto& it, rmRouteings)
         {
@@ -1354,10 +1354,10 @@ bool TessngDBToolsRemove::deleteRouting(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove Routes failed! Unknow Error.";
+        qWarning() << "remove Routes exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1380,7 +1380,7 @@ bool TessngDBToolsRemove::deleteDecisionPoint(QList<long> ids)
         }
 
         result = removeDecisionPoint(rmDecisionPoint);
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         foreach(auto & it, rmDecisionPoint)
         {
@@ -1397,10 +1397,10 @@ bool TessngDBToolsRemove::deleteDecisionPoint(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove Routes failed! Unknow Error.";
+        qWarning() << "remove Routes exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1435,7 +1435,7 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
 
         //删除车道连接数据库记录
         result = removeLaneConnector(rmLaneConnector);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
 
         //同步车道连接内存
         foreach(auto& it, rmLaneConnector)
@@ -1444,17 +1444,17 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         }
 
         //删除并保护路径车道连接
-        for (int i = 0; i < gpScene->mlGRouting.size(); i++) 
+        for (int i = 0; i < gpScene->mlGRouting.size(); i++)
         {
             QList<LCStruct*> lcStructs = gpScene->mlGRouting[i]->mhLCStruct.values(connID);
-            for (auto& lcStruct : lcStructs) 
+            for (auto& lcStruct : lcStructs)
             {
-                if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId) 
+                if (lcStruct->fromLaneId == fromLaneId && lcStruct->toLaneId == toLaneId)
                 {
 
                     //删除路径车道连接
                     result = removeRoutingLaneConnector(gpScene->mlGRouting[i]->id(), connID, fromLaneId, toLaneId);
-                    if (!result) goto failed;
+                    if (!result) goto exitPoint;
 
                     if (lcStructs.size() == 1) {
                         //路径保护
@@ -1499,10 +1499,10 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         result = false;
     }
     catch (...) {
-        qWarning() << "remove DrivInfoCollector failed! Unknow Error.";
+        qWarning() << "remove DrivInfoCollector exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1540,7 +1540,7 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
                             foreach(LCStruct * pLc, lLC)
                             {
                                 result = removeRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId) && result;
-                                if (!result) goto failed;
+                                if (!result) goto exitPoint;
                             }
                             break;
                         }
@@ -1551,7 +1551,7 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
         }
 
         result = removeConnector(rmConnects) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         foreach(auto it, rmConnects)
         {
@@ -1568,10 +1568,10 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove Connectors failed! Unknow Error.";
+        qWarning() << "remove Connectors exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1579,12 +1579,12 @@ failed:
     return result;
 }
 
-bool TessngDBToolsRemove::deleteLane(QList<long> ids)
+bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
 {
     bool result = true;
     try {
         /// <summary>
-        /// 车道删除逻辑
+        /// 车道删除步骤
         /// 1.根据提供的车道id 删除信号灯(SignalLamp)
         /// 2.根据车道id 删除公交站点(BusStation)
         /// 3.根据车道id 删除限速区(ReduceSpeedArea)
@@ -1606,11 +1606,24 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
         QList<GVehicleTravelDetector*> rmVehicleTravelDetector;
         QList<GVehicleQueueCounter*> rmVehicleQueueCounters;
         QList<GVehicleDrivInfoCollector*> rmVehicleDrivInfoCollectors;
-        foreach(GLink * pGLink, gpScene->mlGLink) {
-            foreach(auto lane, pGLink->mlGLane) {
+        QList<LaneConnector*> rmLaneConnectors;
+        QList<GLink*> changLinks;
+        QList<long> rmLinks;
+        foreach(auto link, gpScene->mlGLink) {
+            QList<GLane*> lanes=link->mlGLane;
+            foreach (auto lane, link->mlGLane) {
                 if (!ids.contains(lane->id())) continue;
+
+                lanes.removeOne(lane);
+
                 if (rmLanes.contains(lane)) continue;
                 rmLanes.push_back(lane);
+
+                if(!changLinks.contains(lane->mpGLink))changLinks.append(lane->mpGLink);
+            }
+            if(lanes.isEmpty()) {
+                rmLinks.append(link->mpLink->linkID);
+                if(changLinks.contains(link)) changLinks.removeOne(link);
             }
         }
         foreach(auto bs, gpScene->mlGBusStation) {
@@ -1622,7 +1635,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
             rmBusStations.append(bs);
         }
 
-     
+
         foreach(auto lane, rmLanes)
         {
             foreach(auto it, gpScene->mlGReduceSpeedArea)
@@ -1634,7 +1647,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
                     rmGReduceSpeedAreas.push_back(it);
                     break;
                 }
-            } 
+            }
         }
         foreach(auto lane, rmLanes)
         {
@@ -1688,45 +1701,85 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
             }
         }
         ///车道连接
-        foreach(GConnector* ptrConn, gpScene->mlGConnector) {
-            result = removeLaneConnector(ptrConn->mlGLaneConnector) && result;
-            if (!result) goto failed;
-        }
-        foreach(GRouting* pGRouting, gpScene->mlGRouting) {
-            foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
-                if (oneRouting.mlGLink.size() == 0) break;
-
-                for (int i = 0, size = oneRouting.mlGLink.size(); i < size - 1; ++i) {
-                    GLink* pGLink1 = oneRouting.mlGLink.at(i);
-                    GLink* pGLink2 = oneRouting.mlGLink.at(i + 1);
-
-                    foreach(GConnector * pGConnector, pGLink1->mlToGConnector)
-                    {
-                        if (pGConnector->mpToGLink != pGLink2) continue;
-                        QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
-                        foreach(LCStruct * pLc, lLC)
-                        {
-                            if (ids.contains(pLc->fromLaneId) || ids.contains(pLc->toLaneId)) {
-                                result = removeRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId) && result;
-                                if (!result) goto failed;
-                            }
-                        }
-                        break;
-                    }
+        foreach(auto lane, rmLanes)
+        {
+            foreach(GConnector * ptrConn, gpScene->mlGConnector) {
+                if (ptrConn->mpFromGLink != lane->mpGLink && ptrConn->mpToGLink != lane->mpGLink) continue;
+                foreach(auto lc, ptrConn->mpConnector->mlLaneConnector) {
+                    if (rmLaneConnectors.contains(lc)) continue;
+                    if (lc->mpFromLane != lane->mpLane && lc->mpToLane != lane->mpLane) continue;
+                    rmLaneConnectors.push_back(lc);
                 }
-
             }
         }
+        foreach(GRouting* pGRouting, gpScene->mlGRouting) {
+        }
+
+        result =removeBusStation(rmBusStations);
+        if (!result)goto exitPoint;
+
+        result=removeReduceSpeedArea(rmGReduceSpeedAreas);
+        if (!result)goto exitPoint;
+
+        result =removeVehicleTravelDetector(rmVehicleTravelDetector);
+        if (!result)goto exitPoint;
+
+        result =removeVehicleQueueCounter(rmVehicleQueueCounters);
+        if (!result)goto exitPoint;
+
+        result =removeDrivInfoCollector(rmVehicleDrivInfoCollectors);
+        if (!result)goto exitPoint;
+
+        result =removeLaneConnector(rmLaneConnectors);
+        if (!result)goto exitPoint;
         ///删除导向箭头
         result = removeGuideArrow(rmGGuideArrows) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除信号灯
         result = removeSignalLamp(rmGSignalLamps) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         result = removeLane(rmLanes) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
+
+        result =deleteLink(rmLinks,false);
+        if (!result)goto exitPoint;
+
+        foreach (auto it, changLinks) {
+            QList<GLane*> lans=it->mlGLane;
+            int nun=1;
+            foreach (auto lane, lans) {
+                lane->mpLane->serialNumber=nun;
+                nun++;
+            }
+            TessngDBToolsUpdate::getInstance()->updateLanes(lans);
+        }
+
+        foreach (auto it, rmBusStations) {
+            gpScene->removeGBusStation(it);
+        }
+
+        foreach (auto it, rmGReduceSpeedAreas) {
+            gpScene->removeGReduceSpeedArea(it);
+        }
+
+        foreach (auto it, rmVehicleTravelDetector) {
+            gpScene->removeGTravelDetector(it);
+        }
+
+        foreach (auto it, rmVehicleQueueCounters) {
+            gpScene->removeGQueueCounter(it);
+        }
+
+        foreach (auto it, rmVehicleDrivInfoCollectors) {
+            gpScene->removeGCollector(it);
+        }
+
+        foreach (auto it, rmLaneConnectors) {
+            GConnector* gc=gpScene->findGConnectorByConnID(it->mpConnector->connID);
+            gc->mlGLaneConnector.removeOne(gpScene->findGLaneConnectorByID(it->mpFromLane->laneID,it->mpToLane->laneID));
+        }
 
         foreach(auto it, rmGGuideArrows)
         {
@@ -1751,10 +1804,10 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove Lanes failed! Unknow Error.";
+        qWarning() << "remove Lanes exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
@@ -1762,7 +1815,7 @@ failed:
     return result;
 }
 
-bool TessngDBToolsRemove::deleteLink(QList<long> ids)
+bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache)
 {
     bool result = true;
     try
@@ -1863,51 +1916,53 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids)
         }
         ///删除路段相关数据
         result = removeLink(rmLinks) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除连接段相关数据
         result = removeConnector(rmConnects) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除决策点相关数据
         result = removeDecisionPoint(rmDecisionPoints) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除导向箭头
         result = removeGuideArrow(rmGGuideArrows) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除信号灯
         result = removeSignalLamp(rmGSignalLamps) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除信号灯组
         result = removeSignalGroup(rmSignalGroups) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除发车点
         result = removeDeparturePoint(rmGDeparturePoints) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除采集器
         result = removeDrivInfoCollector(rmGVehicleDrivInfoCollectors) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除排队计数器
         result = removeVehicleQueueCounter(rmGVehicleQueueCounters) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除行程时间检测器
         result = removeVehicleTravelDetector(rmGVehicleTravelDetectors) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除限速区
         result = removeReduceSpeedArea(rmGReduceSpeedAreas) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
 
         ///删除公交站
         result = removeBusStation(rmGBusStations) && result;
-        if (!result)goto failed;
+        if (!result)goto exitPoint;
+
+        if(!clearCache) goto exitPoint;
 
         foreach(auto it, rmLinks)
         {
@@ -1969,10 +2024,10 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids)
         result = false;
     }
     catch (...) {
-        qWarning() << "remove link failed! Unknow Error.";
+        qWarning() << "remove link exitPoint! Unknow Error.";
         result = false;
     }
-failed:
+exitPoint:
     result = gDB.commit() && result;
     if (!result) {
         gDB.rollback();
