@@ -34,6 +34,7 @@ protected:
 
     /// 公交线路的路段或连接段序列
     bool removeBusLineRoad(const QList<GBusLine*>& list);
+    bool removeBusLineLink(long busLineID, const QList<GLink*> busLineLinks);
 
     /// 公交线路：公交线路的路段或连接段序列，公交线路
     bool removeBusLine(const QList<GBusLine*>& list);

@@ -241,6 +241,21 @@ bool TessngDBToolsRemoveBase::removeBusLineRoad(BusLine* it)
     return result;
 }
 
+bool TessngDBToolsRemoveBase::removeBusLineLink(long busLineID, const QList<GLink*> busLineLinks)
+{
+    QSqlQuery slQuery(gDB);
+    bool result = true;
+    for (auto& link : busLineLinks) {
+        QString deleteSql = QString(R"(delete from BusLineRoad where busLineID=%1 and roadID=%2;)").arg(busLineID).arg(link->id());
+        result = slQuery.exec(deleteSql);
+        if (!result) {
+            throw PH::Exception(slQuery.lastError().text().toStdString());
+            break;
+        }
+    }
+    return result;
+}
+
 /// 公交线路
 bool TessngDBToolsRemoveBase::removeBusLine(const QList<GBusLine*>& list)
 {
@@ -880,6 +895,10 @@ bool TessngDBToolsRemoveBase::removeVertex(GVertex* it)
 bool TessngDBToolsRemoveBase::removeLinkVertex(const QList<GVertex*>& list)
 {
     bool result = true;
+
+    result = removeVertex(list);
+    if (!result) return false;
+
     for (auto& it : list) {
         result = removeLinkVertex(it);
         if (!result) return false;
@@ -961,10 +980,10 @@ bool TessngDBToolsRemoveBase::removeLink(GLink* it) {
 
     result = removeLane(it->mlGLane);
     if (!result) return false;
-    result = removeVertex(it->mlGVertex);
-    if (!result) return false;
+    
     result = removeLinkVertex(it->mlGVertex);
     if (!result) return false;
+
     QList<Node*> nodes;
     nodes.push_back(it->mpLink->startNode);
     nodes.push_back(it->mpLink->endNode);

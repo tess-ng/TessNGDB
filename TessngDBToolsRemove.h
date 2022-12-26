@@ -227,6 +227,15 @@ public:
 
     /**
          * @brief 删除路段
+         * @param id					[路段ID]
+         * @param nums					[顶点序号]
+         *
+         * @return bool
+         */
+    bool deleteLinkVertex(long id, QList<int> nums);
+
+    /**
+         * @brief 删除路段
          * @param ids					[路段ID]
          *
          * @return bool

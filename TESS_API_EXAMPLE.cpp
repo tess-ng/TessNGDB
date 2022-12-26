@@ -388,7 +388,13 @@ void TESS_API_EXAMPLE::on_btnDecisionPoint_released()
 
 void TESS_API_EXAMPLE::on_btnLaneConnector_released()
 {
-
+    bool result = TessngDBToolsRemove::getInstance()->deleteLaneConnector(2,4,7);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除车道连接", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除车道连接"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnConnector_released()
