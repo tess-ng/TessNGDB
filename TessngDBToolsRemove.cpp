@@ -1420,7 +1420,7 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         GLane* toLane = gpScene->findGLaneByLaneID(toLaneId);
         int fromLaneNumber = fromLane->number();
         int toLaneNumber = toLane->number();
-        if(!fromLane || !toLane || !connector)goto failed;
+        if(!fromLane || !toLane || !connector)goto exitPoint;
 
         //需要删除的限速区
         QList<GReduceSpeedArea*> rmArea = gpScene->lGReduceSpeedAreaOnLaneObject(qgraphicsitem_cast<GraphicsObject*>(laneConnector));
@@ -1472,19 +1472,19 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
 
         //删除限速区
         result = removeReduceSpeedArea(rmArea);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
         //删除行程时间检测器
         result = removeVehicleTravelDetector(rmVTDetector);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
         //删除排队计数器
         result = removeVehicleQueueCounter(rmVQCounter);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
         //删除车辆信息采集器
         result = removeDrivInfoCollector(rmVDICollector);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
         //删除信号灯
         result = removeSignalLamp(rmSignalLamp);
-        if (!result) goto failed;
+        if (!result) goto exitPoint;
         //删除车道连接
         result = removeLaneConnector(rmLaneConnector);
         if (!result) goto exitPoint;
@@ -1622,7 +1622,7 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
             QList<GConnector*> rmCon;
             rmCon.push_back(connector);
             result = removeConnector(rmCon);
-            if (!result) goto failed;
+            if (!result) goto exitPoint;
 
             gpScene->removeGConnector(connector);
         }
