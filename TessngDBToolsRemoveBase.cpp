@@ -463,7 +463,7 @@ bool TessngDBToolsRemoveBase::removeReduceSpeedArea(GReduceSpeedArea* it)
     if (!result) return false;
     result = removeReduceSpeedVehiType(it->mpReduceSpeedArea->mlReduceSpeedVehiType);
     if (!result) return false;
-    QString deleteSql = QString(R"(delete from ReduceSpeedInterval where reduceSpeedAreaID=%1;)").arg(it->mpReduceSpeedArea->reduceSpeedAreaID);
+    QString deleteSql = QString(R"(delete from ReduceSpeedArea where reduceSpeedAreaID=%1;)").arg(it->mpReduceSpeedArea->reduceSpeedAreaID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 

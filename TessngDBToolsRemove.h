@@ -273,6 +273,12 @@ private:
          * @return bool
          */
     bool checkContainsConnector(const QList<GConnector*>&, long id);
+
+    bool protectRoutingLaneConnector(GConnector* connector, long fromLaneId, long toLaneId);
+
+    bool protectRoutingLinks(GConnector* connector, long fromLaneId, long toLaneId);
+
+    bool protectBusLineLinks(GConnector* connector, long fromLaneId, long toLaneId);
 };
 
 #endif // TESSNGDBTOOLSREMOVE_H
