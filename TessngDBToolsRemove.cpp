@@ -72,7 +72,7 @@ bool TessngDBToolsRemove::checkContansLane(const QList<GConnector*>& list, long 
         foreach(auto lane, it->laneConnectors())
         {
             if (fromlaneId == lane->fromLane()->id() &&
-                tolaneId == lane->toLane()->id()) return true;
+                    tolaneId == lane->toLane()->id()) return true;
         }
     }
     return false;
@@ -462,7 +462,7 @@ bool TessngDBToolsRemove::deleteBusStation(QList<long> ids) {
         foreach(auto busLine, gpScene->mlGBusLine) {
             for (int i = 0; i < busLine->mpBusLine->mlBusStationLine.size();) {
                 if (busLine->mpBusLine->mlBusStationLine[i]->lineId() != busLine->id()
-                    || !ids.contains(busLine->mpBusLine->mlBusStationLine[i]->stationId()))
+                        || !ids.contains(busLine->mpBusLine->mlBusStationLine[i]->stationId()))
                 {
                     i++;
                 }
@@ -1602,13 +1602,12 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         QList<GVehicleTravelDetector*> rmVTDetector;
         foreach(auto& it, gpScene->mlGVehicleTravelDetector)
         {
-            if (it->mpVehicleTravelDetector->startRoadId == connector->fromLink()->id() &&
-                it->mpVehicleTravelDetector->start_laneNumber == fromLaneNumber && 
-                it->mpVehicleTravelDetector->start_toLaneNumber == toLaneNumber 
-                ||
-                it->mpVehicleTravelDetector->teminalRoadId == connector->toLink()->id() &&
-                it->mpVehicleTravelDetector->teminal_laneNumber == fromLaneNumber &&
-                it->mpVehicleTravelDetector->teminal_toLaneNumber == toLaneNumber) {
+            if ((it->mpVehicleTravelDetector->startRoadId == connector->fromLink()->id() &&
+                 it->mpVehicleTravelDetector->start_laneNumber == fromLaneNumber &&
+                 it->mpVehicleTravelDetector->start_toLaneNumber == toLaneNumber)||
+                    (it->mpVehicleTravelDetector->teminalRoadId == connector->toLink()->id() &&
+                     it->mpVehicleTravelDetector->teminal_laneNumber == fromLaneNumber &&
+                     it->mpVehicleTravelDetector->teminal_toLaneNumber == toLaneNumber)) {
                 rmVTDetector.push_back(it);
             }
         }
@@ -1616,9 +1615,9 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         QList<GVehicleQueueCounter*> rmVQCounter;
         foreach(auto& it, gpScene->mlGVehicleQueueCounter)
         {
-            if (it->mpVehicleQueueCounter->roadID == connID && 
-                it->mpVehicleQueueCounter->laneNumber == fromLaneNumber && 
-                it->mpVehicleQueueCounter->toLaneNumber) {
+            if (it->mpVehicleQueueCounter->roadID == connID &&
+                    it->mpVehicleQueueCounter->laneNumber == fromLaneNumber &&
+                    it->mpVehicleQueueCounter->toLaneNumber) {
                 rmVQCounter.push_back(it);
             }
         }
@@ -1627,8 +1626,8 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         foreach(auto& it, gpScene->mlGVehicleDrivInfoCollector)
         {
             if (it->mpVehicleDrivInfoCollector->roadID == connID &&
-                it->mpVehicleDrivInfoCollector->laneNumber == fromLaneNumber &&
-                it->mpVehicleDrivInfoCollector->toLaneNumber) {
+                    it->mpVehicleDrivInfoCollector->laneNumber == fromLaneNumber &&
+                    it->mpVehicleDrivInfoCollector->toLaneNumber==toLaneNumber) {
                 rmVDICollector.push_back(it);
             }
         }
@@ -1721,16 +1720,19 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
                 }
             }
         }
-
+                }
         result = protectRoutingLaneConnector(connector, fromLaneId, toLaneId);
         if (!result) goto exitPoint;
+                    //删除路径车道连接
+        }
+        
 
-        //判断连接段是否还存在连接并处理
-        if (connector->mlGLaneConnector.isEmpty())
-        {
             protectRoutingLinks(connector, fromLaneId, toLaneId);
 
             protectBusLineLinks(connector, fromLaneId, toLaneId);
+
+            }
+
 
             QList<GConnector*> rmCon;
             rmCon.push_back(connector);
@@ -1766,6 +1768,7 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
     bool result = true;
     try {
         QList<GConnector*> rmConnects;
+        QList<long> rmRts;
         foreach(GConnector * ptrConn, gpScene->mlGConnector) {
             if (rmConnects.contains(ptrConn)) continue;
             if (ids.contains(ptrConn->mpConnector->connID)) {
@@ -1773,33 +1776,34 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
             }
         }
 
-        foreach(GDecisionPoint * pGDecisionPoint, gpScene->mlGDecisionPoint) {
-            foreach(GRouting * pGRouting, pGDecisionPoint->mlGRouting) {
-                foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
-                    if (oneRouting.mlGLink.size() == 0) break;
+        foreach(GRouting * pGRouting,gpScene->mlGRouting) {
+            foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
+                if (oneRouting.mlGLink.size() == 0) break;
 
-                    for (int i = 0, size = oneRouting.mlGLink.size(); i < size - 1; ++i) {
-                        GLink* pGLink1 = oneRouting.mlGLink.at(i);
-                        GLink* pGLink2 = oneRouting.mlGLink.at(i + 1);
+                for (int i = 0, size = oneRouting.mlGLink.size(); i < size - 1; ++i) {
+                    GLink* pGLink1 = oneRouting.mlGLink.at(i);
+                    GLink* pGLink2 = oneRouting.mlGLink.at(i + 1);
 
-                        foreach(GConnector * pGConnector, pGLink1->mlToGConnector)
+                    foreach(GConnector * pGConnector, pGLink1->mlToGConnector)
+                    {
+                        if (pGConnector->mpToGLink != pGLink2) continue;
+                        if (!rmConnects.contains(pGConnector)) continue;
+
+                        QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
+                        if(!rmRts.contains(pGConnector->mpConnector->connID))rmRts.push_back(pGConnector->mpConnector->connID);
+                        foreach(LCStruct * pLc, lLC)
                         {
-                            if (pGConnector->mpToGLink != pGLink2) continue;
-                            if (!rmConnects.contains(pGConnector)) continue;
-
-                            QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
-                            foreach(LCStruct * pLc, lLC)
-                            {
-                                result = removeRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId) && result;
-                                if (!result) goto exitPoint;
-                            }
-                            break;
+                            result = removeRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId) && result;
+                            if (!result) goto exitPoint;
                         }
+                        break;
                     }
-
                 }
+
             }
         }
+
+
 
         result = removeConnector(rmConnects) && result;
         if (!result)goto exitPoint;
@@ -1807,6 +1811,12 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
         foreach(auto it, rmConnects)
         {
             gpScene->removeGConnector(it);
+        }
+
+        foreach(GRouting * pGRouting,gpScene->mlGRouting) {
+            foreach (auto it, rmRts) {
+                pGRouting->mhLCStruct.remove(it);
+            }
         }
     }
     catch (QException& exc) {
@@ -1858,6 +1868,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         QList<GVehicleQueueCounter*> rmVehicleQueueCounters;
         QList<GVehicleDrivInfoCollector*> rmVehicleDrivInfoCollectors;
         QList<LaneConnector*> rmLaneConnectors;
+        QList<GConnector*> rmCons;
         QList<GLink*> changLinks;
         QList<long> rmLinks;
         foreach(auto link, gpScene->mlGLink) {
@@ -1894,7 +1905,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 if (rmGReduceSpeedAreas.contains(it))continue;
                 if (it->mpReduceSpeedArea->roadID != lane->mpGLink->mpLink->linkID) continue;
                 if (it->mpReduceSpeedArea->laneNumber == lane->mpLane->serialNumber ||
-                    it->mpReduceSpeedArea->toLaneNumber == lane->mpLane->serialNumber) {
+                        it->mpReduceSpeedArea->toLaneNumber == lane->mpLane->serialNumber) {
                     rmGReduceSpeedAreas.push_back(it);
                     break;
                 }
@@ -1906,13 +1917,13 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             {
                 if (rmVehicleTravelDetector.contains(it))continue;
                 if (it->mpVehicleTravelDetector->startRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->start_laneNumber ==
-                    lane->mpLane->serialNumber || it->mpVehicleTravelDetector->start_toLaneNumber == lane->mpLane->serialNumber)) {
+                                                                                                  lane->mpLane->serialNumber || it->mpVehicleTravelDetector->start_toLaneNumber == lane->mpLane->serialNumber)) {
                     rmVehicleTravelDetector.push_back(it);
                     break;
                 }
 
                 if (it->mpVehicleTravelDetector->teminalRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->teminal_laneNumber ==
-                    lane->mpLane->serialNumber || it->mpVehicleTravelDetector->teminal_toLaneNumber == lane->mpLane->serialNumber)) {
+                                                                                                    lane->mpLane->serialNumber || it->mpVehicleTravelDetector->teminal_toLaneNumber == lane->mpLane->serialNumber)) {
                     rmVehicleTravelDetector.push_back(it);
                     break;
                 }
@@ -1947,7 +1958,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         }
         foreach(GSignalLamp * pGSl, gpScene->mlGSignalLamp) {
             if (ids.contains(pGSl->mpSignalLamp->laneID) ||
-                ids.contains(pGSl->mpSignalLamp->toLaneID)) {
+                    ids.contains(pGSl->mpSignalLamp->toLaneID)) {
                 rmGSignalLamps.push_back(pGSl);
             }
         }
@@ -1964,8 +1975,49 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             }
         }
         foreach(GRouting* pGRouting, gpScene->mlGRouting) {
-        }
+            foreach (auto ptrConn, gpScene->mlGConnector) {
+                QList<LCStruct*> lcStructs = pGRouting->mhLCStruct.values(ptrConn->id());
+                for (auto& lcStruct : lcStructs){
+                    if(ids.contains(lcStruct->fromLaneId)||ids.contains(lcStruct->toLaneId)){
+                        result = removeRoutingLaneConnector(pGRouting->id(), ptrConn->id(), lcStruct->fromLaneId, lcStruct->toLaneId);
+                        if (!result) goto exitPoint;
 
+                        if(1==lcStructs.size()){
+                            if(ptrConn->mlGLaneConnector.isEmpty()){
+                                pGRouting->mhLCStruct.remove(ptrConn->id());
+                                continue;
+                            }
+
+                            GLaneConnector* laneConMinFrom = ptrConn->mlGLaneConnector[0];
+                            for (auto& laneConnector : ptrConn->mlGLaneConnector)
+                            {
+                                if (laneConMinFrom->fromLane()->number() > laneConnector->fromLane()->number())
+                                {
+                                    laneConMinFrom = laneConnector;
+                                }
+                            }
+
+                            GLane* laneFromMin = gpScene->findGLaneByLaneID(laneConMinFrom->fromLane()->id());
+                            QList<GLaneConnector*> laneCons = gpScene->findGLaneConnectorByFromGLaneAndToGLink(laneFromMin, GLink::iToGLink(ptrConn->toLink()));
+
+                            GLaneConnector* laneConMinTo = laneCons[0];
+                            for (auto& laneConnector : laneCons) {
+                                if (laneConMinTo->fromLane()->number() > laneConnector->fromLane()->number())
+                                {
+                                    laneConMinTo = laneConnector;
+                                }
+                            }
+
+                            pGRouting->mhLCStruct.value(ptrConn->id())->fromLaneId = laneConMinFrom->fromLane()->id();
+                            pGRouting->mhLCStruct.value(ptrConn->id())->toLaneId = laneConMinTo->toLane()->id();
+                        }else{
+                            pGRouting->mhLCStruct.remove(ptrConn->id(), lcStruct);
+                        }
+                    }
+                }
+            }
+
+        }
         result =removeBusStation(rmBusStations);
         if (!result)goto exitPoint;
 
@@ -1995,6 +2047,18 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         if (!result)goto exitPoint;
 
         result =deleteLink(rmLinks,false);
+        if (!result)goto exitPoint;
+
+        foreach (auto it, rmLaneConnectors) {
+            GConnector* gc=gpScene->findGConnectorByConnID(it->mpConnector->connID);
+            gc->mlGLaneConnector.removeOne(gpScene->findGLaneConnectorByID(it->mpFromLane->laneID,it->mpToLane->laneID));
+
+            if(gc->mlGLaneConnector.isEmpty()){
+                rmCons.append(gc);
+            }
+        }
+
+        result = removeConnector(rmCons) && result;
         if (!result)goto exitPoint;
 
         foreach (auto it, changLinks) {
@@ -2027,11 +2091,6 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             gpScene->removeGCollector(it);
         }
 
-        foreach (auto it, rmLaneConnectors) {
-            GConnector* gc=gpScene->findGConnectorByConnID(it->mpConnector->connID);
-            gc->mlGLaneConnector.removeOne(gpScene->findGLaneConnectorByID(it->mpFromLane->laneID,it->mpToLane->laneID));
-        }
-
         foreach(auto it, rmGGuideArrows)
         {
             gpScene->removeGGuideArrow(it);
@@ -2043,6 +2102,9 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
 
         foreach(auto it, rmLanes) {
             gpScene->removeGLane(it);
+        }
+        foreach(auto it, rmCons) {
+            gpScene->removeGConnector(it);
         }
     }
     catch (QException& exc) {

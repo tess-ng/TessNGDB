@@ -2,7 +2,8 @@
 #define TESSNGDBTOOLSUPDATE_H
 #include "DBClassDefine.h"
 #include "vehicletype.h"
-class TessngDBToolsUpdate
+#include "singleholder.h"
+class TessngDBToolsUpdate : public PH::SingleHolder<TessngDBToolsUpdate>
 {
 public:
     ///update link
@@ -57,6 +58,7 @@ protected:
 
     ~TessngDBToolsUpdate();
 private:
+    friend class  PH::SingleHolder<TessngDBToolsUpdate>;
     TessngDBToolsUpdate(const TessngDBToolsUpdate&) = delete;
     bool updateVertex(const QList<Vertex*>& list);
 
