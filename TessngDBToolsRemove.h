@@ -264,6 +264,8 @@ private:
          * @return bool
          */
     bool checkContainsConnector(const QList<GConnector*>&, long id);
+
+    void clearhValiedConnector(GConnector* connector);
 };
 
 #endif // TESSNGDBTOOLSREMOVE_H

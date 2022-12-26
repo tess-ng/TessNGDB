@@ -408,5 +408,8 @@ void TESS_API_EXAMPLE::on_btnLinkVertex_released()
 
 void TESS_API_EXAMPLE::on_btnLink_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    TessngDBToolsRemove::getInstance()->deleteLink(list);
 }
