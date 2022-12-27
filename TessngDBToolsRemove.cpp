@@ -1602,13 +1602,13 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         QList<GVehicleTravelDetector*> rmVTDetector;
         foreach(auto & it, gpScene->mlGVehicleTravelDetector)
         {
-            if (it->mpVehicleTravelDetector->startRoadId == connector->fromLink()->id() &&
+            if ((it->mpVehicleTravelDetector->startRoadId == connector->fromLink()->id() &&
                 it->mpVehicleTravelDetector->start_laneNumber == fromLaneNumber &&
-                it->mpVehicleTravelDetector->start_toLaneNumber == toLaneNumber
+                it->mpVehicleTravelDetector->start_toLaneNumber == toLaneNumber)
                 ||
-                it->mpVehicleTravelDetector->teminalRoadId == connector->toLink()->id() &&
+                (it->mpVehicleTravelDetector->teminalRoadId == connector->toLink()->id() &&
                 it->mpVehicleTravelDetector->teminal_laneNumber == fromLaneNumber &&
-                it->mpVehicleTravelDetector->teminal_toLaneNumber == toLaneNumber) {
+                it->mpVehicleTravelDetector->teminal_toLaneNumber == toLaneNumber)) {
                 rmVTDetector.push_back(it);
             }
         }
