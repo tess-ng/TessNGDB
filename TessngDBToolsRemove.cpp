@@ -1689,36 +1689,33 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
             gpScene->removeGSignalLamp(it);
         }
         //删除车道连接内存
-        foreach(auto & it, rmLaneConnector)
-        {
-            for (int i = 0; i < connector->mpConnector->mlLaneConnector.size();) {
-                if (connector->mpConnector->mlLaneConnector[i]->mpFromLane->laneID == fromLaneId &&
-                    connector->mpConnector->mlLaneConnector[i]->mpToLane->laneID == toLaneId)
-                {
-                    connector->mpConnector->mlLaneConnector.removeAt(i);
-                }
-                else {
-                    i++;
-                }
+        for (int i = 0; i < connector->mpConnector->mlLaneConnector.size();) {
+            if (connector->mpConnector->mlLaneConnector[i]->mpFromLane->laneID == fromLaneId &&
+                connector->mpConnector->mlLaneConnector[i]->mpToLane->laneID == toLaneId)
+            {
+                connector->mpConnector->mlLaneConnector.removeAt(i);
             }
-            for (int i = 0; i < connector->mlGLaneConnector.size();) {
-                if (connector->mlGLaneConnector[i]->fromLane()->id() == fromLaneId &&
-                    connector->mlGLaneConnector[i]->toLane()->id() == toLaneId)
-                {
-                    connector->mlGLaneConnector.removeAt(i);
-                }
-                else {
-                    i++;
-                }
+            else {
+                i++;
             }
-            for (int i = 0; i < gpScene->mlGLaneConnector.size();) {
-                if (gpScene->mlGLaneConnector[i]->fromLane()->id() == fromLaneId && gpScene->mlGLaneConnector[i]->toLane()->id() == toLaneId)
-                {
-                    gpScene->mlGLaneConnector.removeAt(i);
-                }
-                else {
-                    i++;
-                }
+        }
+        for (int i = 0; i < connector->mlGLaneConnector.size();) {
+            if (connector->mlGLaneConnector[i]->fromLane()->id() == fromLaneId &&
+                connector->mlGLaneConnector[i]->toLane()->id() == toLaneId)
+            {
+                connector->mlGLaneConnector.removeAt(i);
+            }
+            else {
+                i++;
+            }
+        }
+        for (int i = 0; i < gpScene->mlGLaneConnector.size();) {
+            if (gpScene->mlGLaneConnector[i]->fromLane()->id() == fromLaneId && gpScene->mlGLaneConnector[i]->toLane()->id() == toLaneId)
+            {
+                gpScene->mlGLaneConnector.removeAt(i);
+            }
+            else {
+                i++;
             }
         }
 
