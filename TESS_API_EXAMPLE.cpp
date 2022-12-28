@@ -409,7 +409,13 @@ void TESS_API_EXAMPLE::on_btnLane_released()
 
 void TESS_API_EXAMPLE::on_btnLinkVertex_released()
 {
-
+    bool result = TessngDBToolsRemove::getInstance()->deleteLinkVertex(1, {1});
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除顶点", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除顶点"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnLink_released()

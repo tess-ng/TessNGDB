@@ -2129,18 +2129,35 @@ bool TessngDBToolsRemove::deleteLinkVertex(long id, QList<int> nums)
     try {
         //开启事务
         gDB.transaction();
+        GLink* rmLink = NULL;
+        foreach(GLink * it, gpScene->mlGLink) {
+            if (it->id() == id) {
+                rmLink = it;
+                break;
+            }
+        }
+        if (rmLink == NULL) goto exitPoint;
 
-        QList<GSignalLamp*> rmSignalLamp;
-        foreach(GSignalLamp * it, gpScene->mlGSignalLamp) {
+        QList<GVertex*> rmGVertex;
+        QList<Vertex*> rmVertex;
+        for(int i = 0; i < rmLink->mlGVertex.size(); i++) {
+            if (nums.contains(i)) {
+                rmGVertex.push_back(rmLink->mlGVertex[i]);
+            }
+        }
+        for (int i = 0; i < rmLink->mpLink->mlVertex.size(); i++) {
+            if (nums.contains(i)) {
+                rmVertex.push_back(rmLink->mpLink->mlVertex[i]);
+            }
         }
 
-        //删除顶点
-        //result = removeSignalLamp(rmSignalLamp);
+        //删除路段顶点
+        result = removeLinkVertex(rmGVertex);
         if (!result)goto exitPoint;
 
-        foreach(auto it, rmSignalLamp)
-        {
-            gpScene->removeGSignalLamp(it);
+        //同步内存
+        foreach(auto& it , rmGVertex) {
+            rmLink->removeGVertxt(it);
         }
     }
     catch (QException& exc) {
