@@ -207,7 +207,7 @@ public:
          *
          * @return bool
          */
-    bool deleteLaneConnector(long connID, long fromLaneId, long toLaneId);
+    bool deleteLaneConnector(long connID, long fromLaneId, long toLaneId,bool trans=true);
 
     /**
          * @brief 删除连接段
@@ -240,7 +240,7 @@ public:
          *
          * @return bool
          */
-    bool deleteLink(QList<long> ids,bool clearCache=true);
+    bool deleteLink(QList<long> ids,bool clearCache=true,bool trans=true);
 
 private:
     friend class PH::SingleHolder<TessngDBToolsRemove>;

@@ -160,16 +160,13 @@ bool TessngDBToolsUpdate::updateLinks(const QList<GLink*>& links) {
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update Links failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -196,7 +193,7 @@ bool TessngDBToolsUpdate::updateLane(Lane* lane){
     bool result=true;
     QSqlQuery  query(gDB);
     QString sql="UPDATE Lane set ";
-    sql+=QString("LaneID=%1").arg(lane->laneID);
+    sql+=QString("LinkID=%1").arg(lane->linkID);
     sql+=QString(",SerialNumber=%1").arg(lane->serialNumber);
     sql+=QString(",Width=%1").arg(lane->width);
     sql+=QString(",ActionType='%1'").arg(lane->actionType);
@@ -205,7 +202,7 @@ bool TessngDBToolsUpdate::updateLane(Lane* lane){
     sql+=QString(",leftBreakPointsJson='%1'").arg(jsonObjToStr(lane->leftBreakPointsJson));
     sql+=QString(",rightBreakPointsJson='%1'").arg(jsonObjToStr(lane->rightBreakPointsJson));
     sql+=QString(",otherAttrsJson='%1'").arg(jsonObjToStr(lane->otherAttrsJson));
-    sql+=QString(" WHERE LinkID=%1").arg(lane->laneID);
+    sql+=QString(" WHERE LaneID=%1").arg(lane->laneID);
     query.prepare(sql);
     result=query.exec();
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
@@ -213,11 +210,11 @@ bool TessngDBToolsUpdate::updateLane(Lane* lane){
 }
 
 
-bool TessngDBToolsUpdate::updateLanes(const QList<GLane*>& list){
+bool TessngDBToolsUpdate::updateLanes(const QList<GLane*>& list, bool trans){
     bool result = true;
     try {
         //开启事务
-        gDB.transaction();
+        if(trans)gDB.transaction();
         foreach (auto it, list) {
             result=updateLaneLimitVehicle(it->mpLane->laneID,it->mpLane->mlVehicleType);
             if(!result) goto failed;
@@ -228,21 +225,20 @@ bool TessngDBToolsUpdate::updateLanes(const QList<GLane*>& list){
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update Lanes failed! Unknow Error.";
-        result = false;
     }
 failed:
-    result = gDB.commit() && result;
-    if (!result) {
-        gDB.rollback();
+    if (trans) {
+        result = gDB.commit() && result;
+        if (!result) {
+            gDB.rollback();
+        }
     }
 
     return result;
@@ -277,16 +273,13 @@ bool TessngDBToolsUpdate::updateGuideArrows(const QList<GGuideArrow *> &list)
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update GuideArrow failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -377,16 +370,13 @@ bool TessngDBToolsUpdate::updateConnectors(const QList<GConnector *> &list)
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update Connectors failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -451,16 +441,13 @@ bool TessngDBToolsUpdate::updateRouteings(const QList<GRouting*>& list){
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update Routeing failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -546,16 +533,13 @@ bool TessngDBToolsUpdate::updateDecisionPoint(const QList<GDecisionPoint *> &lis
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update DecisionPoint failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -611,16 +595,13 @@ bool TessngDBToolsUpdate::updateDeparturePoint(const QList<GDeparturePoint*>& li
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update DeparturePoint failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -721,16 +702,13 @@ bool TessngDBToolsUpdate::updateSignalGroups(const QList<SignalGroup *> &list)
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update SignalGroups failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -752,16 +730,13 @@ bool TessngDBToolsUpdate::updateSignalLamps(const QList<GSignalLamp*>& list){
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update SignalLamps failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -802,16 +777,13 @@ bool TessngDBToolsUpdate::updateVehicleDrivInfoCollectors(const QList<GVehicleDr
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update VehicleDrivInfoCollectors failed! Unknow Error.";
-        result = false;
     }
     result = gDB.commit() && result;
     if (!result) {
@@ -856,16 +828,13 @@ bool TessngDBToolsUpdate::updateVehicleQueueCounters(const QList<GVehicleQueueCo
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update VehicleQueueCounters failed! Unknow Error.";
-        result = false;
     }
     result = gDB.commit() && result;
     if (!result) {
@@ -911,16 +880,13 @@ bool TessngDBToolsUpdate::updateVehicleTravelDetectors(const QList<GVehicleTrave
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update VehicleTravelDetectors failed! Unknow Error.";
-        result = false;
     }
 
     result = gDB.commit() && result;
@@ -960,16 +926,13 @@ bool TessngDBToolsUpdate::updateVehicleDetectors(const QList<GVehicleDetector*>&
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update VehicleDetectors failed! Unknow Error.";
-        result = false;
     }
 
     result = gDB.commit() && result;
@@ -1050,16 +1013,13 @@ bool TessngDBToolsUpdate::updateReduceSpeedAreas(const QList<GReduceSpeedArea *>
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update ReduceSpeedAreas failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;
@@ -1095,16 +1055,13 @@ bool TessngDBToolsUpdate::updateBustation(const QList<GBusStation*>& list){
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update Bustation failed! Unknow Error.";
-        result = false;
     }
     result = gDB.commit() && result;
     if (!result) {
@@ -1222,16 +1179,13 @@ bool TessngDBToolsUpdate::updateBusLine(const QList<GBusLine*>& list){
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
-        result = false;
+        qWarning() << exc.message().c_str();
     }
     catch (...) {
         qWarning() << "update GBusLine failed! Unknow Error.";
-        result = false;
     }
 failed:
     result = gDB.commit() && result;

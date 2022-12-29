@@ -10,7 +10,7 @@ public:
     bool updateLinks(const QList<GLink*> &links);
 
     ///update lane
-    bool updateLanes(const QList<GLane*>& list);
+    bool updateLanes(const QList<GLane*>& list,bool trans=true);
 
     ///update guid arrow
     bool updateGuideArrows(const QList<GGuideArrow*>& list);

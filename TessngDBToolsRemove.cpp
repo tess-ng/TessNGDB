@@ -47,7 +47,9 @@
 #include "Vehicletype.h"
 #include "GVehicleDetector.h"
 #include "TessngDBToolsUpdate.h"
+#include "exception.h"
 #include <QException>
+#include <QSqlError>
 #include <QDebug>
 TessngDBToolsRemove::TessngDBToolsRemove() :TessngDBToolsRemoveBase() {
 
@@ -1543,11 +1545,11 @@ bool TessngDBToolsRemove::protectBusLineLinks(GConnector* connector, long fromLa
     }
 }
 
-bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long toLaneId)
+bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long toLaneId, bool trans)
 {
     bool result = true;
     try {
-        gDB.transaction();
+        if(trans)gDB.transaction();
 
         GConnector* connector = NULL;
         foreach(auto & it, gpScene->mlGConnector)
@@ -1741,9 +1743,9 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1751,10 +1753,13 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         result = false;
     }
 exitPoint:
-    result = gDB.commit() && result;
-    if (!result) {
-        gDB.rollback();
+    if (trans) {
+        result = gDB.commit() && result;
+        if (!result) {
+            gDB.rollback();
+        }
     }
+
     return result;
 }
 
@@ -1763,6 +1768,7 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
     bool result = true;
     try {
         QList<GConnector*> rmConnects;
+        QList<GLaneConnector*> rmLaneConns;
         QList<long> rmRts;
         foreach(GConnector * ptrConn, gpScene->mlGConnector) {
             if (rmConnects.contains(ptrConn)) continue;
@@ -1770,7 +1776,11 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
                 rmConnects.push_back(ptrConn);
             }
         }
-
+        foreach (auto it, gpScene->mlGLaneConnector)
+        {
+            if (!rmConnects.contains(it->mpGConnector)) continue;
+            rmLaneConns.append(it);
+        }
         foreach(GRouting * pGRouting,gpScene->mlGRouting) {
             foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
                 if (oneRouting.mlGLink.size() == 0) break;
@@ -1801,6 +1811,11 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
         result = removeConnector(rmConnects) && result;
         if (!result)goto exitPoint;
 
+        foreach(auto it, rmLaneConns)
+        {
+            result = deleteLaneConnector(it->connector()->id(), it->fromLane()->id(), it->toLane()->id(), false);
+            if (!result)goto exitPoint;
+        }
         foreach(auto it, rmConnects)
         {
             gpScene->removeGConnector(it);
@@ -1837,6 +1852,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
 {
     bool result = true;
     try {
+        gDB.transaction();
         /// <summary>
         /// 车道删除步骤
         /// 1.根据提供的车道id 删除信号灯(SignalLamp)
@@ -2039,7 +2055,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         result = removeLane(rmLanes) && result;
         if (!result)goto exitPoint;
 
-        result =deleteLink(rmLinks,false);
+        result =deleteLink(rmLinks,false,false);
         if (!result)goto exitPoint;
 
         foreach (auto it, rmLaneConnectors) {
@@ -2061,7 +2077,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 lane->mpLane->serialNumber=nun;
                 nun++;
             }
-            TessngDBToolsUpdate::getInstance()->updateLanes(lans);
+            TessngDBToolsUpdate::getInstance()->updateLanes(lans,false);
         }
 
         foreach (auto it, rmBusStations) {
@@ -2180,12 +2196,12 @@ exitPoint:
     return result;
 }
 
-bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache)
+bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache, bool trans)
 {
     bool result = true;
     try
     {
-        gDB.transaction();
+        if(trans)gDB.transaction();
 
         QList<GLink*> rmLinks;
         QList<GConnector*> rmConnects;
@@ -2210,12 +2226,12 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache)
             }
         }
         foreach(GDecisionPoint * pGDecisionPoint, gpScene->mlGDecisionPoint) {
-            if (!ids.contains(pGDecisionPoint->link()->id())) continue;
+            if (!ids.contains(pGDecisionPoint->mpGLink->id())) continue;
             rmDecisionPoints.push_back(pGDecisionPoint);
         }
         foreach(GGuideArrow * pOne, gpScene->mlGGuideArrow) {
             if (!pOne->validate()) continue;
-            if (!ids.contains(pOne->mpGLane->link()->id())) continue;
+            if (!ids.contains(pOne->mpGLane->mpGLink->id())) continue;
             rmGGuideArrows.push_back(pOne);
         }
         foreach(GSignalLamp * pGSl, gpScene->mlGSignalLamp) {
@@ -2238,12 +2254,27 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache)
             rmGDeparturePoints.push_back(pDp);
         }
         foreach(GVehicleDrivInfoCollector * pGCollecter, gpScene->mlGVehicleDrivInfoCollector) {
-            if (!ids.contains(pGCollecter->link()->id())) continue;
-            rmGVehicleDrivInfoCollectors.push_back(pGCollecter);
+            if (pGCollecter->onLink()) {
+                if (!ids.contains(pGCollecter->link()->id())) continue;
+                rmGVehicleDrivInfoCollectors.push_back(pGCollecter);
+            }
+            else {
+                if (ids.contains(pGCollecter->mpGLaneConnector->connector()->fromLink()->id()) || ids.contains(pGCollecter->mpGLaneConnector->connector()->toLink()->id())) {
+                    rmGVehicleDrivInfoCollectors.push_back(pGCollecter);
+                }
+            }
+            
         }
         foreach(GVehicleQueueCounter * pGQueue, gpScene->mlGVehicleQueueCounter) {
-            if (!ids.contains(pGQueue->mpGLane->link()->id())) continue;
-            rmGVehicleQueueCounters.push_back(pGQueue);
+            if (pGQueue->mpVehicleQueueCounter->isOnLink()) {
+                if (!ids.contains(pGQueue->mpVehicleQueueCounter->roadID)) continue;
+                rmGVehicleQueueCounters.push_back(pGQueue);
+            }else{
+                if (ids.contains(pGQueue->mpGLaneConnector->connector()->fromLink()->id()) || ids.contains(pGQueue->mpGLaneConnector->connector()->toLink()->id())) {
+                    rmGVehicleQueueCounters.push_back(pGQueue);
+                }
+            }
+            
         }
         foreach(GVehicleTravelDetector * pOne, gpScene->mlGVehicleTravelDetector) {
             if (pOne->mbStarted)continue;
@@ -2393,9 +2424,12 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache)
         result = false;
     }
 exitPoint:
-    result = gDB.commit() && result;
-    if (!result) {
-        gDB.rollback();
+    if (trans) {
+        result = gDB.commit() && result;
+        if (!result) {
+            gDB.rollback();
+        }
     }
+
     return result;
 }
