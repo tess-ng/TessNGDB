@@ -1928,7 +1928,6 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                     if (it->mpReduceSpeedArea->laneNumber == lane->mpLane->serialNumber ||
                         it->mpReduceSpeedArea->toLaneNumber == lane->mpLane->serialNumber) {
                         rmGReduceSpeedAreas.push_back(it);
-                        break;
                     }
                 }
                 else {
@@ -1936,7 +1935,6 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                         if (lc->mpToGLane != lane && lc->mpFromGLane != lane) continue;
                         if (it->mpReduceSpeedArea->roadID != lc->connector()->id()) continue;
                         rmGReduceSpeedAreas.push_back(it);
-                        break;
                     }
                 }
                 
@@ -1950,13 +1948,11 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 if (it->mpVehicleTravelDetector->startRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->start_laneNumber ==
                                                                                                   lane->mpLane->serialNumber || it->mpVehicleTravelDetector->start_toLaneNumber == lane->mpLane->serialNumber)) {
                     rmVehicleTravelDetector.push_back(it);
-                    break;
                 }
 
                 if (it->mpVehicleTravelDetector->teminalRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->teminal_laneNumber ==
                                                                                                     lane->mpLane->serialNumber || it->mpVehicleTravelDetector->teminal_toLaneNumber == lane->mpLane->serialNumber)) {
                     rmVehicleTravelDetector.push_back(it);
-                    break;
                 }
             }
 
