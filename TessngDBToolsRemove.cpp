@@ -116,9 +116,9 @@ bool TessngDBToolsRemove::deleteSignalLamp(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -161,9 +161,9 @@ bool TessngDBToolsRemove::deleteSignalColor(long id, QList<int> serialNnumbers)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -226,9 +226,9 @@ bool TessngDBToolsRemove::deleteSignalPhase(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -285,9 +285,9 @@ bool TessngDBToolsRemove::deleteSignalGroup(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -345,9 +345,9 @@ bool TessngDBToolsRemove::deleteBusStationPassengerArriving(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -399,9 +399,9 @@ bool TessngDBToolsRemove::deleteBusStationLine(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -483,9 +483,9 @@ bool TessngDBToolsRemove::deleteBusStation(QList<long> ids) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -530,9 +530,9 @@ bool TessngDBToolsRemove::deleteBusLine(QList<long> ids) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -571,9 +571,9 @@ bool TessngDBToolsRemove::deleteDrivInfoCollector(QList<long> ids) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -612,9 +612,9 @@ bool TessngDBToolsRemove::deleteVehicleQueueCounter(QList<long> ids) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -652,9 +652,9 @@ bool TessngDBToolsRemove::deleteVehicleTravelDetector(QList<long> ids) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -692,9 +692,9 @@ bool TessngDBToolsRemove::deleteGuideArrow(QList<long> ids) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -760,9 +760,9 @@ bool TessngDBToolsRemove::deleteReduceSpeedInterval(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -815,9 +815,9 @@ bool TessngDBToolsRemove::deleteReduceSpeedVehiType(long id, QList<long> vehicle
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -855,9 +855,9 @@ bool TessngDBToolsRemove::deleteReduceSpeedArea(QList<long> departureIntervalDs)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -908,9 +908,9 @@ bool TessngDBToolsRemove::deleteDepartureInterval(long id, QList<long> departure
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -949,9 +949,9 @@ bool TessngDBToolsRemove::deleteDeparturePoint(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1003,9 +1003,9 @@ bool TessngDBToolsRemove::deleteVehicleConsDetail(long id, QList<long> vehicleTy
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1068,16 +1068,14 @@ bool TessngDBToolsRemove::deleteVehicleConstitutent(QList<long> ids)
     }
     catch (QException& exc) {
         qWarning() << exc.what();
-        result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
         qWarning() << "remove ReduceSpeedArea exitPoint! Unknow Error.";
-        result = false;
     }
 exitPoint:
     result = gDB.commit() && result;
@@ -1130,9 +1128,9 @@ bool TessngDBToolsRemove::deleteRoutingFLowRatio(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1305,9 +1303,9 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1348,9 +1346,9 @@ bool TessngDBToolsRemove::deleteRouting(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1391,9 +1389,9 @@ bool TessngDBToolsRemove::deleteDecisionPoint(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1831,9 +1829,9 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -1880,16 +1878,17 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         QList<GConnector*> rmCons;
         QList<GLink*> changLinks;
         QList<long> rmLinks;
+
+        foreach(auto it, gpScene->mlGLane) {
+            if (!ids.contains(it->id())) continue;
+            if (rmLanes.contains(it)) continue;
+            rmLanes.push_back(it);
+        }
         foreach(auto link, gpScene->mlGLink) {
             QList<GLane*> lanes=link->mlGLane;
             foreach (auto lane, link->mlGLane) {
-                if (!ids.contains(lane->id())) continue;
-
+                if (!rmLanes.contains(lane))continue;
                 lanes.removeOne(lane);
-
-                if (rmLanes.contains(lane)) continue;
-                rmLanes.push_back(lane);
-
                 if(!changLinks.contains(lane->mpGLink))changLinks.append(lane->mpGLink);
             }
             if(lanes.isEmpty()) {
@@ -1906,18 +1905,41 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             rmBusStations.append(bs);
         }
 
+        ///车道连接
+        foreach(auto lane, rmLanes)
+        {
+            foreach(GConnector * ptrConn, gpScene->mlGConnector) {
+                if (ptrConn->mpFromGLink != lane->mpGLink && ptrConn->mpToGLink != lane->mpGLink) continue;
+                foreach(auto lc, ptrConn->mpConnector->mlLaneConnector) {
+                    if (rmLaneConnectors.contains(lc)) continue;
+                    if (lc->mpFromLane != lane->mpLane && lc->mpToLane != lane->mpLane) continue;
+                    rmLaneConnectors.push_back(lc);
+                }
+            }
+        }
 
         foreach(auto lane, rmLanes)
         {
             foreach(auto it, gpScene->mlGReduceSpeedArea)
             {
                 if (rmGReduceSpeedAreas.contains(it))continue;
-                if (it->mpReduceSpeedArea->roadID != lane->mpGLink->mpLink->linkID) continue;
-                if (it->mpReduceSpeedArea->laneNumber == lane->mpLane->serialNumber ||
+                if (it->mpReduceSpeedArea->isOnLink()) {
+                    if (it->mpReduceSpeedArea->roadID != lane->mpGLink->mpLink->linkID) continue;
+                    if (it->mpReduceSpeedArea->laneNumber == lane->mpLane->serialNumber ||
                         it->mpReduceSpeedArea->toLaneNumber == lane->mpLane->serialNumber) {
-                    rmGReduceSpeedAreas.push_back(it);
-                    break;
+                        rmGReduceSpeedAreas.push_back(it);
+                        break;
+                    }
                 }
+                else {
+                    foreach(auto lc, gpScene->mlGLaneConnector) {
+                        if (lc->mpToGLane != lane && lc->mpFromGLane != lane) continue;
+                        if (it->mpReduceSpeedArea->roadID != lc->connector()->id()) continue;
+                        rmGReduceSpeedAreas.push_back(it);
+                        break;
+                    }
+                }
+                
             }
         }
         foreach(auto lane, rmLanes)
@@ -1939,24 +1961,32 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             }
 
         }
-        foreach(auto lane, rmLanes)
+        foreach(auto it, gpScene->mlGVehicleQueueCounter)
         {
-            foreach(auto it, gpScene->mlGVehicleQueueCounter)
-            {
-                if (rmVehicleQueueCounters.contains(it))continue;
-                if (it->mpGLane != lane) continue;
+            if (rmVehicleQueueCounters.contains(it))continue;
+            if (it->mpVehicleQueueCounter->isOnLink()) {
+                if (!rmLanes.contains(it->mpGLane)) continue;
                 rmVehicleQueueCounters.push_back(it);
             }
+            else {
+                if (!rmLaneConnectors.contains(it->mpGLaneConnector->mpLaneConnector)) continue;
+                rmVehicleQueueCounters.push_back(it);
+            }
+
         }
 
-        foreach(auto lane, rmLanes)
+        foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
         {
-            foreach(auto it, gpScene->mlGVehicleDrivInfoCollector)
-            {
-                if (rmVehicleDrivInfoCollectors.contains(it))continue;
-                if (it->mpGLane != lane) continue;
+            if (rmVehicleDrivInfoCollectors.contains(it))continue;
+            if (it->onLink()) {
+                if (!rmLanes.contains(it->mpGLane)) continue;
                 rmVehicleDrivInfoCollectors.push_back(it);
             }
+            else {
+                if (!rmLaneConnectors.contains(it->mpGLaneConnector->mpLaneConnector)) continue;
+                rmVehicleDrivInfoCollectors.push_back(it);
+            }
+
         }
 
         foreach(GGuideArrow * pOne, gpScene->mlGGuideArrow) {
@@ -1971,18 +2001,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 rmGSignalLamps.push_back(pGSl);
             }
         }
-        ///车道连接
-        foreach(auto lane, rmLanes)
-        {
-            foreach(GConnector * ptrConn, gpScene->mlGConnector) {
-                if (ptrConn->mpFromGLink != lane->mpGLink && ptrConn->mpToGLink != lane->mpGLink) continue;
-                foreach(auto lc, ptrConn->mpConnector->mlLaneConnector) {
-                    if (rmLaneConnectors.contains(lc)) continue;
-                    if (lc->mpFromLane != lane->mpLane && lc->mpToLane != lane->mpLane) continue;
-                    rmLaneConnectors.push_back(lc);
-                }
-            }
-        }
+      
         foreach(GRouting* pGRouting, gpScene->mlGRouting) {
             foreach (auto ptrConn, gpScene->mlGConnector) {
                 QList<LCStruct*> lcStructs = pGRouting->mhLCStruct.values(ptrConn->id());
@@ -2027,6 +2046,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             }
 
         }
+       
         result =removeBusStation(rmBusStations);
         if (!result)goto exitPoint;
 
@@ -2070,15 +2090,6 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         result = removeConnector(rmCons) && result;
         if (!result)goto exitPoint;
 
-        foreach (auto it, changLinks) {
-            QList<GLane*> lans=it->mlGLane;
-            int nun=1;
-            foreach (auto lane, lans) {
-                lane->mpLane->serialNumber=nun;
-                nun++;
-            }
-            TessngDBToolsUpdate::getInstance()->updateLanes(lans,false);
-        }
 
         foreach (auto it, rmBusStations) {
             gpScene->removeGBusStation(it);
@@ -2115,14 +2126,24 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         foreach(auto it, rmCons) {
             gpScene->removeGConnector(it);
         }
+
+        foreach(auto it, changLinks) {
+            QList<GLane*> lans = it->mlGLane;
+            int nun = 1;
+            foreach(auto lane, lans) {
+                lane->mpLane->serialNumber = nun;
+                nun++;
+            }
+            TessngDBToolsUpdate::getInstance()->updateLanes(lans, false);
+        }
     }
     catch (QException& exc) {
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -2178,9 +2199,9 @@ bool TessngDBToolsRemove::deleteLinkVertex(long id, QList<int> nums)
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
@@ -2414,9 +2435,9 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache, bool trans
         qWarning() << exc.what();
         result = false;
     }
-    catch (const std::exception& exc)
+    catch (const PH::Exception& exc)
     {
-        qWarning() << exc.what();
+        qWarning() << exc.message().c_str();
         result = false;
     }
     catch (...) {
