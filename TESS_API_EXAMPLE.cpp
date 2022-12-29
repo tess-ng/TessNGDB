@@ -399,17 +399,41 @@ void TESS_API_EXAMPLE::on_btnLaneConnector_released()
 
 void TESS_API_EXAMPLE::on_btnConnector_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBToolsRemove::getInstance()->deleteConnectors(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除连接段", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除连接段"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnLane_released()
 {
-
+    long id = ui.inputID->text().toInt();
+    QList<long> list;
+    list.push_back(id);
+    bool result = TessngDBToolsRemove::getInstance()->deleteLane(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除车道", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除车道"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnLinkVertex_released()
 {
-
+    bool result = TessngDBToolsRemove::getInstance()->deleteLinkVertex(1, {1});
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除顶点", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除顶点"), "删除失败");
+    }
 }
 
 void TESS_API_EXAMPLE::on_btnLink_released()
@@ -417,5 +441,11 @@ void TESS_API_EXAMPLE::on_btnLink_released()
     long id = ui.inputID->text().toInt();
     QList<long> list;
     list.push_back(id);
-    TessngDBToolsRemove::getInstance()->deleteLink(list);
+    bool result = TessngDBToolsRemove::getInstance()->deleteLink(list);
+    if (result) {
+        QMessageBox::information(gpTessInterface->guiInterface()->mainWindow(), "删除路段", "删除成功");
+    }
+    else {
+        QMessageBox::warning(gpTessInterface->guiInterface()->mainWindow(), QString("删除路段"), "删除失败");
+    }
 }
