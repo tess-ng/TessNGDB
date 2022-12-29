@@ -1798,8 +1798,6 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
             }
         }
 
-
-
         result = removeConnector(rmConnects) && result;
         if (!result)goto exitPoint;
 
@@ -2063,7 +2061,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 lane->mpLane->serialNumber=nun;
                 nun++;
             }
-            //TessngDBToolsUpdate::getInstance()->updateLanes(lans);
+            TessngDBToolsUpdate::getInstance()->updateLanes(lans);
         }
 
         foreach (auto it, rmBusStations) {
