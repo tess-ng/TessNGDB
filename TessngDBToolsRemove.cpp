@@ -1765,6 +1765,7 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
 {
     bool result = true;
     try {
+        gDB.transaction();
         QList<GConnector*> rmConnects;
         QList<GLaneConnector*> rmLaneConns;
         QList<long> rmRts;
@@ -2115,6 +2116,16 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         }
         foreach(auto it, rmCons) {
             gpScene->removeGConnector(it);
+        }
+        //删除车道数为0的路段的内存
+        QList<GLink*> rmGLinks;
+        foreach(GLink* pGLink, gpScene->mlGLink) {
+            if (!rmLinks.contains(pGLink->mpLink->linkID)) continue;
+            rmGLinks.push_back(pGLink);
+        }
+        foreach(auto it, rmGLinks)
+        {
+            gpScene->removeGLink(it);
         }
 
         foreach(auto it, changLinks) {
