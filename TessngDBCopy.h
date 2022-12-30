@@ -2,6 +2,8 @@
 #define TESSNGDBCOPY_H
 #include "singleholder.h"
 #include <QSqlDatabase>
+
+
 class Link;
 class Connector;
 class DecisionPoint;
@@ -45,6 +47,7 @@ public:
     bool insertReduceSpeedArea(ReduceSpeedArea* pReduceSpeedArea);
     bool insertBusStation(BusStation* pBusStation);
     bool insertBusLine(BusLine* pBusLine);
+    bool clippingDB(const QPainterPath& ppath,const QString& pathFile);
     void test();
 private:
     TessngDBCopy();

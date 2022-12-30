@@ -2070,8 +2070,8 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
 
         foreach (auto it, rmLaneConnectors) {
             GConnector* gc=gpScene->findGConnectorByConnID(it->mpGConnector->mpConnector->connID);
-            gc->mlGLaneConnector.removeOne(gpScene->findGLaneConnectorByID(it->mpFromGLane->mpLane->laneID,it->mpToGLane->mpLane->laneID));
-
+            result = deleteLaneConnector(it->connector()->id(), it->fromLane()->id(), it->toLane()->id(), false);
+            if (!result)goto exitPoint;
             if(gc->mlGLaneConnector.isEmpty()){
                 rmCons.append(gc);
             }

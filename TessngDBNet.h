@@ -43,8 +43,6 @@ private Q_SLOTS:
     void chooseItemTypeChanged(QAction*);
     void saveScenesData();
 private:
-    bool checkContansLane(QHash<int, GLink*>& hash, long laneId);
-    bool checkContansLane(QHash<int, GConnector*>& hash, long fromlaneId,long tolaneId);
     void initMenu();
     bool isSamePoint(QPointF p1, QPointF p2);
     enum ProcessMode

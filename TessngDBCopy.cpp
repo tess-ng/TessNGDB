@@ -31,6 +31,18 @@
 #include "BusLine.h"
 #include "BusStationLine.h"
 #include "PassengerArriving.h"
+#include "glink.h"
+#include "gconnector.h"
+#include "GGuideArrow.h"
+#include "gsignallamp.h"
+#include "gdecisionpoint.h"
+#include "gdeparturepoint.h"
+#include "gvehicledrivinfocollector.h"
+#include "gvehiclequeuecounter.h"
+#include "gvehicletraveldetector.h"
+#include "greducespeedarea.h"
+#include "gbusstation.h"
+#include "gbusline.h"
 #include <QDebug>
 #include <QUuid>
 bool TessngDBCopy::copyDb(const QString& dbFileName)
@@ -955,7 +967,233 @@ bool TessngDBCopy::insertBusLine(BusLine* pBusLine) {
 
     return bResult;
 }
+static bool checkContansLane(const QHash<int, GLink*>& hash, long laneId) {
+    auto it = hash.constBegin();
+    while (it != hash.constEnd())
+    {
+        foreach(auto lane, it.value()->mlGLane)
+        {
+            if (laneId == lane->id()) return true;
+        }
+        ++it;
+    }
+    return false;
+}
+static bool checkContansLane(const QHash<int, GConnector*>& hash, long fromlaneId, long tolaneId) {
+    auto it = hash.constBegin();
+    while (it != hash.constEnd())
+    {
+        foreach(auto lane, it.value()->laneConnectors())
+        {
+            if (fromlaneId == lane->fromLane()->id() &&
+                tolaneId == lane->toLane()->id()) return true;
+        }
+        ++it;
+    }
+    return false;
+}
 void TessngDBCopy::test(){
 
 }
 
+bool TessngDBCopy::clippingDB(const QPainterPath& pathShape, const QString& pathFile) {
+    QHash<int, GLink*> hashLink;
+    QHash<int, GLink*> allGLinkCatch;
+    QList<BusLine*> bsList;
+    QList<SignalGroup*> listSignalGroup;
+    foreach(GLink * pGLink, gpScene->mlGLink) {
+        allGLinkCatch.insert(pGLink->id(), pGLink);
+        QPainterPath temp = pGLink->shape();
+        if (!temp.intersects(pathShape)) continue;
+        hashLink[pGLink->id()] = pGLink;
+    }
+    QHash<int, GConnector*> hashConnector;
+    foreach(GConnector * pConnector, gpScene->mlGConnector) {
+        QPainterPath temp = pConnector->shape();
+        if (!temp.intersects(pathShape)) continue;
+        hashConnector[pConnector->id()] = pConnector;
+
+        if (!hashLink.contains(pConnector->fromLink()->id())) {
+            hashLink.insert(pConnector->fromLink()->id(), allGLinkCatch[pConnector->fromLink()->id()]);
+        }
+        if (!hashLink.contains(pConnector->toLink()->id())) {
+            hashLink.insert(pConnector->toLink()->id(), allGLinkCatch[pConnector->toLink()->id()]);
+        }
+    }
+
+
+    bool result = true;
+    result = copyDb(pathFile);
+    if (!result) return false;
+
+    getSqlDatabase()->transaction();
+    result = saveConfiguration();
+    if (!result) goto exit;
+    result = insertNet();
+    if (!result) goto exit;
+    ///保存路段相关数据
+    foreach(auto it, hashLink) {
+        result = insertLink(it->mpLink);
+        if (!result) goto exit;
+    }
+    ///保存连接段相关数据
+    foreach(auto it, hashConnector) {
+        result = insertConnector(it->mpConnector);
+        if (!result) goto exit;
+    }
+    ///保存决策点
+    foreach(GDecisionPoint * pGDecisionPoint, gpScene->mlGDecisionPoint) {
+        if (!hashLink.contains(pGDecisionPoint->link()->id())) continue;
+        result = insertDecisionPoint(pGDecisionPoint->mpDecisionPoint);
+        if (!result) goto exit;
+        foreach(GRouting * pGRouting, pGDecisionPoint->mlGRouting) {
+            foreach(OneRouting oneRouting, pGRouting->mlOneRouting) {
+                if (oneRouting.mlGLink.size() == 0)
+                {
+                    break;
+                }
+                for (int i = 0, size = oneRouting.mlGLink.size(); i < size - 1; ++i) {
+                    GLink* pGLink1 = oneRouting.mlGLink.at(i);
+                    GLink* pGLink2 = oneRouting.mlGLink.at(i + 1);
+                    foreach(GConnector * pGConnector, pGLink1->mlToGConnector)
+                    {
+                        if (pGConnector->mpToGLink == pGLink2)
+                        {
+                            QList<LCStruct*> lLC = pGRouting->mhLCStruct.values(pGConnector->mpConnector->connID);
+                            foreach(LCStruct * pLc, lLC)
+                            {
+                                result = insertRoutingLaneConnector(pGRouting->routingID, pGConnector->mpConnector->connID, pLc->fromLaneId, pLc->toLaneId);
+                                if (!result) goto exit;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ///保存导向箭头
+    foreach(GGuideArrow * pOne, gpScene->mlGGuideArrow)
+    {
+
+        if (!pOne->validate()) continue;
+        if (!hashLink.contains(pOne->mpGLane->link()->id())) continue;
+        result = insertGuideArrow(pOne->mpGuideArrow);
+        if (!result) goto exit;
+    }
+
+    ///保存信号灯
+    foreach(GSignalLamp * pGSl, gpScene->mlGSignalLamp) {
+        bool flag = false;
+        if (0 == pGSl->mpSignalLamp->toLaneID) {
+            flag = checkContansLane(hashLink, pGSl->mpSignalLamp->laneID);
+        }
+        else {
+            flag = checkContansLane(hashConnector, pGSl->mpSignalLamp->laneID, pGSl->mpSignalLamp->toLaneID);
+        }
+        if (!flag) continue;
+        SignalGroup* group = dynamic_cast<SignalGroup*>(pGSl->signalGroup());
+        if (nullptr != group && !listSignalGroup.contains(group)) {
+            listSignalGroup.append(group);
+        }
+        result = insertSignalLamp(pGSl->mpSignalLamp);
+        if (!result) goto exit;
+    }
+    ///保存信号灯组
+    foreach(SignalGroup * pSg, listSignalGroup) {
+        result = insertSignalGroup(pSg);
+        if (!result) goto exit;
+    }
+    ///保存车型
+    foreach(const VehicleType & vt, ghVehicleType) {
+        result = insertVehicleType(vt);
+        if (!result) goto exit;
+    }
+    foreach(const VehicleComposition & vc, ghVehicleComposition) {
+        result = insertVehicleConstitutent(vc);
+        if (!result) goto exit;
+    }
+
+    ///保存发车点
+    foreach(GDeparturePoint * pDp, gpScene->mlGDeparturePoint) {
+        if (!hashLink.contains(pDp->link()->id())) continue;
+        result = insertDeparturePoint(*pDp->mpDeparturePoint);
+        if (!result) goto exit;
+    }
+    ///保存采集器
+    foreach(GVehicleDrivInfoCollector * pGCollecter, gpScene->mlGVehicleDrivInfoCollector) {
+        if (!hashLink.contains(pGCollecter->link()->id())) continue;
+        result = insertDrivInfoCollector(*pGCollecter->mpVehicleDrivInfoCollector);
+        if (!result) goto exit;
+    }
+    ///保存排队计数器
+    foreach(GVehicleQueueCounter * pGQueue, gpScene->mlGVehicleQueueCounter) {
+        if (!hashLink.contains(pGQueue->mpGLane->link()->id())) continue;
+        result = insertVehicleQueueCounter(pGQueue->mpVehicleQueueCounter);
+        if (!result) goto exit;
+    }
+
+    ///保存行程时间检测器
+    foreach(GVehicleTravelDetector * pOne, gpScene->mlGVehicleTravelDetector) {
+        if (pOne->mbStarted)continue;
+        bool flag = true;
+        if (0 == pOne->mpVehicleTravelDetector->start_toLaneNumber) {
+            flag = flag && hashLink.contains(pOne->mpVehicleTravelDetector->startRoadId);
+        }
+        else {
+            flag = flag && hashConnector.contains(pOne->mpVehicleTravelDetector->startRoadId);
+        }
+
+        if (0 == pOne->mpVehicleTravelDetector->teminal_toLaneNumber) {
+            flag = flag && hashLink.contains(pOne->mpVehicleTravelDetector->teminalRoadId);
+        }
+        else {
+            flag = flag && hashConnector.contains(pOne->mpVehicleTravelDetector->teminalRoadId);
+        }
+        if (!flag) continue;
+        result = insertVehicleTravelDetector(pOne->mpVehicleTravelDetector);
+        if (!result) goto exit;
+    }
+
+    ///保存限速区
+    foreach(GReduceSpeedArea * pOne, gpScene->mlGReduceSpeedArea) {
+        bool flag = false;
+        if (0 == pOne->mpReduceSpeedArea->toLaneNumber) {
+            flag = hashLink.contains(pOne->mpReduceSpeedArea->roadID);
+        }
+        else {
+            flag = hashConnector.contains(pOne->mpReduceSpeedArea->roadID);
+        }
+        if (!flag) continue;
+        result = insertReduceSpeedArea(pOne->mpReduceSpeedArea);
+        if (!result) goto exit;
+    }
+    ///保存公交站
+    foreach(GBusStation * pGBusStation, gpScene->mlGBusStation) {
+        if (!hashLink.contains(pGBusStation->link()->id())) continue;
+        result = insertBusStation(pGBusStation->mpBusStation);
+        if (!result) goto exit;
+    }
+    ///保存公交线路及相关站点线路，以及乘客到站
+    foreach(GBusLine * pGBusLine, gpScene->mlGBusLine) {
+        BusLine* bline = pGBusLine->mpBusLine;
+        for (int i = 0, size = bline->mlLink.size(); i < size; ++i) {
+            Link* pLink = bline->mlLink.at(i);
+            if (!hashLink.contains(pLink->linkID)) continue;
+            if (bsList.contains(bline)) continue;
+            bsList.push_back(bline);
+        }
+    }
+    foreach(auto it, bsList) {
+        result = insertBusLine(it);
+        if (!result) goto exit;
+    }
+    result = updateIds();
+exit:
+    result = getSqlDatabase()->commit() && result;
+    if (!result)
+    {
+        getSqlDatabase()->rollback();
+    }
+    return result;
+}
