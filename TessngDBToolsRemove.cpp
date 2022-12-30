@@ -1874,7 +1874,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         QList<GVehicleTravelDetector*> rmVehicleTravelDetector;
         QList<GVehicleQueueCounter*> rmVehicleQueueCounters;
         QList<GVehicleDrivInfoCollector*> rmVehicleDrivInfoCollectors;
-        QList<LaneConnector*> rmLaneConnectors;
+        QList<GLaneConnector*> rmLaneConnectors;
         QList<GConnector*> rmCons;
         QList<GLink*> changLinks;
         QList<long> rmLinks;
@@ -1906,57 +1906,51 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         }
 
         ///车道连接
-        foreach(auto lane, rmLanes)
-        {
-            foreach(GConnector * ptrConn, gpScene->mlGConnector) {
-                if (ptrConn->mpFromGLink != lane->mpGLink && ptrConn->mpToGLink != lane->mpGLink) continue;
-                foreach(auto lc, ptrConn->mpConnector->mlLaneConnector) {
-                    if (rmLaneConnectors.contains(lc)) continue;
-                    if (lc->mpFromLane != lane->mpLane && lc->mpToLane != lane->mpLane) continue;
+
+        foreach(GConnector* ptrConn, gpScene->mlGConnector) {
+            foreach(auto lc, ptrConn->mlGLaneConnector) {
+                if (rmLaneConnectors.contains(lc)) continue;
+                if (rmLanes.contains(lc->mpFromGLane) || rmLanes.contains(lc->mpToGLane)) {
                     rmLaneConnectors.push_back(lc);
                 }
             }
         }
 
-        foreach(auto lane, rmLanes)
+        foreach(auto it, gpScene->mlGReduceSpeedArea)
         {
-            foreach(auto it, gpScene->mlGReduceSpeedArea)
-            {
-                if (rmGReduceSpeedAreas.contains(it))continue;
-                if (it->mpReduceSpeedArea->isOnLink()) {
+            if (it->mpReduceSpeedArea->isOnLink()) {
+                foreach(auto lane, rmLanes) {
+                    if (rmGReduceSpeedAreas.contains(it))continue;
                     if (it->mpReduceSpeedArea->roadID != lane->mpGLink->mpLink->linkID) continue;
                     if (it->mpReduceSpeedArea->laneNumber == lane->mpLane->serialNumber ||
                         it->mpReduceSpeedArea->toLaneNumber == lane->mpLane->serialNumber) {
                         rmGReduceSpeedAreas.push_back(it);
                     }
                 }
-                else {
-                    foreach(auto lc, gpScene->mlGLaneConnector) {
+            }
+            else {
+                foreach(auto lc, gpScene->mlGLaneConnector) {
+                    foreach(auto lane, rmLanes) {
+                        if (rmGReduceSpeedAreas.contains(it))continue;
                         if (lc->mpToGLane != lane && lc->mpFromGLane != lane) continue;
                         if (it->mpReduceSpeedArea->roadID != lc->connector()->id()) continue;
                         rmGReduceSpeedAreas.push_back(it);
                     }
                 }
-                
             }
         }
-        foreach(auto lane, rmLanes)
+        foreach(auto it, gpScene->mlGVehicleTravelDetector)
         {
-            foreach(auto it, gpScene->mlGVehicleTravelDetector)
-            {
-                if (rmVehicleTravelDetector.contains(it))continue;
-                if (it->mpVehicleTravelDetector->startRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->start_laneNumber ==
-                                                                                                  lane->mpLane->serialNumber || it->mpVehicleTravelDetector->start_toLaneNumber == lane->mpLane->serialNumber)) {
-                    rmVehicleTravelDetector.push_back(it);
-                }
-
-                if (it->mpVehicleTravelDetector->teminalRoadId == lane->mpGLink->mpLink->linkID && (it->mpVehicleTravelDetector->teminal_laneNumber ==
-                                                                                                    lane->mpLane->serialNumber || it->mpVehicleTravelDetector->teminal_toLaneNumber == lane->mpLane->serialNumber)) {
+            foreach(auto lc, gpScene->mlGLaneConnector) {
+                if (lc != it->mpGLaneConnector) continue;
+                foreach(auto lane, rmLanes) {
+                    if (lc->mpToGLane != lane && lc->mpFromGLane != lane) continue;
+                    if (rmVehicleTravelDetector.contains(it)) continue;
                     rmVehicleTravelDetector.push_back(it);
                 }
             }
-
         }
+
         foreach(auto it, gpScene->mlGVehicleQueueCounter)
         {
             if (rmVehicleQueueCounters.contains(it))continue;
@@ -1965,7 +1959,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 rmVehicleQueueCounters.push_back(it);
             }
             else {
-                if (!rmLaneConnectors.contains(it->mpGLaneConnector->mpLaneConnector)) continue;
+                if (!rmLaneConnectors.contains(it->mpGLaneConnector)) continue;
                 rmVehicleQueueCounters.push_back(it);
             }
 
@@ -1979,7 +1973,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 rmVehicleDrivInfoCollectors.push_back(it);
             }
             else {
-                if (!rmLaneConnectors.contains(it->mpGLaneConnector->mpLaneConnector)) continue;
+                if (!rmLaneConnectors.contains(it->mpGLaneConnector)) continue;
                 rmVehicleDrivInfoCollectors.push_back(it);
             }
 
@@ -2061,22 +2055,22 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
         result =removeLaneConnector(rmLaneConnectors);
         if (!result)goto exitPoint;
         ///删除导向箭头
-        result = removeGuideArrow(rmGGuideArrows) && result;
+        result = removeGuideArrow(rmGGuideArrows);
         if (!result)goto exitPoint;
 
         ///删除信号灯
-        result = removeSignalLamp(rmGSignalLamps) && result;
+        result = removeSignalLamp(rmGSignalLamps);
         if (!result)goto exitPoint;
 
-        result = removeLane(rmLanes) && result;
+        result = removeLane(rmLanes);
         if (!result)goto exitPoint;
 
         result =deleteLink(rmLinks,false,false);
         if (!result)goto exitPoint;
 
         foreach (auto it, rmLaneConnectors) {
-            GConnector* gc=gpScene->findGConnectorByConnID(it->mpConnector->connID);
-            gc->mlGLaneConnector.removeOne(gpScene->findGLaneConnectorByID(it->mpFromLane->laneID,it->mpToLane->laneID));
+            GConnector* gc=gpScene->findGConnectorByConnID(it->mpGConnector->mpConnector->connID);
+            gc->mlGLaneConnector.removeOne(gpScene->findGLaneConnectorByID(it->mpFromGLane->mpLane->laneID,it->mpToGLane->mpLane->laneID));
 
             if(gc->mlGLaneConnector.isEmpty()){
                 rmCons.append(gc);
@@ -2294,13 +2288,18 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache, bool trans
             
         }
         foreach(GVehicleTravelDetector * pOne, gpScene->mlGVehicleTravelDetector) {
-            if (pOne->mbStarted)continue;
+            if (rmGVehicleTravelDetectors.contains(pOne)) continue;
             bool flag = true;
             if (0 == pOne->mpVehicleTravelDetector->start_toLaneNumber) {
                 flag = ids.contains(pOne->mpVehicleTravelDetector->startRoadId) && flag;
             }
             else {
                 flag = checkContainsConnector(rmConnects, pOne->mpVehicleTravelDetector->startRoadId) && flag;
+            }
+
+            if (flag) {
+                rmGVehicleTravelDetectors.push_back(pOne);
+                continue;
             }
 
             if (0 == pOne->mpVehicleTravelDetector->teminal_toLaneNumber) {

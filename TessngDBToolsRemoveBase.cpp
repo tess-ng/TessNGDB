@@ -989,7 +989,7 @@ bool TessngDBToolsRemoveBase::removeLink(GLink* it) {
     nodes.push_back(it->mpLink->endNode);
     result = removeNode(nodes);
 
-    QString deleteSql = QString(R"(delete from Link where linkID=%1;)").arg(it->mpLink->roadId);
+    QString deleteSql = QString(R"(delete from Link where linkID=%1;)").arg(it->mpLink->linkID);
     result = slQuery.exec(deleteSql);
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
