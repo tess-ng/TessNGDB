@@ -15,6 +15,263 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="5" column="0">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="title">
+       <string>决策点</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnRouting">
+         <property name="text">
+          <string>路径</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnRoutingLaneConnector">
+         <property name="text">
+          <string>路径车道连接</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btnRoutingFLowRatio">
+         <property name="text">
+          <string>路径流量分配</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="btnDecisionPoint">
+         <property name="text">
+          <string>决策点</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="title">
+       <string>路段</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="2" column="0">
+        <widget class="QPushButton" name="btnLane">
+         <property name="text">
+          <string>车道</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnLink">
+         <property name="text">
+          <string>路段</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnLinkVertex">
+         <property name="text">
+          <string>路段顶点</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>公交</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnBusLine">
+         <property name="text">
+          <string>公交线路</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnBusStation">
+         <property name="text">
+          <string>公交站点</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btnBusStationLine">
+         <property name="text">
+          <string>公交站点-线路</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="btnPassengerArriving">
+         <property name="text">
+          <string>乘客到站</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="title">
+       <string>车辆运行及检测</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btnVehicleDrivInfoCollecter">
+         <property name="text">
+          <string>车辆信息采集器</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="btnDepartureInterval">
+         <property name="text">
+          <string>发车间隔</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnVehicleTravelDetector">
+         <property name="text">
+          <string>行程时间检测器</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="btnReduceSpeedArea">
+         <property name="text">
+          <string>限速区</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QPushButton" name="btnVehicleConsDetail">
+         <property name="text">
+          <string>车型组成与车型占比</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="btnReduceSpeedVehiType">
+         <property name="text">
+          <string>限速区限速车型</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QPushButton" name="btnVehicleType">
+         <property name="text">
+          <string>车型</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="btnGuideArrow">
+         <property name="text">
+          <string>导向箭头</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="btnVehicleConstitutent">
+         <property name="text">
+          <string>车型组成</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QPushButton" name="btnDeparturePoint">
+         <property name="text">
+          <string>发车点</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="btnReduceSpeedInterval">
+         <property name="text">
+          <string>限速区时间间隔</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="btnVehicleQueueCounter">
+         <property name="text">
+          <string>排队计数器</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QGroupBox" name="groupBox_6">
+      <property name="title">
+       <string>连接段</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnLaneConnector">
+         <property name="text">
+          <string>车道连接</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnConnector">
+         <property name="text">
+          <string>连接段</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QGroupBox" name="groupBox_1">
+      <property name="title">
+       <string>信号控制</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnPhaseGreen">
+         <property name="text">
+          <string>相位绿色</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnPhase">
+         <property name="text">
+          <string>相位</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btnSignalGroup">
+         <property name="text">
+          <string>信号灯组</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="btnSignalLamp">
+         <property name="text">
+          <string>信号灯</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
@@ -34,256 +291,32 @@
      </layout>
     </item>
     <item row="1" column="0">
-     <widget class="QGroupBox" name="groupBox_1">
+     <widget class="QGroupBox" name="groupBox">
       <property name="title">
-       <string>信号控制</string>
+       <string>操作</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout_9">
        <item row="0" column="0">
-        <widget class="QPushButton" name="btnPhaseGreen">
+        <widget class="QRadioButton" name="radioButtonInsert">
          <property name="text">
-          <string>删除相位绿色</string>
+          <string>新增</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QPushButton" name="btnPhase">
+        <widget class="QRadioButton" name="radioButtonUpdate">
          <property name="text">
-          <string>删除相位</string>
+          <string>更新</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="btnSignalGroup">
+       <item row="0" column="2">
+        <widget class="QRadioButton" name="radioButtonDelete">
          <property name="text">
-          <string>删除信号灯组</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btnSignalLamp">
-         <property name="text">
-          <string>删除信号灯</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="title">
-       <string>公交</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btnBusLine">
-         <property name="text">
-          <string>删除公交线路</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnBusStation">
-         <property name="text">
-          <string>删除公交站点</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="btnBusStationLine">
-         <property name="text">
-          <string>删除公交站点-线路</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btnPassengerArriving">
-         <property name="text">
-          <string>删除乘客到站</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="title">
-       <string>车辆运行及检测</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="1" colspan="2">
-        <widget class="QPushButton" name="btnVehicleQueueCounter">
-         <property name="text">
-          <string>删除排队计数器</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QPushButton" name="btnGuideArrow">
-         <property name="text">
-          <string>删除导向箭头</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="btnVehicleDrivInfoCollecter">
-         <property name="text">
-          <string>删除车辆信息采集器</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="btnDepartureInterval">
-         <property name="text">
-          <string>删除发车间隔</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btnVehicleTravelDetector">
-         <property name="text">
-          <string>删除行程时间检测器</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="btnReduceSpeedArea">
-         <property name="text">
-          <string>删除限速区</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QPushButton" name="btnVehicleConsDetail">
-         <property name="text">
-          <string>删除车型组成与车型占比</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QPushButton" name="btnVehicleType">
-         <property name="text">
-          <string>删除车型</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QPushButton" name="btnVehicleConstitutent">
-         <property name="text">
-          <string>删除车型组成</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QPushButton" name="btnReduceSpeedInterval">
-         <property name="text">
-          <string>删除限速区时间间隔</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="btnDeparturePoint">
-         <property name="text">
-          <string>删除发车点</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="btnReduceSpeedVehiType">
-         <property name="text">
-          <string>删除限速区限速车型</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QGroupBox" name="groupBox_4">
-      <property name="title">
-       <string>决策点</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btnRouting">
-         <property name="text">
-          <string>删除路径</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnRoutingLaneConnector">
-         <property name="text">
-          <string>删除路径车道连接</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="btnRoutingFLowRatio">
-         <property name="text">
-          <string>删除路径流量分配</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btnDecisionPoint">
-         <property name="text">
-          <string>删除决策点</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QGroupBox" name="groupBox_5">
-      <property name="title">
-       <string>路段</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <item row="2" column="0">
-        <widget class="QPushButton" name="btnLane">
-         <property name="text">
-          <string>删除车道</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btnLink">
-         <property name="text">
-          <string>删除路段</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnLinkVertex">
-         <property name="text">
-          <string>删除路段顶点</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QGroupBox" name="groupBox_6">
-      <property name="title">
-       <string>连接段</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnLaneConnector">
-         <property name="text">
-          <string>删除车道连接</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btnConnector">
-         <property name="text">
-          <string>删除连接段</string>
+          <string>删除</string>
          </property>
         </widget>
        </item>
