@@ -17,6 +17,15 @@
 #include "Routing.h"
 #include "gdecisionpoint.h"
 #include "DecisionPoint.h"
+
+#include "GVehicleDetector.h"
+#include "VehicleDetector.h"
+#include "GReduceSpeedArea.h"
+#include "ReduceSpeedArea.h"
+#include "GBusStation.h"
+#include "BusStation.h"
+#include "GBusLine.h"
+#include "BusLine.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
