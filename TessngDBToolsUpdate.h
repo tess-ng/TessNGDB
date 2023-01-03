@@ -16,6 +16,9 @@ public:
 
     ///update Connector
     bool updateConnector(const Connector&);
+    
+    ///update LaneConnector
+    bool updateLaneConnector(const LaneConnector&);
 
     ///update Routeing
     bool updateRouteing(const Routing&);

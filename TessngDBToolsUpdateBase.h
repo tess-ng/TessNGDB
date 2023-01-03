@@ -21,6 +21,8 @@ protected:
     ///update Connector
     bool updateConnectorsPtr(Connector*);
 
+    bool updateLaneConnectorPtr(LaneConnector*);
+
     ///update Routeing
     bool updateRouteingPtr(Routing*);
 
