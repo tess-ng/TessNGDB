@@ -7,8 +7,8 @@ CONFIG += console
 CONFIG += precompiled_header
 PRECOMPILED_HEADER = pch
 
-#FORMS += \
-#        TESS_API_EXAMPLE.ui
+FORMS += \
+        TESS_API_EXAMPLE.ui
 
 SOURCES += \
     DBPluginGui.cpp \
@@ -22,7 +22,7 @@ SOURCES += \
     TessngDBToolsUpdate.cpp \
     TessngDBToolsUpdateBase.cpp \
     exception.cpp \
-    #TESS_API_EXAMPLE.cpp \
+    TESS_API_EXAMPLE.cpp \
     TessngDBToolsRemoveBase.cpp \
     main.cpp
 
@@ -40,7 +40,7 @@ HEADERS += \
     TessngDBToolsUpdate.h \
     TessngDBToolsUpdateBase.h \
     exception.h \
-    #TESS_API_EXAMPLE.h \
+    TESS_API_EXAMPLE.h \
     pch \
     singleholder.h
 
