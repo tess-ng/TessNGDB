@@ -15,12 +15,17 @@ class BusStationLine;
 class GBusLine;
 class BusLine;
 class GBusStation;
+class BusStation;
 class IBusStationLine;
 
 class GVehicleDrivInfoCollector;
+class VehicleDrivInfoCollector;
 class GVehicleQueueCounter;
+class VehicleQueueCounter;
 class GVehicleTravelDetector;
+class VehicleTravelDetector;
 class GVehicleDetector;
+class VehicleDetector;
 class GReduceSpeedArea;
 class ReduceSpeedInterval;
 class ReduceSpeedVehiType;

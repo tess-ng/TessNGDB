@@ -743,9 +743,7 @@ bool TessngDBToolsRemoveBase::removeRoutingLink(long routingID, const QList<ILin
     }
     return result;
 }
-
-bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* it)
-{
+bool TessngDBToolsRemoveBase::removeRoutingLink(Routing* it) {
     QSqlQuery slQuery(gDB);
     bool result = true;
 
@@ -754,6 +752,10 @@ bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* it)
     if (!result)throw PH::Exception(gDB.lastError().text().toStdString());
 
     return result;
+}
+bool TessngDBToolsRemoveBase::removeRoutingLink(GRouting* it)
+{
+    return removeRoutingLink(it->getRouting());
 }
 
 /// 路径

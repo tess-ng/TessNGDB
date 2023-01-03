@@ -1992,7 +1992,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 rmGSignalLamps.push_back(pGSl);
             }
         }
-      
+
         foreach(GRouting* pGRouting, gpScene->mlGRouting) {
             foreach (auto ptrConn, gpScene->mlGConnector) {
                 QList<LCStruct*> lcStructs = pGRouting->mhLCStruct.values(ptrConn->id());
@@ -2037,7 +2037,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
             }
 
         }
-       
+
         result =removeBusStation(rmBusStations);
         if (!result)goto exitPoint;
 
@@ -2285,7 +2285,7 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache, bool trans
                     rmGVehicleDrivInfoCollectors.push_back(pGCollecter);
                 }
             }
-            
+
         }
         foreach(GVehicleQueueCounter * pGQueue, gpScene->mlGVehicleQueueCounter) {
             if (pGQueue->mpVehicleQueueCounter->isOnLink()) {
@@ -2296,7 +2296,7 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache, bool trans
                     rmGVehicleQueueCounters.push_back(pGQueue);
                 }
             }
-            
+
         }
         foreach(GVehicleTravelDetector * pOne, gpScene->mlGVehicleTravelDetector) {
             if (rmGVehicleTravelDetectors.contains(pOne)) continue;

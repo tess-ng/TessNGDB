@@ -193,6 +193,7 @@ private:
 
     /// 路径路段
     bool removeRoutingLink(GRouting* it);
+    bool removeRoutingLink(Routing* it);
 
     /// 路径
     bool removeRouting(GRouting* it);

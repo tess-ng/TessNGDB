@@ -7,52 +7,56 @@ class TessngDBToolsUpdate : public PH::SingleHolder<TessngDBToolsUpdate>
 {
 public:
     ///update link
-    bool updateLinks(const QList<GLink*> &links);
+    bool updateLink(Link* link);
 
     ///update lane
-    bool updateLanes(const QList<GLane*>& list,bool trans=true);
+    bool updateLane(Lane*);
+    bool updateLanes(const QList<Lane*>&,bool trans=true);
+    bool updateLanes(const QList<GLane*>&,bool trans=true);
 
     ///update guid arrow
-    bool updateGuideArrows(const QList<GGuideArrow*>& list);
+    bool updateGuideArrowByTrans(GuideArrow*);
+    bool updateGuideArrow(GuideArrow* arrow);
 
     ///update Connector
-    bool updateConnectors(const QList<GConnector*>& list);
+    bool updateConnectors(Connector*);
 
     ///update Routeing
-    bool updateRouteings(const QList<GRouting*>& list);
+    bool updateRouteings(const QList<Routing*>& list);
 
     ///update DecisionPoint
-    bool updateDecisionPoint(const QList<GDecisionPoint*>& list);
+    bool updateDecisionPoint(DecisionPoint*);
 
     ///update DeparturePoint
-    bool updateDeparturePoint(const QList<GDeparturePoint*>& list);
+    bool updateDeparturePoint(DeparturePoint*);
 
     ///update signalGroup
     bool updateSignalGroups(const QList<SignalGroup*>& list);
 
     ///update SignalLamp
-    bool updateSignalLamps(const QList<GSignalLamp*>& list);
+    bool updateSignalLampByTrans(SignalLamp*);
+    bool updateSignalLamp(SignalLamp* pSignalLamp);
 
     ///update VehicleDrivInfoCollector
-    bool updateVehicleDrivInfoCollectors(const QList<GVehicleDrivInfoCollector*>& list);
+    bool updateVehicleDrivInfoCollector(VehicleDrivInfoCollector*);
 
     ///update VehicleQueueCounter
-    bool updateVehicleQueueCounters(const QList<GVehicleQueueCounter*>& list);
+    bool updateVehicleQueueCounter(VehicleQueueCounter*);
 
     ///update VehicleTravelDetector
-    bool updateVehicleTravelDetectors(const QList<GVehicleTravelDetector*>& list);
+    bool updateVehicleTravelDetector(VehicleTravelDetector*);
 
     ///update VehicleDetector
-    bool updateVehicleDetectors(const QList<GVehicleDetector*>& list);
+    bool updateVehicleDetector(VehicleDetector*);
 
     ///update ReduceSpeedArea
-    bool updateReduceSpeedAreas(const QList<GReduceSpeedArea*>& list);
+    bool updateReduceSpeedArea(ReduceSpeedArea*);
 
     ///update BusStation
-    bool updateBustation(const QList<GBusStation*>& list);
+    bool updateBustation(BusStation*);
 
     ///update BusLine
-    bool updateBusLine(const QList<GBusLine*>& list);
+    bool updateBusLine(BusLine*);
 protected:
     TessngDBToolsUpdate();
 
@@ -66,13 +70,11 @@ private:
 
     bool updateLinkVertex(long linkId,const QList<Vertex*>& list);
 
-    bool updateLink(Link* link);
+    bool updateLinkBase(Link* link);
 
     bool updateLaneLimitVehicle(long laneId,QList<VehicleType> &list);
 
-    bool updateLane(Lane* lane);
-
-    bool updateGuideArrow(GuideArrow* arrow);
+    bool updateLaneBase(Lane* lane);
 
     bool updateLaneConnectors(long connId,const QList<LaneConnector*> &list);
 
@@ -82,17 +84,15 @@ private:
 
     bool updateRouteing(Routing* route);
 
-    bool updateRoutingLinks(GRouting* routing);
+    bool updateRoutingLinks(Routing* routing);
 
     bool updateRoutingFlowByInterval(const QList<RoutingFlowByInterval*> &pRPIs,const QList<Routing*> &routes);
 
-    bool updateDecisionPoint(DecisionPoint* pDecisionPoint);
+    bool updateDecisionPointBase(DecisionPoint* pDecisionPoint);
 
     bool updateDepaInterval(long departurePointID,QList<DepaInterval> &lsit);
 
-    bool updateDeparturePoint(DeparturePoint* dp);
-
-    bool updateSignalLamp(SignalLamp* pSignalLamp);
+    bool updateDeparturePointBase(DeparturePoint* dp);
 
     bool updateSignalPhase(const QList<SignalPhase*> &list);
 
@@ -104,7 +104,7 @@ private:
 
     bool updateReduceSpeedIntervals(const QList<ReduceSpeedInterval*>& list);
 
-    bool updateReduceSpeedArea(ReduceSpeedArea* pReduceSpeedArea);
+    bool updateReduceSpeedAreaBase(ReduceSpeedArea* pReduceSpeedArea);
 
     bool updateBusLineRoads(BusLine* bline);
 
@@ -112,7 +112,7 @@ private:
 
     bool updateBusStationLine(const QList<BusStationLine*>& list);
 
-    bool updateBusLine(BusLine* pBusLine);
+    bool updateBusLineBase(BusLine* pBusLine);
 
     QString jsonObjToStr(const QJsonObject& obj);
 };
