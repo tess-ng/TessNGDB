@@ -115,7 +115,7 @@ protected:
     /// 路段：结点，车道，顶点，路段顶点，路段
     bool removeLink(const QList<GLink*>& list);
 private:
-    friend class TessngDBToolsUpdate;
+    friend class TessngDBToolsUpdateBase;
     TessngDBToolsRemoveBase(const TessngDBToolsRemoveBase&) = delete;
 
     //------------------------------------信号控制----------------------------------

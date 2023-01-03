@@ -20,6 +20,7 @@ SOURCES += \
     TessngDBNet.cpp \
     TessngDBToolsRemove.cpp \
     TessngDBToolsUpdate.cpp \
+    TessngDBToolsUpdateBase.cpp \
     exception.cpp \
     #TESS_API_EXAMPLE.cpp \
     TessngDBToolsRemoveBase.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     TessngDBToolsRemove.h \
     TessngDBToolsRemoveBase.h \
     TessngDBToolsUpdate.h \
+    TessngDBToolsUpdateBase.h \
     exception.h \
     #TESS_API_EXAMPLE.h \
     pch \
