@@ -74,14 +74,22 @@ void TESS_API_EXAMPLE::on_btnSignalLamp_released()
 
     }
     else if (bUpdate) {
-        QList<GSignalLamp*> rmGSignalLamp;
-        foreach(GSignalLamp * it, gpScene->mlGSignalLamp) {
+        SignalLamp test;
+        foreach(GSignalLamp* it, gpScene->mlGSignalLamp) {
             if (it->id() == id) {
-                rmGSignalLamp.push_back(it);
+                test.signalLampID = it->mpSignalLamp->signalLampID;
+                test.name = it->mpSignalLamp->name;
+                test.mpSignalPhase = it->mpSignalLamp->mpSignalPhase;
+                test.laneID = it->mpSignalLamp->laneID;
+                test.toLaneID = it->mpSignalLamp->toLaneID;
+                test.x = it->mpSignalLamp->x;
+                test.y = it->mpSignalLamp->y;
+                test.z = it->mpSignalLamp->z;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateSignalLamps(rmGSignalLamp);
+
+        result = TessngDBToolsUpdate::getInstance()->updateSignalLamp(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -164,14 +172,19 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
 
     }
     else if (bUpdate) {
-        QList<SignalGroup*> rmSignalGroup;
+        SignalGroup test;
         foreach(SignalGroup * it, gpScene->mlSignalGroup) {
             if (it->id() == id) {
-                rmSignalGroup.push_back(it);
+                test.signalGroupID = it->signalGroupID;
+                test.name = it->name;
+                test.timeLength = it->timeLength;
+                test.startTime = it->startTime;
+                test.endTime = it->endTime;
+                test.mlPhase = it->mlPhase;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateSignalGroups(rmSignalGroup);
+        result = TessngDBToolsUpdate::getInstance()->updateSignalGroup(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -254,14 +267,30 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
 
     }
     else if (bUpdate) {
-        QList<GBusLine*> rmGBusLine;
+        BusLine test;
         foreach(GBusLine * it, gpScene->mlGBusLine) {
             if (it->id() == id) {
-                rmGBusLine.push_back(it);
+                test.busLineID = it->mpBusLine->busLineID;
+                test.name = it->mpBusLine->name;
+                test.length = it->mpBusLine->length;
+                test.dischargeFreq = it->mpBusLine->dischargeFreq;
+                test.dischargeStartTime = it->mpBusLine->dischargeStartTime;
+                test.dischargeEndTime = it->mpBusLine->dischargeEndTime;
+                test.startX = it->mpBusLine->startX;
+                test.startY = it->mpBusLine->startY;
+                test.endX = it->mpBusLine->endX;
+                test.endY = it->mpBusLine->endY;
+                test.desirSpeed = it->mpBusLine->desirSpeed;
+                test.speedSD = it->mpBusLine->speedSD;
+                test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime;
+                test.mlLink = it->mpBusLine->mlLink;
+                test.mlLinkId = it->mpBusLine->mlLinkId;
+                test.mlBusStationLine = it->mpBusLine->mlBusStationLine;
+                test.mSpecialApp = it->mpBusLine->mSpecialApp;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateBusLine(rmGBusLine);
+        result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -290,14 +319,22 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
 
     }
     else if (bUpdate) {
-        QList<GBusStation*> rmGBusStation;
+        BusStation test;
         foreach(GBusStation * it, gpScene->mlGBusStation) {
             if (it->id() == id) {
-                rmGBusStation.push_back(it);
+                test.busStationID = it->mpBusStation->busStationID;
+                test.name = it->mpBusStation->name;
+                test.laneNumber = it->mpBusStation->laneNumber;
+                test.x = it->mpBusStation->x;
+                test.y = it->mpBusStation->y;
+                test.length = it->mpBusStation->length;
+                test.type = it->mpBusStation->type;
+                test.mlBusStationLine = it->mpBusStation->mlBusStationLine;
+                test.mpLink = it->mpBusStation->mpLink;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateBustation(rmGBusStation);
+        result = TessngDBToolsUpdate::getInstance()->updateBustation(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -327,14 +364,31 @@ void TESS_API_EXAMPLE::on_btnVehicleTravelDetector_released()
 
     }
     else if (bUpdate) {
-        QList<GVehicleTravelDetector*> rmGVehicleTravelDetector;
+        VehicleTravelDetector test;
         foreach(GVehicleTravelDetector * it, gpScene->mlGVehicleTravelDetector) {
             if (it->mpVehicleTravelDetector->detectorId == id) {
-                rmGVehicleTravelDetector.push_back(it);
+                test.detectorId = it->mpVehicleTravelDetector->detectorId;
+                test.name = it->mpVehicleTravelDetector->name;
+                test.startRoadId = it->mpVehicleTravelDetector->startRoadId;
+                test.start_laneNumber = it->mpVehicleTravelDetector->start_laneNumber;
+                test.start_toLaneNumber = it->mpVehicleTravelDetector->start_toLaneNumber;
+                test.startDist = it->mpVehicleTravelDetector->startDist;
+                test.startX = it->mpVehicleTravelDetector->startX;
+                test.startY = it->mpVehicleTravelDetector->startY;
+                test.teminalRoadId = it->mpVehicleTravelDetector->teminalRoadId;
+                test.teminal_laneNumber = it->mpVehicleTravelDetector->teminal_laneNumber;
+                test.teminal_toLaneNumber = it->mpVehicleTravelDetector->teminal_toLaneNumber;
+                test.teminalDist = it->mpVehicleTravelDetector->teminalDist;
+                test.teminalX = it->mpVehicleTravelDetector->teminalX;
+                test.teminalY = it->mpVehicleTravelDetector->teminalY;
+                test.startTime = it->mpVehicleTravelDetector->startTime;
+                test.endTime = it->mpVehicleTravelDetector->endTime;
+                test.dataInterval = it->mpVehicleTravelDetector->dataInterval;
+                test.shortestDistance = it->mpVehicleTravelDetector->shortestDistance;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateVehicleTravelDetectors(rmGVehicleTravelDetector);
+        result = TessngDBToolsUpdate::getInstance()->updateVehicleTravelDetector(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -363,14 +417,30 @@ void TESS_API_EXAMPLE::on_btnVehicleQueueCounter_released()
 
     }
     else if (bUpdate) {
-        QList<GVehicleQueueCounter*> rmGVehicleQueueCounter;
+        VehicleQueueCounter test;
         foreach(GVehicleQueueCounter * it, gpScene->mlGVehicleQueueCounter) {
             if (it->mpVehicleQueueCounter->queueCounterID == id) {
-                rmGVehicleQueueCounter.push_back(it);
+                test.queueCounterID = it->mpVehicleQueueCounter->queueCounterID;
+                test.name = it->mpVehicleQueueCounter->name;
+                test.roadID = it->mpVehicleQueueCounter->roadID;
+                test.laneNumber = it->mpVehicleQueueCounter->laneNumber;
+                test.toLaneNumber = it->mpVehicleQueueCounter->toLaneNumber;
+                test.x = it->mpVehicleQueueCounter->x;
+                test.y = it->mpVehicleQueueCounter->y;
+                test.z = it->mpVehicleQueueCounter->z;
+                test.speedLowLimit = it->mpVehicleQueueCounter->speedLowLimit;
+                test.speedUpLimit = it->mpVehicleQueueCounter->speedUpLimit;
+                test.maxDistInterval = it->mpVehicleQueueCounter->maxDistInterval;
+                test.maxQueueLength = it->mpVehicleQueueCounter->maxQueueLength;
+                test.distance = it->mpVehicleQueueCounter->distance;
+                test.startTime = it->mpVehicleQueueCounter->startTime;
+                test.endTime = it->mpVehicleQueueCounter->endTime;
+                test.dataInterval = it->mpVehicleQueueCounter->dataInterval;
+                test.countInterval = it->mpVehicleQueueCounter->countInterval;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateVehicleQueueCounters(rmGVehicleQueueCounter);
+        result = TessngDBToolsUpdate::getInstance()->updateVehicleQueueCounter(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -399,14 +469,25 @@ void TESS_API_EXAMPLE::on_btnVehicleDrivInfoCollecter_released()
 
     }
     else if (bUpdate) {
-        QList<GVehicleDrivInfoCollector*> rmGVehicleDrivInfoCollector;
+        VehicleDrivInfoCollector test;
         foreach(GVehicleDrivInfoCollector * it, gpScene->mlGVehicleDrivInfoCollector) {
             if (it->id() == id) {
-                rmGVehicleDrivInfoCollector.push_back(it);
+                test.collecterID = it->mpVehicleDrivInfoCollector->collecterID;
+                test.name = it->mpVehicleDrivInfoCollector->name;
+                test.roadID = it->mpVehicleDrivInfoCollector->roadID;
+                test.laneNumber = it->mpVehicleDrivInfoCollector->laneNumber;
+                test.toLaneNumber = it->mpVehicleDrivInfoCollector->toLaneNumber;
+                test.distance = it->mpVehicleDrivInfoCollector->distance;
+                test.x = it->mpVehicleDrivInfoCollector->x;
+                test.y = it->mpVehicleDrivInfoCollector->y;
+                test.z = it->mpVehicleDrivInfoCollector->z;
+                test.startTime = it->mpVehicleDrivInfoCollector->startTime;
+                test.endTime = it->mpVehicleDrivInfoCollector->endTime;
+                test.dataInterval = it->mpVehicleDrivInfoCollector->dataInterval;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateVehicleDrivInfoCollectors(rmGVehicleDrivInfoCollector);
+        result = TessngDBToolsUpdate::getInstance()->updateVehicleDrivInfoCollector(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -435,14 +516,18 @@ void TESS_API_EXAMPLE::on_btnGuideArrow_released()
 
     }
     else if (bUpdate) {
-        QList<GGuideArrow*> rmGGuideArrow;
+        GuideArrow test;
         foreach(GGuideArrow * it, gpScene->mlGGuideArrow) {
             if (it->mpGuideArrow->guideArrowID == id) {
-                rmGGuideArrow.push_back(it);
+                test.guideArrowID = it->mpGuideArrow->guideArrowID;
+                test.laneID = it->mpGuideArrow->laneID;
+                test.length = it->mpGuideArrow->length;
+                test.distToTerminal = it->mpGuideArrow->distToTerminal;
+                test.arrowType = it->mpGuideArrow->arrowType;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateGuideArrows(rmGGuideArrow);
+        result = TessngDBToolsUpdate::getInstance()->updateGuideArrow(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -525,14 +610,22 @@ void TESS_API_EXAMPLE::on_btnReduceSpeedArea_released()
 
     }
     else if (bUpdate) {
-        QList<GReduceSpeedArea*> rmGReduceSpeedArea;
+        ReduceSpeedArea test;
         foreach(GReduceSpeedArea * it, gpScene->mlGReduceSpeedArea) {
             if (it->mpReduceSpeedArea->reduceSpeedAreaID == id) {
-                rmGReduceSpeedArea.push_back(it);
+                test.reduceSpeedAreaID = it->mpReduceSpeedArea->reduceSpeedAreaID;
+                test.name = it->mpReduceSpeedArea->name;
+                test.location = it->mpReduceSpeedArea->location;
+                test.areaLength = it->mpReduceSpeedArea->areaLength;
+                test.roadID = it->mpReduceSpeedArea->roadID;
+                test.laneNumber = it->mpReduceSpeedArea->laneNumber;
+                test.toLaneNumber = it->mpReduceSpeedArea->toLaneNumber;
+                test.mlReduceSpeedInterval = it->mpReduceSpeedArea->mlReduceSpeedInterval;
+                test.mlReduceSpeedVehiType = it->mpReduceSpeedArea->mlReduceSpeedVehiType;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateReduceSpeedAreas(rmGReduceSpeedArea);
+        result = TessngDBToolsUpdate::getInstance()->updateReduceSpeedArea(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -588,14 +681,18 @@ void TESS_API_EXAMPLE::on_btnDeparturePoint_released()
 
     }
     else if (bUpdate) {
-        QList<GDeparturePoint*> rmGDeparturePoint;
+        DeparturePoint test;
         foreach(GDeparturePoint * it, gpScene->mlGDeparturePoint) {
             if (it->id() == id) {
-                rmGDeparturePoint.push_back(it);
+                test.departurePointID = it->mpDeparturePoint->departurePointID;
+                test.name = it->mpDeparturePoint->name;
+                test.mpLink = it->mpDeparturePoint->mpLink;
+                test.mlDepaInterval = it->mpDeparturePoint->mlDepaInterval;
+                test.mlDepaPossion = it->mpDeparturePoint->mlDepaPossion;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateDeparturePoint(rmGDeparturePoint);
+        result = TessngDBToolsUpdate::getInstance()->updateDeparturePoint(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -738,14 +835,19 @@ void TESS_API_EXAMPLE::on_btnRouting_released()
 
     }
     else if (bUpdate) {
-        QList<GRouting*> rmGRouting;
+        Routing test;
         foreach(GRouting * it, gpScene->mlGRouting) {
             if (it->id() == id) {
-                rmGRouting.push_back(it);
+                Routing* itRouting = it->getRouting();
+                test.routingID = itRouting->routingID;
+                test.routingName = itRouting->routingName;
+                test.proportion = itRouting->proportion;
+                test.mpDecisionPoint = itRouting->mpDecisionPoint;
+                test.mllLink = itRouting->mllLink;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateRouteings(rmGRouting);
+        result = TessngDBToolsUpdate::getInstance()->updateRouteing(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -771,17 +873,25 @@ void TESS_API_EXAMPLE::on_btnDecisionPoint_released()
     bool result = false;
 
     if (bInsert) {
-
     }
     else if (bUpdate) {
-        QList<GDecisionPoint*> rmGDecisionPoint;
+        DecisionPoint test;
         foreach(GDecisionPoint * it, gpScene->mlGDecisionPoint) {
             if (it->id() == id) {
-                rmGDecisionPoint.push_back(it);
+                test.deciPointID = it->mpDecisionPoint->deciPointID;
+                test.deciPointName = it->mpDecisionPoint->deciPointName;
+                test.X = it->mpDecisionPoint->X;
+                test.Y = it->mpDecisionPoint->Y;
+                test.Z = it->mpDecisionPoint->Z;
+                test.mFromPoint = it->mpDecisionPoint->mFromPoint;
+                test.mToPoint = it->mpDecisionPoint->mToPoint;
+                test.mlRouting = it->mpDecisionPoint->mlRouting;
+                test.mpLink = it->mpDecisionPoint->mpLink;
+                test.mlRoutingFlowByInterval = it->mpDecisionPoint->mlRoutingFlowByInterval;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateDecisionPoint(rmGDecisionPoint);
+        result = TessngDBToolsUpdate::getInstance()->updateDecisionPoint(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -835,14 +945,32 @@ void TESS_API_EXAMPLE::on_btnConnector_released()
 
     }
     else if (bUpdate) {
-        QList<GConnector*> rmGConnector;
+        GConnector* testG = NULL;
         foreach(GConnector * it, gpScene->mlGConnector) {
             if (it->id() == id) {
-                rmGConnector.push_back(it);
+                testG = it;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateConnectors(rmGConnector);
+        if (testG != NULL) {
+            Connector test(testG->id(), testG->mpConnector->mpFromLink, testG->mpConnector->mpToLink);
+            test.roadId = testG->mpConnector->roadId;
+            test.connName = testG->mpConnector->connName;
+            test.length = testG->mpConnector->length;
+            test.curvature = testG->mpConnector->curvature;
+            test.nonLinearCoefficient = testG->mpConnector->nonLinearCoefficient;
+            test.color = testG->mpConnector->color;
+            test.desiredSpeed = testG->mpConnector->desiredSpeed;
+            test.limitSpeed = testG->mpConnector->limitSpeed;
+            test.leftBreakPointsJson = testG->mpConnector->leftBreakPointsJson;
+            test.rightBreakPointsJson = testG->mpConnector->rightBreakPointsJson;
+            test.otherAttrsJson = testG->mpConnector->otherAttrsJson;
+            test.mpFromLink = testG->mpConnector->mpFromLink;
+            test.mpToLink = testG->mpConnector->mpToLink;
+            test.mlLaneConnector = testG->mpConnector->mlLaneConnector;
+            test.mlVehicleType = testG->mpConnector->mlVehicleType;
+            result = TessngDBToolsUpdate::getInstance()->updateConnector(test);
+        }
     }
     else if (bDelete) {
         QList<long> list;
@@ -871,14 +999,25 @@ void TESS_API_EXAMPLE::on_btnLane_released()
 
     }
     else if (bUpdate) {
-        QList<GLane*> rmGLane;
+        Lane test;
         foreach(GLane * it, gpScene->mlGLane) {
             if (it->id() == id) {
-                rmGLane.push_back(it);
+                test.laneID = it->mpLane->laneID;
+                test.linkID = it->mpLane->linkID;
+                test.serialNumber = it->mpLane->serialNumber;
+                test.width = it->mpLane->width;
+                test.expectTravelDirection = it->mpLane->expectTravelDirection;
+                test.actionType = it->mpLane->actionType;
+                test.centerLinePointsJson = it->mpLane->centerLinePointsJson;
+                test.leftBreakPointsJson = it->mpLane->leftBreakPointsJson;
+                test.rightBreakPointsJson = it->mpLane->rightBreakPointsJson;
+                test.otherAttrsJson = it->mpLane->otherAttrsJson;
+                test.mlGuideArrow = it->mpLane->mlGuideArrow;
+                test.mlVehicleType = it->mpLane->mlVehicleType;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateLanes(rmGLane);
+        result = TessngDBToolsUpdate::getInstance()->updateLane(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -931,14 +1070,38 @@ void TESS_API_EXAMPLE::on_btnLink_released()
     if (bInsert) {
     }
     else if (bUpdate) {
-        QList<GLink*> udGLink;
+        Link test;
         foreach(GLink * it, gpScene->mlGLink) {
             if (it->id() == id) {
-                udGLink.push_back(it);
+                test.linkID = it->mpLink->linkID;
+                test.linkName = it->mpLink->linkName;
+                test.netId = it->mpLink->netId;
+                test.roadId = it->mpLink->roadId;
+                test.laneNumber = it->mpLink->laneNumber;
+                test.laneWidth = it->mpLink->laneWidth;
+                test.laneColor = it->mpLink->laneColor;
+                test.linkType = it->mpLink->linkType;
+                test.length = it->mpLink->length;
+                test.curvature = it->mpLink->curvature;
+                test.nonLinearCoefficient = it->mpLink->nonLinearCoefficient;
+                test.linkSaturationFlow = it->mpLink->linkSaturationFlow;
+                test.linkTrafficFlow = it->mpLink->linkTrafficFlow;
+                test.desiredSpeed = it->mpLink->desiredSpeed;
+                test.limitSpeed = it->mpLink->limitSpeed;
+                test.minSpeed = it->mpLink->minSpeed;
+                test.addValue = it->mpLink->addValue;
+                test.centerLinePointsJson = it->mpLink->centerLinePointsJson;
+                test.leftBreakPointsJson = it->mpLink->leftBreakPointsJson;
+                test.rightBreakPointsJson = it->mpLink->rightBreakPointsJson;
+                test.otherAttrsJson = it->mpLink->otherAttrsJson;
+                test.startNode = it->mpLink->startNode;
+                test.endNode = it->mpLink->endNode;
+                test.mlVertex = it->mpLink->mlVertex;
+                test.mlLane = it->mpLink->mlLane;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateLinks(udGLink);
+        result = TessngDBToolsUpdate::getInstance()->updateLink(test);
     }
     else if (bDelete) {
         QList<long> list;

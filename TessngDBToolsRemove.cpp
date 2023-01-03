@@ -1815,8 +1815,13 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
             result = deleteLaneConnector(it->connector()->id(), it->fromLane()->id(), it->toLane()->id(), false);
             if (!result)goto exitPoint;
         }
+
+        //内存同步
         foreach(auto it, rmConnects)
         {
+            foreach(auto link, gpScene->mlGLink) {
+                if (link->mlFromGConnector.contains(it)) link->mlFromGConnector.removeOne(it);
+            }
             gpScene->removeGConnector(it);
         }
 
