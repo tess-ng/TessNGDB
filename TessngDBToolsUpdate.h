@@ -6,7 +6,7 @@ class TessngDBToolsUpdate : public TessngDBToolsUpdateBase,public PH::SingleHold
 {
 public:
     ///update link
-    bool updateLink(const Link& link);
+    Link* updateLink(const Link& link);
 
     ///update lane
     bool updateLane(const Lane& lane);
@@ -66,5 +66,6 @@ private:
     void gupdateVertex(Vertex* dest,const QList<Vertex*>& src);
     void gupdateLane(Lane* dest,const QList<Lane*>& src);
     void gupdateGuideArrow(GuideArrow* dest,const QList<GuideArrow*>& src);
+    bool findRoutingLink(int& m, int& n,int id,const QList<QList<Link*>>&);
 };
 #endif // TESSNGDBTOOLSUPDATE_H

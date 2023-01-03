@@ -15,6 +15,8 @@
 #include "laneconnector.h"
 #include "grouting.h"
 #include "Routing.h"
+#include "gdecisionpoint.h"
+#include "DecisionPoint.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
@@ -87,9 +89,9 @@ void TessngDBToolsUpdate::gupdateLane(Lane* dest,const QList<Lane*>& src){
     }
 }
 ///update link
-bool TessngDBToolsUpdate::updateLink(const Link& link){
+Link* TessngDBToolsUpdate::updateLink(const Link& link){
     bool result=updateLinkPtr(const_cast<Link*>(&link));
-    if(!result) return false;
+    if(!result) return nullptr;
     GLink* gLink=gpScene->findGLinkByLinkID(link.linkID);
 
     assert(nullptr!=gLink);
@@ -144,7 +146,7 @@ bool TessngDBToolsUpdate::updateLink(const Link& link){
     foreach(auto it, gLink->mpLink->mlLane) {
         gupdateLane(it,link.mlLane);
     }
-    return true;
+    return gLink->mpLink;
 }
 
 ///update lane
@@ -272,7 +274,19 @@ bool TessngDBToolsUpdate::updateConnector(const Connector& conn){
 
     return true;
 }
-
+bool TessngDBToolsUpdate::findRoutingLink(int& m, int& n, int id, const QList<QList<Link*>>& list) {
+    for(int i=0;i< list.size();i++)
+    {
+        m = i;
+        for(int j = 0; j < list[i].size();j++) {
+            if (id == list[i][j]->linkID) {
+                n = j;
+                return true;
+            }
+        }
+    }
+    return false;
+}
 ///update Routeing
 bool TessngDBToolsUpdate::updateRouteing(const Routing& rt){
     bool result = updateRouteingPtr(const_cast<Routing*>(&rt));
@@ -281,20 +295,61 @@ bool TessngDBToolsUpdate::updateRouteing(const Routing& rt){
 
     assert(nullptr != gRt);
 
-    gRt->routingName;
+    gRt->getRouting()->routingName=rt.routingName;
     /* 流量比 */
-    qreal proportion;
-    /* 依赖的决策点 */
-    DecisionPoint* mpDecisionPoint;
-    //一条决策路径可以由多个最短路径组成
-    QList<QList<Link*>> mllLink;
+    gRt->getRouting()->proportion=rt.proportion;
 
+    //一条决策路径可以由多个最短路径组成
+    QList<QPair<int, int>> rmList;
+    for (int i = 0; i < gRt->getRouting()->mllLink.size();i++) {
+        for (int j=0;j< gRt->getRouting()->mllLink[i].size(); j++)
+        {
+            int m, n;
+            if (findRoutingLink(m, n, gRt->getRouting()->mllLink[i][j]->linkID, rt.mllLink)) {
+                Link* link = updateLink(*rt.mllLink[m][n]);
+                if (nullptr != link) {
+                    gRt->getRouting()->mllLink[i][j] = link;
+                }
+            }
+            else {
+                rmList.append(QPair<int,int>(i,j));
+            }
+        }
+    }
+    while (!rmList.empty())
+    {
+        QPair<int, int> pair=rmList.takeFirst();
+        gRt->getRouting()->mllLink[pair.first].removeAt(pair.second);
+    }
     return true;
 }
 
 ///update DecisionPoint
-bool TessngDBToolsUpdate::updateDecisionPoint(const DecisionPoint&){
-    return false;
+bool TessngDBToolsUpdate::updateDecisionPoint(const DecisionPoint& dp){
+    bool result = updateDecisionPointPtr(const_cast<DecisionPoint*>(&dp));
+    if (!result) return false;
+    GDecisionPoint* gdP = gpScene->findGDecisionPointByID(dp.deciPointID);
+
+    assert(nullptr != gdP);
+   
+    gdP->mpDecisionPoint->deciPointName=dp.deciPointID;
+    /* 坐标X */
+    gdP->mpDecisionPoint->X = dp.X;
+    /* 坐标Y */
+    gdP->mpDecisionPoint->Y = dp.Y;
+    /* 高程 */
+    gdP->mpDecisionPoint->Z = dp.Z;
+
+    gdP->mpDecisionPoint->mFromPoint = dp.mFromPoint;
+    gdP->mpDecisionPoint->mToPoint = dp.mToPoint;
+
+    QList<Routing*> mlRouting;
+    Link* mpLink;
+
+    QList<RoutingFlowByInterval*> mlRoutingFlowByInterval;
+
+
+    return true;
 }
 ///update DeparturePoint
 bool TessngDBToolsUpdate::updateDeparturePoint(const DeparturePoint&){
