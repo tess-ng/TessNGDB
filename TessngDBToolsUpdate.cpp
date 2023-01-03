@@ -6,6 +6,15 @@
 #include "glink.h"
 #include "Node.h"
 #include "GuideArrow.h"
+
+#include "GVehicleDetector.h"
+#include "VehicleDetector.h"
+#include "GReduceSpeedArea.h"
+#include "ReduceSpeedArea.h"
+#include "GBusStation.h"
+#include "BusStation.h"
+#include "GBusLine.h"
+#include "BusLine.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
@@ -192,21 +201,78 @@ bool TessngDBToolsUpdate::updateVehicleTravelDetector(const VehicleTravelDetecto
     return false;
 }
 ///update VehicleDetector
-bool TessngDBToolsUpdate::updateVehicleDetector(const VehicleDetector&){
+bool TessngDBToolsUpdate::updateVehicleDetector(const VehicleDetector& vehicleDetector){
     return false;
 }
 
 ///update ReduceSpeedArea
-bool TessngDBToolsUpdate::updateReduceSpeedArea(const ReduceSpeedArea&){
-    return false;
+bool TessngDBToolsUpdate::updateReduceSpeedArea(const ReduceSpeedArea& reduceSpeedArea){
+    bool result = updateReduceSpeedAreaPtr(const_cast<ReduceSpeedArea*>(&reduceSpeedArea));
+    if (!result) return false;
+
+    GReduceSpeedArea* gReduceSpeedArea = nullptr;
+    foreach(GReduceSpeedArea * it, gpScene->mlGReduceSpeedArea) {
+        if (reduceSpeedArea.reduceSpeedAreaID == it->mpReduceSpeedArea->reduceSpeedAreaID) gReduceSpeedArea = it;
+    }
+    assert(nullptr != gReduceSpeedArea);
+
+    gReduceSpeedArea->mpReduceSpeedArea->name = reduceSpeedArea.name;
+    gReduceSpeedArea->mpReduceSpeedArea->location = reduceSpeedArea.location;
+    gReduceSpeedArea->mpReduceSpeedArea->areaLength = reduceSpeedArea.areaLength;
+    gReduceSpeedArea->mpReduceSpeedArea->roadID = reduceSpeedArea.roadID;
+    gReduceSpeedArea->mpReduceSpeedArea->laneNumber = reduceSpeedArea.laneNumber;
+    gReduceSpeedArea->mpReduceSpeedArea->toLaneNumber = reduceSpeedArea.toLaneNumber;
+    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedInterval = reduceSpeedArea.mlReduceSpeedInterval;
+    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedVehiType = reduceSpeedArea.mlReduceSpeedVehiType;
+
+    return true;
 }
 
 ///update BusStation
-bool TessngDBToolsUpdate::updateBustation(const BusStation&){
-    return false;
+bool TessngDBToolsUpdate::updateBustation(const BusStation& busStation){
+    bool result = updateBustationPtr(const_cast<BusStation*>(&busStation));
+    if (!result) return false;
+
+    GBusStation* gBusStation = gpScene->findGBusStationByID(busStation.busStationID);
+    assert(nullptr != gBusStation);
+
+    gBusStation->mpBusStation->busStationID = busStation.busStationID;
+    gBusStation->mpBusStation->name = busStation.name;
+    gBusStation->mpBusStation->laneNumber = busStation.laneNumber;
+    gBusStation->mpBusStation->x = busStation.x;
+    gBusStation->mpBusStation->y = busStation.y;
+    gBusStation->mpBusStation->length = busStation.length;
+    gBusStation->mpBusStation->type = busStation.type;
+    gBusStation->mpBusStation->mlBusStationLine = busStation.mlBusStationLine;
+    gBusStation->mpBusStation->mpLink = busStation.mpLink;
+
+    return true;
 }
 
 ///update BusLine
-bool TessngDBToolsUpdate::updateBusLine(const BusLine&){
-    return false;
+bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
+    bool result = updateBusLinePtr(const_cast<BusLine*>(&busLine));
+    if (!result) return false;
+
+    GBusLine* gBusLine = gpScene->findGBusLineByID(busLine.busLineID);
+    assert(nullptr != gBusLine);
+
+    gBusLine->mpBusLine->name = busLine.name;
+    gBusLine->mpBusLine->length = busLine.length;
+    gBusLine->mpBusLine->dischargeFreq = busLine.dischargeFreq;
+    gBusLine->mpBusLine->dischargeStartTime = busLine.dischargeStartTime;
+    gBusLine->mpBusLine->dischargeEndTime = busLine.dischargeEndTime;
+    gBusLine->mpBusLine->startX = busLine.startX;
+    gBusLine->mpBusLine->startY = busLine.startY;
+    gBusLine->mpBusLine->endX = busLine.endX;
+    gBusLine->mpBusLine->endY = busLine.endY;
+    gBusLine->mpBusLine->desirSpeed = busLine.desirSpeed;
+    gBusLine->mpBusLine->speedSD = busLine.speedSD;
+    gBusLine->mpBusLine->passCountAtStartTime = busLine.passCountAtStartTime;
+    gBusLine->mpBusLine->mlLink = busLine.mlLink;
+    gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;
+    gBusLine->mpBusLine->mlBusStationLine = busLine.mlBusStationLine;
+    gBusLine->mpBusLine->mSpecialApp = busLine.mSpecialApp;
+
+    return true;
 }
