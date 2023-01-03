@@ -317,20 +317,35 @@ failed:
 
     return result;
 }
+bool TessngDBToolsUpdateBase::updateLaneConnectorPtr(LaneConnector* it) {
+    bool result = true;
+    QSqlQuery  query(gDB);
+    QString sql = "UPDATE LaneConnector set ";
+    sql += QString(",weight=%1").arg(it->weight);
+    sql += QString(",centerLinePointsJson='%1'").arg(jsonObjToStr(it->centerLinePointsJson));
+    sql += QString(",leftBreakPointsJson='%1'").arg(jsonObjToStr(it->leftBreakPointsJson));
+    sql += QString(",rightBreakPointsJson='%1'").arg(jsonObjToStr(it->rightBreakPointsJson));
+    sql += QString(",otherAttrsJson='%1'").arg(jsonObjToStr(it->otherAttrsJson));
+    sql += QString(" WHERE connID=%1 and StartLaneID=%2 and EndLaneID=%3").arg(it->mpConnector->connID).arg(it->mpFromLane->laneID).arg(it->mpToLane->laneID);
+    query.prepare(sql);
+    result = query.exec();
+    if (!result) {
+        throw PH::Exception(query.lastError().text().toStdString());
+    }
+    return result;
+}
 bool TessngDBToolsUpdateBase::updateLaneConnectors(long connId,const QList<LaneConnector *> &list)
 {
     bool result=true;
     QSqlQuery  query(gDB);
     foreach(auto it,list){
         QString sql="UPDATE LaneConnector set ";
-        sql+=QString("StartLaneID=%1").arg(it->mpFromLane->laneID);
-        sql+=QString(",EndLaneID=%1").arg(it->mpToLane->laneID);
         sql+=QString(",weight=%1").arg(it->weight);
         sql+=QString(",centerLinePointsJson='%1'").arg(jsonObjToStr(it->centerLinePointsJson));
         sql+=QString(",leftBreakPointsJson='%1'").arg(jsonObjToStr(it->leftBreakPointsJson));
         sql+=QString(",rightBreakPointsJson='%1'").arg(jsonObjToStr(it->rightBreakPointsJson));
         sql+=QString(",otherAttrsJson='%1'").arg(jsonObjToStr(it->otherAttrsJson));
-        sql+=QString(" WHERE connID=%1").arg(connId);
+        sql+=QString(" WHERE connID=%1 and StartLaneID=%2 and EndLaneID=%3").arg(connId).arg(it->mpFromLane->laneID).arg(it->mpToLane->laneID);
         query.prepare(sql);
         result=query.exec();
         if(!result) {
