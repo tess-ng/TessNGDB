@@ -5,60 +5,61 @@
 
 class TessngDBToolsUpdateBase
 {
-public:
+protected:
     ///update link
-    bool updateLink(Link* link);
+    bool updateLinkPtr(Link* link);
 
     ///update lane
-    bool updateLane(Lane*);
-    bool updateLanes(const QList<Lane*>&,bool trans=true);
-    bool updateLanes(const QList<GLane*>&,bool trans=true);
+    bool updateLanePtr(Lane*);
+    bool updateLanesPtr(const QList<Lane*>&,bool trans=true);
+    bool updateLanesPtr(const QList<GLane*>&,bool trans=true);
 
     ///update guid arrow
-    bool updateGuideArrowByTrans(GuideArrow*);
-    bool updateGuideArrow(GuideArrow* arrow);
+    bool updateGuideArrowByTransPtr(GuideArrow*);
+    bool updateGuideArrowPtr(GuideArrow* arrow);
 
     ///update Connector
-    bool updateConnectors(Connector*);
+    bool updateConnectorsPtr(Connector*);
 
     ///update Routeing
-    bool updateRouteing(Routing*);
+    bool updateRouteingPtr(Routing*);
 
     ///update DecisionPoint
-    bool updateDecisionPoint(DecisionPoint*);
+    bool updateDecisionPointPtr(DecisionPoint*);
 
     ///update DeparturePoint
-    bool updateDeparturePoint(DeparturePoint*);
+    bool updateDeparturePointPtr(DeparturePoint*);
 
     ///update signalGroup
     bool updateSignalGroup(SignalGroup*);
 
     ///update SignalLamp
-    bool updateSignalLampByTrans(SignalLamp*);
-    bool updateSignalLamp(SignalLamp* pSignalLamp);
+    bool updateSignalLampByTransPtr(SignalLamp*);
+    bool updateSignalLampPtr(SignalLamp* pSignalLamp);
 
     ///update VehicleDrivInfoCollector
-    bool updateVehicleDrivInfoCollector(VehicleDrivInfoCollector*);
+    bool updateVehicleDrivInfoCollectorPtr(VehicleDrivInfoCollector*);
 
     ///update VehicleQueueCounter
-    bool updateVehicleQueueCounter(VehicleQueueCounter*);
+    bool updateVehicleQueueCounterPtr(VehicleQueueCounter*);
 
     ///update VehicleTravelDetector
-    bool updateVehicleTravelDetector(VehicleTravelDetector*);
+    bool updateVehicleTravelDetectorPtr(VehicleTravelDetector*);
 
     ///update VehicleDetector
-    bool updateVehicleDetector(VehicleDetector*);
+    bool updateVehicleDetectorPtr(VehicleDetector*);
 
     ///update ReduceSpeedArea
-    bool updateReduceSpeedArea(ReduceSpeedArea*);
+    bool updateReduceSpeedAreaPtr(ReduceSpeedArea*);
 
     ///update BusStation
-    bool updateBustation(BusStation*);
+    bool updateBustationPtr(BusStation*);
 
     ///update BusLine
-    bool updateBusLine(BusLine*);
+    bool updateBusLinePtr(BusLine*);
     TessngDBToolsUpdateBase();
 private:
+    friend class TessngDBToolsRemove;
     bool updateVertex(const QList<Vertex*>& list);
 
     bool updateNode(const QList<Node*> &list);

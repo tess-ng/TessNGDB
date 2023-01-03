@@ -133,7 +133,7 @@ bool TessngDBToolsUpdateBase::updateLinkBase(Link* link){
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateLink(Link* mpLink) {
+bool TessngDBToolsUpdateBase::updateLinkPtr(Link* mpLink) {
     bool result = true;
     try {
         //开启事务
@@ -202,13 +202,13 @@ bool TessngDBToolsUpdateBase::updateLaneBase(Lane* lane){
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateLanes(const QList<GLane*>& list,bool trans){
+bool TessngDBToolsUpdateBase::updateLanesPtr(const QList<GLane*>& list,bool trans){
     bool result = true;
     try {
         //开启事务
         if(trans)gDB.transaction();
         foreach (auto it, list) {
-            result =updateLane(it->mpLane);
+            result =updateLanePtr(it->mpLane);
             if(!result) goto failed;
         }
     }
@@ -233,13 +233,13 @@ failed:
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updateLanes(const QList<Lane*>& list,bool trans){
+bool TessngDBToolsUpdateBase::updateLanesPtr(const QList<Lane*>& list,bool trans){
     bool result = true;
     try {
         //开启事务
         if(trans)gDB.transaction();
         foreach (auto it, list) {
-            result =updateLane(it);
+            result =updateLanePtr(it);
             if(!result) goto failed;
         }
     }
@@ -263,7 +263,7 @@ failed:
 
     return result;
 }
-bool TessngDBToolsUpdateBase::updateLane(Lane* mpLane){
+bool TessngDBToolsUpdateBase::updateLanePtr(Lane* mpLane){
     bool result = true;
     result = updateLaneLimitVehicle(mpLane->laneID, mpLane->mlVehicleType);
     if (!result) return result;
@@ -273,7 +273,7 @@ bool TessngDBToolsUpdateBase::updateLane(Lane* mpLane){
 
     return result;
 }
-bool TessngDBToolsUpdateBase::updateGuideArrow(GuideArrow *arrow)
+bool TessngDBToolsUpdateBase::updateGuideArrowPtr(GuideArrow *arrow)
 {
     bool result=true;
     QSqlQuery  query(gDB);
@@ -290,13 +290,13 @@ bool TessngDBToolsUpdateBase::updateGuideArrow(GuideArrow *arrow)
 }
 
 
-bool TessngDBToolsUpdateBase::updateGuideArrowByTrans(GuideArrow* mpGuideArrow)
+bool TessngDBToolsUpdateBase::updateGuideArrowByTransPtr(GuideArrow* mpGuideArrow)
 {
     bool result = true;
     try {
         //开启事务
         gDB.transaction();
-        result = updateGuideArrow(mpGuideArrow);
+        result = updateGuideArrowPtr(mpGuideArrow);
         if (!result) goto failed;
     }
     catch (QException& exc) {
@@ -379,7 +379,7 @@ bool TessngDBToolsUpdateBase::updateConnector(Connector* it){
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateConnectors(Connector* mpConnector)
+bool TessngDBToolsUpdateBase::updateConnectorsPtr(Connector* mpConnector)
 {
     bool result = true;
     try {
@@ -453,7 +453,7 @@ bool TessngDBToolsUpdateBase::updateRouteingBase(Routing* route){
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateRouteing(Routing* it){
+bool TessngDBToolsUpdateBase::updateRouteingPtr(Routing* it){
     bool result = true;
     try {
         //开启事务
@@ -540,7 +540,7 @@ bool TessngDBToolsUpdateBase::updateDecisionPointBase(DecisionPoint* pDecisionPo
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateDecisionPoint(DecisionPoint* mpDecisionPoint)
+bool TessngDBToolsUpdateBase::updateDecisionPointPtr(DecisionPoint* mpDecisionPoint)
 {
     bool result = true;
     try {
@@ -550,7 +550,7 @@ bool TessngDBToolsUpdateBase::updateDecisionPoint(DecisionPoint* mpDecisionPoint
         if (!result) goto failed;
 
         foreach (auto it, mpDecisionPoint->mlRouting) {
-            result = updateRouteing(it);
+            result = updateRouteingPtr(it);
             if (!result) goto failed;
         }
 
@@ -607,7 +607,7 @@ bool TessngDBToolsUpdateBase::updateDeparturePointBase(DeparturePoint* dp){
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateDeparturePoint(DeparturePoint* mpDeparturePoint){
+bool TessngDBToolsUpdateBase::updateDeparturePointPtr(DeparturePoint* mpDeparturePoint){
     bool result = true;
     try {
         //开启事务
@@ -636,7 +636,7 @@ failed:
 
     return result;
 }
-bool TessngDBToolsUpdateBase::updateSignalLamp(SignalLamp* pSignalLamp){
+bool TessngDBToolsUpdateBase::updateSignalLampPtr(SignalLamp* pSignalLamp){
     bool result=true;
     QSqlQuery  query(gDB);
     QString sql="UPDATE SignalLamp set ";
@@ -741,12 +741,12 @@ failed:
 
     return result;
 }
-bool TessngDBToolsUpdateBase::updateSignalLampByTrans(SignalLamp* sl) {
+bool TessngDBToolsUpdateBase::updateSignalLampByTransPtr(SignalLamp* sl) {
     bool result = true;
     try {
         //开启事务
         gDB.transaction();
-        result = updateSignalLamp(sl);
+        result = updateSignalLampPtr(sl);
         if (!result) goto failed;
     }
     catch (QException& exc) {
@@ -768,7 +768,7 @@ failed:
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updateVehicleDrivInfoCollector(VehicleDrivInfoCollector* it){
+bool TessngDBToolsUpdateBase::updateVehicleDrivInfoCollectorPtr(VehicleDrivInfoCollector* it){
     bool result = true;
     try {
         //开启事务
@@ -812,7 +812,7 @@ bool TessngDBToolsUpdateBase::updateVehicleDrivInfoCollector(VehicleDrivInfoColl
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updateVehicleQueueCounter(VehicleQueueCounter* it){
+bool TessngDBToolsUpdateBase::updateVehicleQueueCounterPtr(VehicleQueueCounter* it){
     bool result = true;
     try {
         //开启事务
@@ -860,7 +860,7 @@ bool TessngDBToolsUpdateBase::updateVehicleQueueCounter(VehicleQueueCounter* it)
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updateVehicleTravelDetector(VehicleTravelDetector* it){
+bool TessngDBToolsUpdateBase::updateVehicleTravelDetectorPtr(VehicleTravelDetector* it){
     bool result = true;
     try {
         //开启事务
@@ -910,7 +910,7 @@ bool TessngDBToolsUpdateBase::updateVehicleTravelDetector(VehicleTravelDetector*
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updateVehicleDetector(VehicleDetector* it){
+bool TessngDBToolsUpdateBase::updateVehicleDetectorPtr(VehicleDetector* it){
     bool result = true;
     try {
         //开启事务
@@ -1004,7 +1004,7 @@ bool TessngDBToolsUpdateBase::updateReduceSpeedAreaBase(ReduceSpeedArea* pReduce
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
     return result;
 }
-bool TessngDBToolsUpdateBase::updateReduceSpeedArea(ReduceSpeedArea* mpReduceSpeedArea)
+bool TessngDBToolsUpdateBase::updateReduceSpeedAreaPtr(ReduceSpeedArea* mpReduceSpeedArea)
 {
     bool result = true;
     try {
@@ -1037,7 +1037,7 @@ failed:
 
     return result;
 }
-bool TessngDBToolsUpdateBase::updateBustation(BusStation* mpBusStation){
+bool TessngDBToolsUpdateBase::updateBustationPtr(BusStation* mpBusStation){
     bool result = true;
     try {
         //开启事务
@@ -1166,7 +1166,7 @@ bool TessngDBToolsUpdateBase::updateBusLineBase(BusLine* pBusLine){
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updateBusLine(BusLine* mpBusLine){
+bool TessngDBToolsUpdateBase::updateBusLinePtr(BusLine* mpBusLine){
     bool result = true;
     try {
         //开启事务

@@ -2135,7 +2135,7 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
                 lane->mpLane->serialNumber = nun;
                 nun++;
             }
-            TessngDBToolsUpdate::getInstance()->updateLanes(lans, false);
+            TessngDBToolsUpdate::getInstance()->updateLanesPtr(lans, false);
         }
     }
     catch (QException& exc) {
