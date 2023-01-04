@@ -411,8 +411,8 @@ bool TessngDBToolsUpdate::updateReduceSpeedArea(const ReduceSpeedArea& reduceSpe
     gReduceSpeedArea->mpReduceSpeedArea->roadID = reduceSpeedArea.roadID;
     gReduceSpeedArea->mpReduceSpeedArea->laneNumber = reduceSpeedArea.laneNumber;
     gReduceSpeedArea->mpReduceSpeedArea->toLaneNumber = reduceSpeedArea.toLaneNumber;
-    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedInterval = reduceSpeedArea.mlReduceSpeedInterval;
-    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedVehiType = reduceSpeedArea.mlReduceSpeedVehiType;
+    /*gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedInterval = reduceSpeedArea.mlReduceSpeedInterval;
+    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedVehiType = reduceSpeedArea.mlReduceSpeedVehiType;*/
 
     return true;
 }
@@ -432,7 +432,7 @@ bool TessngDBToolsUpdate::updateBustation(const BusStation& busStation){
     gBusStation->mpBusStation->y = busStation.y;
     gBusStation->mpBusStation->length = busStation.length;
     gBusStation->mpBusStation->type = busStation.type;
-    gBusStation->mpBusStation->mlBusStationLine = busStation.mlBusStationLine;
+    //gBusStation->mpBusStation->mlBusStationLine = busStation.mlBusStationLine;
     gBusStation->mpBusStation->mpLink = busStation.mpLink;
 
     return true;
@@ -458,9 +458,9 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     gBusLine->mpBusLine->desirSpeed = busLine.desirSpeed;
     gBusLine->mpBusLine->speedSD = busLine.speedSD;
     gBusLine->mpBusLine->passCountAtStartTime = busLine.passCountAtStartTime;
-    gBusLine->mpBusLine->mlLink = busLine.mlLink;
+    /*gBusLine->mpBusLine->mlLink = busLine.mlLink;
     gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;
-    gBusLine->mpBusLine->mlBusStationLine = busLine.mlBusStationLine;
+    gBusLine->mpBusLine->mlBusStationLine = busLine.mlBusStationLine;*/
     gBusLine->mpBusLine->mSpecialApp = busLine.mSpecialApp;
 
     return true;
