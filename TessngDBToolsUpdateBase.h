@@ -33,7 +33,7 @@ protected:
     bool updateDeparturePointPtr(DeparturePoint*);
 
     ///update signalGroup
-    bool updateSignalGroup(SignalGroup*);
+    bool updateSignalGroupPtr(SignalGroup*);
 
     ///update SignalLamp
     bool updateSignalLampByTransPtr(SignalLamp*);
