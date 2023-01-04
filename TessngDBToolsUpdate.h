@@ -21,7 +21,7 @@ public:
     bool updateLaneConnector(const LaneConnector&);
 
     ///update Routeing
-    bool updateRouteing(const Routing&);
+    Routing* updateRouteing(const Routing&);
 
     ///update DecisionPoint
     bool updateDecisionPoint(const DecisionPoint&);
@@ -67,5 +67,6 @@ private:
     void gupdateLane(Lane* dest,const QList<Lane*>& src);
     void gupdateGuideArrow(GuideArrow* dest,const QList<GuideArrow*>& src);
     bool findRoutingLink(int& m, int& n,int id,const QList<QList<Link*>>&);
+    void gupdateRoutingFlowByInterval(QList<RoutingFLowRatio*>& dest, const QList<RoutingFLowRatio*>& src);
 };
 #endif // TESSNGDBTOOLSUPDATE_H

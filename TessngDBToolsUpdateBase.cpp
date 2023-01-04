@@ -726,7 +726,7 @@ bool TessngDBToolsUpdateBase::updateSignalGroupBase(SignalGroup* pSignalGroup){
 }
 
 
-bool TessngDBToolsUpdateBase::updateSignalGroup(SignalGroup * it)
+bool TessngDBToolsUpdateBase::updateSignalGroupPtr(SignalGroup * it)
 {
     bool result = true;
     try {
