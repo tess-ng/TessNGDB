@@ -1852,7 +1852,7 @@ exitPoint:
     return result;
 }
 
-bool TessngDBToolsRemove::deleteLane(QList<long> ids,bool fixed)
+bool TessngDBToolsRemove::deleteLane(QList<long> ids)
 {
     bool result = true;
     try {
