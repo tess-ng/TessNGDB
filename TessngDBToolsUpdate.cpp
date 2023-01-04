@@ -414,8 +414,6 @@ bool TessngDBToolsUpdate::updateDeparturePoint(const DeparturePoint& dp){
     gdP->mpDeparturePoint->mlDepaInterval=dp.mlDepaInterval;
     gdP->mpDeparturePoint->mlDepaPossion=dp.mlDepaPossion;
 
-    /*路段*/
-    Link* mpLink;
     return true;
 }
 
@@ -436,7 +434,20 @@ bool TessngDBToolsUpdate::updateSignalGroup(const SignalGroup& sg){
     /* 结束时间 单位：秒 */
     gdP->endTime = sg.endTime;
 
-    QList<SignalPhase*> mlPhase;
+    for (int i = 0; i < gdP->mlPhase.size(); i++) {
+
+        for (int j = 0; j < sg.mlPhase.size(); j++) {
+            if (gdP->mlPhase[i]->signalPhaseID != sg.mlPhase[j]->signalPhaseID) continue;
+            /* 序号 */
+            gdP->mlPhase[i]->serialNumber= sg.mlPhase[j]->serialNumber;
+            /* 名称 */
+            gdP->mlPhase[i]->name = sg.mlPhase[j]->name;
+
+            gdP->mlPhase[i]->mlSignalColor = sg.mlPhase[j]->mlSignalColor;
+
+            break;
+        }
+    }
     return true;
 }
 
@@ -463,8 +474,6 @@ bool TessngDBToolsUpdate::updateSignalLamp(const SignalLamp& pSignalLamp){
     gdP->mpSignalLamp->x = pSignalLamp.x;
     gdP->mpSignalLamp->y = pSignalLamp.y;
     gdP->mpSignalLamp->z = pSignalLamp.z;
-
-    SignalPhase* mpSignalPhase;
 
     return true;
 }
