@@ -42,6 +42,7 @@
 #include "gvehicletraveldetector.h"
 #include "VehicleDetector.h"
 #include "GVehicleDetector.h"
+#include "PassengerArriving.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
@@ -646,7 +647,7 @@ bool TessngDBToolsUpdate::updateReduceSpeedArea(const ReduceSpeedArea& reduceSpe
     gReduceSpeedArea->mpReduceSpeedArea->roadID = reduceSpeedArea.roadID;
     gReduceSpeedArea->mpReduceSpeedArea->laneNumber = reduceSpeedArea.laneNumber;
     gReduceSpeedArea->mpReduceSpeedArea->toLaneNumber = reduceSpeedArea.toLaneNumber;
-    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedVehiType = reduceSpeedArea.mlReduceSpeedVehiType;
+
     foreach(auto newItem, reduceSpeedArea.mlReduceSpeedInterval) {
         foreach(auto oldItem, gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedInterval) {
             if (newItem->intervalID == oldItem->intervalID && newItem->reduceSpeedAreaID == oldItem->reduceSpeedAreaID) {
@@ -682,7 +683,7 @@ bool TessngDBToolsUpdate::updateBustation(const BusStation& busStation){
     gBusStation->mpBusStation->y = busStation.y;
     gBusStation->mpBusStation->length = busStation.length;
     gBusStation->mpBusStation->type = busStation.type;
-    gBusStation->mpBusStation->mlBusStationLine = busStation.mlBusStationLine;
+
     foreach(auto newItem, busStation.mlBusStationLine) {
         foreach(auto oldItem, gBusStation->mpBusStation->mlBusStationLine) {
             if (newItem->id() == oldItem->id()) {
@@ -735,7 +736,7 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     gBusLine->mpBusLine->passCountAtStartTime = busLine.passCountAtStartTime;
     gBusLine->mpBusLine->mlLink = busLine.mlLink;
     gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;
-    gBusLine->mpBusLine->mlBusStationLine = busLine.mlBusStationLine;
+
     foreach(auto newItem, busLine.mlBusStationLine) {
         foreach(auto oldItem, gBusLine->mpBusLine->mlBusStationLine) {
             if (newItem->id() == oldItem->id()) {
