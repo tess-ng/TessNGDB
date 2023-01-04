@@ -745,7 +745,6 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     gBusLine->mpBusLine->passCountAtStartTime = busLine.passCountAtStartTime;
     gBusLine->mpBusLine->mlLink = busLine.mlLink;
     gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;
-
     foreach(auto newItem, busLine.mlBusStationLine) {
         foreach(auto oldItem, gBusLine->mpBusLine->mlBusStationLine) {
             if (newItem->id() == oldItem->id()) {
@@ -756,7 +755,7 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
                 oldItem->leavingPercent = newItem->leavingPercent;
                 oldItem->getOnTimePerson = newItem->getOnTimePerson;
                 oldItem->getOutTimePerson = newItem->getOutTimePerson;
-                oldItem->mlPassengerArriving = newItem->mlPassengerArriving;
+
                 foreach(auto newArriving, newItem->mlPassengerArriving) {
                     foreach(auto oldArriving, oldItem->mlPassengerArriving) {
                         if (newArriving->passengerArrivingID == oldArriving->passengerArrivingID) {
@@ -766,8 +765,6 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
                         }
                     }
                 }
-                oldItem->mlPassenger = newItem->mlPassenger;
-                oldItem->mlPassengerLeaved = newItem->mlPassengerLeaved;
             }
         }
     }

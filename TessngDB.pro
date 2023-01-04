@@ -24,6 +24,7 @@ SOURCES += \
     exception.cpp \
     TESS_API_EXAMPLE.cpp \
     TessngDBToolsRemoveBase.cpp \
+    TessngDBToolsCopy.cpp\
     main.cpp
 
 HEADERS += \
@@ -41,6 +42,7 @@ HEADERS += \
     TessngDBToolsUpdateBase.h \
     exception.h \
     TESS_API_EXAMPLE.h \
+    TessngDBToolsCopy.h\
     pch \
     singleholder.h
 

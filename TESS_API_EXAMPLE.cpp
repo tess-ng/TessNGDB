@@ -1,6 +1,7 @@
 #include "TESS_API_EXAMPLE.h"
 #include "TessngDBToolsRemove.h"
 #include "TessngDBToolsUpdate.h"
+#include "TessngDBToolsCopy.h"
 
 #include <QPushButton>
 #include <QFileDialog>
@@ -268,25 +269,28 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
     }
     else if (bUpdate) {
         BusLine test;
+        BusStationLine* tempLine = new BusStationLine();
+        PassengerArriving* tempPA = new PassengerArriving();
+        
         foreach(GBusLine * it, gpScene->mlGBusLine) {
             if (it->id() == id) {
-                test.busLineID = it->mpBusLine->busLineID;
-                test.name = it->mpBusLine->name;
-                test.length = it->mpBusLine->length;
-                test.dischargeFreq = it->mpBusLine->dischargeFreq;
-                test.dischargeStartTime = it->mpBusLine->dischargeStartTime;
-                test.dischargeEndTime = it->mpBusLine->dischargeEndTime;
-                test.startX = it->mpBusLine->startX;
-                test.startY = it->mpBusLine->startY;
-                test.endX = it->mpBusLine->endX;
-                test.endY = it->mpBusLine->endY;
-                test.desirSpeed = it->mpBusLine->desirSpeed;
-                test.speedSD = it->mpBusLine->speedSD;
-                test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime;
-                test.mlLink = it->mpBusLine->mlLink;
-                test.mlLinkId = it->mpBusLine->mlLinkId;
-                test.mlBusStationLine = it->mpBusLine->mlBusStationLine;
-                test.mSpecialApp = it->mpBusLine->mSpecialApp;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyBusLine(test, it->mpBusLine);
+
+                //修改表单数据
+                //...
+
+                //只修改第一个BusStationLine
+                test.mlBusStationLine.clear();
+                TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusLine->mlBusStationLine[0]);
+                test.mlBusStationLine.push_back(tempLine);
+
+                //只修改第一个BusStationLine的第一个PassengerArriving
+                test.mlBusStationLine[0]->mlPassengerArriving.clear();
+                TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]);
+                test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
+                test.mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
+
                 break;
             }
         }

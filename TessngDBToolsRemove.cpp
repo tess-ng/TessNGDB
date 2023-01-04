@@ -394,6 +394,17 @@ bool TessngDBToolsRemove::deleteBusStationLine(QList<long> ids)
                 }
             }
         }
+
+        for (auto& busLine : gpScene->mlGBusStation) {
+            for (int i = 0; i < busLine->mpBusStation->mlBusStationLine.size();) {
+                if (!ids.contains(busLine->mpBusStation->mlBusStationLine[i]->id())) {
+                    i++;
+                }
+                else {
+                    busLine->mpBusStation->mlBusStationLine.removeAt(i);
+                }
+            }
+        }
     }
     catch (QException& exc) {
         qWarning() << exc.what();
