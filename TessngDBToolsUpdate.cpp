@@ -22,6 +22,8 @@
 #include "VehicleDetector.h"
 #include "GReduceSpeedArea.h"
 #include "ReduceSpeedArea.h"
+#include "ReduceSpeedInterval.h"
+#include "ReduceSpeedVehiType.h"
 #include "GBusStation.h"
 #include "BusStation.h"
 #include "GBusLine.h"
@@ -40,6 +42,7 @@
 #include "gvehicletraveldetector.h"
 #include "VehicleDetector.h"
 #include "GVehicleDetector.h"
+#include "PassengerArriving.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
 
@@ -653,13 +656,28 @@ bool TessngDBToolsUpdate::updateReduceSpeedArea(const ReduceSpeedArea& reduceSpe
     gReduceSpeedArea->mpReduceSpeedArea->roadID = reduceSpeedArea.roadID;
     gReduceSpeedArea->mpReduceSpeedArea->laneNumber = reduceSpeedArea.laneNumber;
     gReduceSpeedArea->mpReduceSpeedArea->toLaneNumber = reduceSpeedArea.toLaneNumber;
-    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedInterval = reduceSpeedArea.mlReduceSpeedInterval;
-    gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedVehiType = reduceSpeedArea.mlReduceSpeedVehiType;
+
+    foreach(auto newItem, reduceSpeedArea.mlReduceSpeedInterval) {
+        foreach(auto oldItem, gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedInterval) {
+            if (newItem->intervalID == oldItem->intervalID && newItem->reduceSpeedAreaID == oldItem->reduceSpeedAreaID) {
+                oldItem->startTime = newItem->startTime;
+                oldItem->endTime = newItem->endTime;
+            }
+        }
+    }
+    foreach(auto newItem, reduceSpeedArea.mlReduceSpeedVehiType) {
+        foreach(auto oldItem, gReduceSpeedArea->mpReduceSpeedArea->mlReduceSpeedVehiType) {
+            if (newItem->vehicleTypeCode == oldItem->vehicleTypeCode && newItem->reduceSpeedAreaID == oldItem->reduceSpeedAreaID) {
+                oldItem->avgSpeed = newItem->avgSpeed;
+                oldItem->speedSD = newItem->speedSD;
+            }
+        }
+    }
 
     return true;
 }
 
-///update BusStation
+///update BusStation: BusStationLine仅能对已有元素进行更新
 bool TessngDBToolsUpdate::updateBustation(const BusStation& busStation){
     bool result = updateBustationPtr(const_cast<BusStation*>(&busStation));
     if (!result) return false;
@@ -674,13 +692,38 @@ bool TessngDBToolsUpdate::updateBustation(const BusStation& busStation){
     gBusStation->mpBusStation->y = busStation.y;
     gBusStation->mpBusStation->length = busStation.length;
     gBusStation->mpBusStation->type = busStation.type;
-    gBusStation->mpBusStation->mlBusStationLine = busStation.mlBusStationLine;
+
+    foreach(auto newItem, busStation.mlBusStationLine) {
+        foreach(auto oldItem, gBusStation->mpBusStation->mlBusStationLine) {
+            if (newItem->id() == oldItem->id()) {
+                oldItem->busStationID = newItem->busStationID;
+                oldItem->linkID = newItem->linkID;
+                oldItem->busLineID = newItem->busLineID;
+                oldItem->parkingTime = newItem->parkingTime;
+                oldItem->leavingPercent = newItem->leavingPercent;
+                oldItem->getOnTimePerson = newItem->getOnTimePerson;
+                oldItem->getOutTimePerson = newItem->getOutTimePerson;
+                oldItem->mlPassengerArriving = newItem->mlPassengerArriving;
+                foreach(auto newArriving, newItem->mlPassengerArriving) {
+                    foreach(auto oldArriving, oldItem->mlPassengerArriving) {
+                        if (newArriving->passengerArrivingID == oldArriving->passengerArrivingID) {
+                            oldArriving->startTime = newArriving->startTime;
+                            oldArriving->endTime = newArriving->endTime;
+                            oldArriving->passengerCount = newArriving->passengerCount;
+                        }
+                    }
+                }
+                oldItem->mlPassenger = newItem->mlPassenger;
+                oldItem->mlPassengerLeaved = newItem->mlPassengerLeaved;
+            }
+        }
+    }
     gBusStation->mpBusStation->mpLink = busStation.mpLink;
 
     return true;
 }
 
-///update BusLine
+///update BusLine: 可对BusLineRoads进行新增删除级别的更新，其他如BusStationLine仅能对已有元素进行更新
 bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     bool result = updateBusLinePtr(const_cast<BusLine*>(&busLine));
     if (!result) return false;
@@ -702,7 +745,32 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     gBusLine->mpBusLine->passCountAtStartTime = busLine.passCountAtStartTime;
     gBusLine->mpBusLine->mlLink = busLine.mlLink;
     gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;
-    gBusLine->mpBusLine->mlBusStationLine = busLine.mlBusStationLine;
+
+    foreach(auto newItem, busLine.mlBusStationLine) {
+        foreach(auto oldItem, gBusLine->mpBusLine->mlBusStationLine) {
+            if (newItem->id() == oldItem->id()) {
+                oldItem->busStationID = newItem->busStationID;
+                oldItem->linkID = newItem->linkID;
+                oldItem->busLineID = newItem->busLineID;
+                oldItem->parkingTime = newItem->parkingTime;
+                oldItem->leavingPercent = newItem->leavingPercent;
+                oldItem->getOnTimePerson = newItem->getOnTimePerson;
+                oldItem->getOutTimePerson = newItem->getOutTimePerson;
+                oldItem->mlPassengerArriving = newItem->mlPassengerArriving;
+                foreach(auto newArriving, newItem->mlPassengerArriving) {
+                    foreach(auto oldArriving, oldItem->mlPassengerArriving) {
+                        if (newArriving->passengerArrivingID == oldArriving->passengerArrivingID) {
+                            oldArriving->startTime = newArriving->startTime;
+                            oldArriving->endTime = newArriving->endTime;
+                            oldArriving->passengerCount = newArriving->passengerCount;
+                        }
+                    }
+                }
+                oldItem->mlPassenger = newItem->mlPassenger;
+                oldItem->mlPassengerLeaved = newItem->mlPassengerLeaved;
+            }
+        }
+    }
     gBusLine->mpBusLine->mSpecialApp = busLine.mSpecialApp;
 
     return true;
