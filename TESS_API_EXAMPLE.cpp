@@ -276,6 +276,7 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
             if (it->id() == id) {
                 //填充表单数据
                 TessngDBToolsCopy::getInstance()->copyBusLine(test, it->mpBusLine);
+                test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime + 10;
 
                 //修改表单数据
                 //...
