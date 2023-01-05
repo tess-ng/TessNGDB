@@ -683,8 +683,7 @@ bool TessngDBToolsUpdateBase::updateSignalLampPtr(SignalLamp* pSignalLamp){
     sql+=QString(",signalPhaseID=%1").arg(pSignalLamp->mpSignalPhase->id());
     sql+=QString(",laneID=%1").arg(pSignalLamp->laneID);
     sql+=QString(",toLaneID=%1").arg(pSignalLamp->toLaneID);
-    sql+=QString(",X=%1").arg(pSignalLamp->x);
-    sql+=QString(",Y=%1").arg(pSignalLamp->y);
+    if(0==_isnan(pSignalLamp->y)) sql+=QString(",Y=%1").arg(pSignalLamp->y);
     sql+=QString(",Z=%1").arg(pSignalLamp->z);
     sql+=QString(" WHERE signalLampID=%1").arg(pSignalLamp->signalLampID);
     query.prepare(sql);
