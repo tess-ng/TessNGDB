@@ -1105,7 +1105,7 @@ bool TessngDBToolsUpdateBase::updateBustationPtr(BusStation* mpBusStation){
         QSqlQuery  query(gDB);
         QString sql = "UPDATE BusStation set ";
         sql += QString("name='%1'").arg(mpBusStation->name);
-        sql += QString("type='%1'").arg(gSpecialWords.trZhToEn(mpBusStation->type));
+        sql += QString(",type='%1'").arg(gSpecialWords.trZhToEn(mpBusStation->type));
         sql += QString(",linkID=%1").arg(mpBusStation->mpLink->linkID);
         sql += QString(",laneNumber=%1").arg(mpBusStation->laneNumber);
         sql += QString(",x=%1").arg(mpBusStation->x);

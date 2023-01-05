@@ -78,14 +78,9 @@ void TESS_API_EXAMPLE::on_btnSignalLamp_released()
         SignalLamp test;
         foreach(GSignalLamp* it, gpScene->mlGSignalLamp) {
             if (it->id() == id) {
-                test.signalLampID = it->mpSignalLamp->signalLampID;
-                test.name = it->mpSignalLamp->name;
-                test.mpSignalPhase = it->mpSignalLamp->mpSignalPhase;
-                test.laneID = it->mpSignalLamp->laneID;
-                test.toLaneID = it->mpSignalLamp->toLaneID;
-                test.x = it->mpSignalLamp->x;
-                test.y = it->mpSignalLamp->y;
-                test.z = it->mpSignalLamp->z;
+                TessngDBToolsCopy::getInstance()->copySignalLamp(test, it->mpSignalLamp);
+                test.name = it->mpSignalLamp->name + "1";
+
                 break;
             }
         }
@@ -174,14 +169,19 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
     }
     else if (bUpdate) {
         SignalGroup test;
+        SignalPhase* tempSP = new SignalPhase();
         foreach(SignalGroup * it, gpScene->mlSignalGroup) {
             if (it->id() == id) {
-                test.signalGroupID = it->signalGroupID;
-                test.name = it->name;
-                test.timeLength = it->timeLength;
-                test.startTime = it->startTime;
-                test.endTime = it->endTime;
-                test.mlPhase = it->mlPhase;
+                TessngDBToolsCopy::getInstance()->copySignalGroup(test, it);
+                test.name = it->name + "1";
+
+                test.mlPhase.clear();
+                if (!it->mlPhase.isEmpty()) {
+                    TessngDBToolsCopy::getInstance()->copySignalPhase(tempSP, it->mlPhase[0]);
+                    tempSP->name = it->mlPhase[0]->name;
+                    test.mlPhase.push_back(tempSP);
+                }
+
                 break;
             }
         }
@@ -276,27 +276,42 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
             if (it->id() == id) {
                 //填充表单数据
                 TessngDBToolsCopy::getInstance()->copyBusLine(test, it->mpBusLine);
-                test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime + 10;
+                test.mlLink.clear();
+                test.mlLinkId.clear();
 
                 //修改表单数据
-                //...
+                test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime + 10;
 
                 //只修改第一个BusStationLine
-                test.mlBusStationLine.clear();
-                TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusLine->mlBusStationLine[0]);
-                tempLine->parkingTime = it->mpBusLine->mlBusStationLine[0]->parkingTime + 10;
-                test.mlBusStationLine.push_back(tempLine);
+                if (!it->mpBusLine->mlBusStationLine.isEmpty()) {
+                    test.mlBusStationLine.clear();
+                    TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusLine->mlBusStationLine[0]);
+                    tempLine->parkingTime = it->mpBusLine->mlBusStationLine[0]->parkingTime + 10;
+                    test.mlBusStationLine.push_back(tempLine);
 
-                //只修改第一个BusStationLine的第一个PassengerArriving
-                test.mlBusStationLine[0]->mlPassengerArriving.clear();
-                TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]);
-                tempPA->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
-                test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
+                    //只修改第一个BusStationLine的第一个PassengerArriving
+                    if (!it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving.isEmpty()) {
+                        test.mlBusStationLine[0]->mlPassengerArriving.clear();
+                        TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]);
+                        tempPA->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
+                        test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
+                    }
+                }
 
                 break;
             }
         }
         result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
+
+        delete tempPA;
+        tempPA = NULL;
+        if (!test.mlBusStationLine.isEmpty()) {
+            test.mlBusStationLine[0]->mlPassengerArriving.clear();
+        }
+ 
+        delete tempLine;
+        tempLine = NULL;
+        test.mlBusStationLine.clear();
     }
     else if (bDelete) {
         QList<long> list;
@@ -326,21 +341,49 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
     }
     else if (bUpdate) {
         BusStation test;
+        BusStationLine* tempLine = new BusStationLine();
+        PassengerArriving* tempPA = new PassengerArriving();
+        
         foreach(GBusStation * it, gpScene->mlGBusStation) {
             if (it->id() == id) {
-                test.busStationID = it->mpBusStation->busStationID;
-                test.name = it->mpBusStation->name;
-                test.laneNumber = it->mpBusStation->laneNumber;
-                test.x = it->mpBusStation->x;
-                test.y = it->mpBusStation->y;
-                test.length = it->mpBusStation->length;
-                test.type = it->mpBusStation->type;
-                test.mlBusStationLine = it->mpBusStation->mlBusStationLine;
-                test.mpLink = it->mpBusStation->mpLink;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyBusStation(test, it->mpBusStation);
+
+                //修改表单数据
+                test.length = it->mpBusStation->length * 2.0;
+
+                //只修改第一个BusStationLine
+                if (!it->mpBusStation->mlBusStationLine.isEmpty()) {
+                    test.mlBusStationLine.clear();
+                    TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusStation->mlBusStationLine[0]);
+                    tempLine->parkingTime = it->mpBusStation->mlBusStationLine[0]->parkingTime + 10;
+                    test.mlBusStationLine.push_back(tempLine);
+
+                    //只修改第一个BusStationLine的第一个PassengerArriving
+                    if (!it->mpBusStation->mlBusStationLine[0]->mlPassengerArriving.isEmpty()) {
+                        test.mlBusStationLine[0]->mlPassengerArriving.clear();
+                        TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusStation->mlBusStationLine[0]->mlPassengerArriving[0]);
+                        tempPA->passengerCount = it->mpBusStation->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
+                        test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
+                    }
+                }
+
                 break;
             }
         }
         result = TessngDBToolsUpdate::getInstance()->updateBustation(test);
+
+        delete tempPA;
+        tempPA = NULL;
+        if (!test.mlBusStationLine.isEmpty()) {
+            test.mlBusStationLine[0]->mlPassengerArriving.clear();
+        }
+
+        delete tempLine;
+        tempLine = NULL;
+        test.mlBusStationLine.clear();
+
+        test.mpLink = NULL;
     }
     else if (bDelete) {
         QList<long> list;
@@ -617,21 +660,42 @@ void TESS_API_EXAMPLE::on_btnReduceSpeedArea_released()
     }
     else if (bUpdate) {
         ReduceSpeedArea test;
+        ReduceSpeedInterval* tempInterval = new ReduceSpeedInterval();
+        ReduceSpeedVehiType* tempVehiType = new ReduceSpeedVehiType();
         foreach(GReduceSpeedArea * it, gpScene->mlGReduceSpeedArea) {
             if (it->mpReduceSpeedArea->reduceSpeedAreaID == id) {
-                test.reduceSpeedAreaID = it->mpReduceSpeedArea->reduceSpeedAreaID;
-                test.name = it->mpReduceSpeedArea->name;
-                test.location = it->mpReduceSpeedArea->location;
-                test.areaLength = it->mpReduceSpeedArea->areaLength;
-                test.roadID = it->mpReduceSpeedArea->roadID;
-                test.laneNumber = it->mpReduceSpeedArea->laneNumber;
-                test.toLaneNumber = it->mpReduceSpeedArea->toLaneNumber;
-                test.mlReduceSpeedInterval = it->mpReduceSpeedArea->mlReduceSpeedInterval;
-                test.mlReduceSpeedVehiType = it->mpReduceSpeedArea->mlReduceSpeedVehiType;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyReduceSpeedArea(test, it->mpReduceSpeedArea);
+                test.mlReduceSpeedInterval.clear();
+                test.mlReduceSpeedVehiType.clear();
+
+                //修改表单数据
+                test.areaLength = it->mpReduceSpeedArea->areaLength * 2.0;
+
+                //copy并只修改第一个ReduceSpeedInterval
+                if (!it->mpReduceSpeedArea->mlReduceSpeedInterval.isEmpty()) {
+                    TessngDBToolsCopy::getInstance()->copyReduceSpeedInterval(tempInterval, it->mpReduceSpeedArea->mlReduceSpeedInterval[0]);
+                    tempInterval->startTime = it->mpReduceSpeedArea->mlReduceSpeedInterval[0]->startTime + 10;
+                    test.mlReduceSpeedInterval.push_back(tempInterval);
+                }
+                //copy并只修改第一个ReduceSpeedVehiType
+                if (!it->mpReduceSpeedArea->mlReduceSpeedVehiType.isEmpty()) {
+                    TessngDBToolsCopy::getInstance()->copyReduceSpeedVehiType(tempVehiType, it->mpReduceSpeedArea->mlReduceSpeedVehiType[0]);
+                    tempVehiType->avgSpeed = it->mpReduceSpeedArea->mlReduceSpeedVehiType[0]->avgSpeed * 2.0;
+                    test.mlReduceSpeedVehiType.push_back(tempVehiType);
+                }
                 break;
             }
         }
         result = TessngDBToolsUpdate::getInstance()->updateReduceSpeedArea(test);
+
+        delete tempInterval;
+        tempInterval = NULL;
+        test.mlReduceSpeedInterval.clear();
+
+        delete tempVehiType;
+        tempVehiType = NULL;
+        test.mlReduceSpeedVehiType.clear();
     }
     else if (bDelete) {
         QList<long> list;

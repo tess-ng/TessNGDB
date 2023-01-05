@@ -51,15 +51,23 @@ public:
 	TessngDBToolsCopy::TessngDBToolsCopy();
 	//------------------------------------信号控制----------------------------------
 
+	bool copySignalLamp(SignalLamp& dest, SignalLamp* src);
+	bool copySignalPhase(SignalPhase* dest, SignalPhase* src);
+	bool copySignalGroup(SignalGroup& dest, SignalGroup* src);
 	//--------------------------------------公交------------------------------------
 
-	bool copyBusLine(BusLine& dest, BusLine* src);
-	bool copyBusStationLine(BusStationLine* dest, BusStationLine* src);
 	bool copyPassengerArriving(PassengerArriving* dest, PassengerArriving* src);
-
+	bool copyBusStationLine(BusStationLine* dest, BusStationLine* src);
+	bool copyBusLine(BusLine& dest, BusLine* src);
+	bool copyBusStation(BusStation& dest, BusStation* src);
 	//---------------------------------车辆运行及检测-------------------------------
 
+	bool copyReduceSpeedInterval(ReduceSpeedInterval* dest, ReduceSpeedInterval* src);
+	bool copyReduceSpeedVehiType(ReduceSpeedVehiType* dest, ReduceSpeedVehiType* src);
+	bool copyReduceSpeedArea(ReduceSpeedArea& dest, ReduceSpeedArea* src);
+
 	//-----------------------------------道路及连接---------------------------------
+	bool copyLink(Link* dest, Link* src);
 protected:
 	~TessngDBToolsCopy();
 };

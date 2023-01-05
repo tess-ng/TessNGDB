@@ -723,7 +723,6 @@ bool TessngDBToolsUpdate::updateBustation(const BusStation& busStation){
     return true;
 }
 
-///update BusLine: 可对BusLineRoads进行新增删除级别的更新，其他如BusStationLine仅能对已有元素进行更新
 bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     bool result = updateBusLinePtr(const_cast<BusLine*>(&busLine));
     if (!result) return false;
@@ -743,8 +742,9 @@ bool TessngDBToolsUpdate::updateBusLine(const BusLine& busLine){
     gBusLine->mpBusLine->desirSpeed = busLine.desirSpeed;
     gBusLine->mpBusLine->speedSD = busLine.speedSD;
     gBusLine->mpBusLine->passCountAtStartTime = busLine.passCountAtStartTime;
-    gBusLine->mpBusLine->mlLink = busLine.mlLink;
-    gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;
+    /*gBusLine->mpBusLine->mlLink = busLine.mlLink;
+    gBusLine->mpBusLine->mlLinkId = busLine.mlLinkId;*/
+
     foreach(auto newItem, busLine.mlBusStationLine) {
         foreach(auto oldItem, gBusLine->mpBusLine->mlBusStationLine) {
             if (newItem->id() == oldItem->id()) {

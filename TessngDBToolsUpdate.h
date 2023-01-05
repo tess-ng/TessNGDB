@@ -50,10 +50,16 @@ public:
     ///update ReduceSpeedArea
     bool updateReduceSpeedArea(const ReduceSpeedArea&);
 
-    ///update BusStation
+    /*
+        对BusStationLine仅能对已有元素进行更新
+        对mpLink内部属性级别的更新需要调用其他特定接口
+    */
     bool updateBustation(const BusStation&);
 
-    ///update BusLine
+    /*
+        对BusStationLine仅能对已有元素进行更新
+        对mlLink，mlLinkId更新需要调用其他特定接口
+    */
     bool updateBusLine(const BusLine&);
 protected:
     ~TessngDBToolsUpdate();
