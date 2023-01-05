@@ -51,13 +51,15 @@ bool TessngDBToolsUpdateBase::updateVertex(const QList<Vertex *> &list)
     bool result=true;
     QSqlQuery  query(gDB);
     foreach(auto pVertex,list){
-        query.prepare(QString("UPDATE Vertex set X=%1,Y=%2,Z=%3 WHERE VertexID=%4")
-                      .arg(pVertex->x)
-                      .arg(pVertex->y)
-                      .arg(pVertex->z)
-                      .arg(pVertex->vertexID));
+        if (!std::_Is_nan(pVertex->x)) {
+            query.prepare(QString("UPDATE Vertex set X=%1,Y=%2,Z=%3 WHERE VertexID=%4")
+                .arg(pVertex->x)
+                .arg(pVertex->y)
+                .arg(pVertex->z)
+                .arg(pVertex->vertexID));
+            result = query.exec();
+        }
 
-        result=query.exec();
         if(!result) {
             throw PH::Exception(query.lastError().text().toStdString());
             break;
@@ -69,12 +71,19 @@ bool TessngDBToolsUpdateBase::updateNode(const QList<Node*> &list){
     bool result=true;
     QSqlQuery  query(gDB);
     foreach(auto it,list){
-        query.prepare(QString("UPDATE Node set nodeName='%1',vertexID=%2 WHERE nodeID=%3")
-                      .arg(it->nodeName)
-                      .arg(it->mpVertex->vertexID)
-                      .arg(it->nodeID));
+        if (it->nodeName != "") {
+            query.prepare(QString("UPDATE Node set nodeName='%1' WHERE nodeID=%2")
+                .arg(it->nodeName)
+                .arg(it->nodeID));
+            result = query.exec();
+        }
+        if (it->nodeName != "") {
+            query.prepare(QString("UPDATE Node set vertexID='%1' WHERE nodeID=%2")
+                .arg(it->mpVertex->vertexID)
+                .arg(it->nodeID));
+            result = query.exec() && result;
+        }
 
-        result=query.exec();
         if(!result) {
             throw PH::Exception(query.lastError().text().toStdString());
             break;
