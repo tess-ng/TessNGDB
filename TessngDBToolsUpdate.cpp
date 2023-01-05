@@ -45,7 +45,6 @@
 #include "PassengerArriving.h"
 TessngDBToolsUpdate::TessngDBToolsUpdate()
 {
-
 }
 
 
@@ -54,18 +53,18 @@ TessngDBToolsUpdate::~TessngDBToolsUpdate()
 
 }
 void TessngDBToolsUpdate::gupdateNode(Node* dest,Node* it){
-    dest->nodeName=it->nodeName;
-    dest->mpVertex->vertexID=it->mpVertex->vertexID;
-    dest->mpVertex->x=it->mpVertex->x;
-    dest->mpVertex->y=it->mpVertex->y;
-    dest->mpVertex->z=it->mpVertex->z;
+    if(!it->nodeName.isEmpty()) dest->nodeName=it->nodeName;
+    if(it->mpVertex->vertexID>0) dest->mpVertex->vertexID=it->mpVertex->vertexID;
+    if (0==_isnan(it->mpVertex->x))dest->mpVertex->x=it->mpVertex->x;
+    if (0 == _isnan(it->mpVertex->y))dest->mpVertex->y=it->mpVertex->y;
+    if (0 == _isnan(it->mpVertex->z))dest->mpVertex->z=it->mpVertex->z;
 }
 void TessngDBToolsUpdate::gupdateVertex(Vertex* dest,const QList<Vertex*>& src){
     foreach (auto it, src) {
         if(dest->vertexID==it->vertexID){
-            dest->x=it->x;
-            dest->y=it->y;
-            dest->z=it->z;
+            if (0 == _isnan(it->x))dest->x=it->x;
+            if (0 == _isnan(it->y))dest->y=it->y;
+            if (0 == _isnan(it->z))dest->z=it->z;
             break;
         }
     }
@@ -74,11 +73,11 @@ void TessngDBToolsUpdate::gupdateGuideArrow(GuideArrow* dest,const QList<GuideAr
     foreach (auto it, src) {
         if(dest->guideArrowID==it->guideArrowID){
             /* 车道编号 */
-            dest->laneID=it->laneID;
+            if (it->laneID > 0)dest->laneID=it->laneID;
             /*导向箭头长度*/
-            dest->length=it->length;
+            if (0 == _isnan(it->length))dest->length=it->length;
             /*中心点到末端距离 单位米*/
-            dest->distToTerminal=it->distToTerminal;
+            if (0 == _isnan(it->distToTerminal))dest->distToTerminal=it->distToTerminal;
 
             dest->arrowType=it->arrowType;
             break;
@@ -89,29 +88,29 @@ void TessngDBToolsUpdate::gupdateGuideArrow(GuideArrow* dest,const QList<GuideAr
 void TessngDBToolsUpdate::gupdateLane(Lane* dest,const QList<Lane*>& src){
     foreach (auto it, src) {
         /* 路段ID*/
-        dest->linkID=it->linkID;
+        if(it->linkID>0)dest->linkID=it->linkID;
         /* 车道序号 */
-        dest->serialNumber=it->serialNumber;
+        if (it->serialNumber > 0)dest->serialNumber=it->serialNumber;
         /* 车道宽度 */
-        dest->width=it->width;
+        if(0 == _isnan(it->width))dest->width=it->width;
         /* 希望行驶方向，L：左，R：右，A：任意 */
-        dest->expectTravelDirection=it->expectTravelDirection;
+        if(!it->expectTravelDirection.isEmpty())dest->expectTravelDirection=it->expectTravelDirection;
         /* 行为类型 */
-        dest->actionType=it->actionType;
+        if(!it->actionType.isEmpty())dest->actionType=it->actionType;
         /* 中心线断点json数据 */
-        dest->centerLinePointsJson=it->centerLinePointsJson;
+        if(!it->centerLinePointsJson.isEmpty())dest->centerLinePointsJson=it->centerLinePointsJson;
         /* 左侧断点json数据 */
-        dest->leftBreakPointsJson=it->leftBreakPointsJson;
+        if (!it->leftBreakPointsJson.isEmpty())dest->leftBreakPointsJson=it->leftBreakPointsJson;
         /* 右侧断点json数据 */
-        dest->rightBreakPointsJson=it->rightBreakPointsJson;
+        if (!it->rightBreakPointsJson.isEmpty())dest->rightBreakPointsJson=it->rightBreakPointsJson;
         /* 其它属性json数据 */
-        dest->otherAttrsJson=it->otherAttrsJson;
+        if (!it->otherAttrsJson.isEmpty())dest->otherAttrsJson=it->otherAttrsJson;
         /*导向箭头*/
         foreach (auto itt, dest->mlGuideArrow) {
             gupdateGuideArrow(itt,it->mlGuideArrow);
         }
         /*限制车型*/
-        dest->mlVehicleType=it->mlVehicleType;
+        if(!it->mlVehicleType.isEmpty())dest->mlVehicleType=it->mlVehicleType;
     }
 }
 ///update link
@@ -123,45 +122,45 @@ Link* TessngDBToolsUpdate::updateLink(const Link& link){
     assert(nullptr!=gLink);
 
 
-    gLink->mpLink->linkName=link.linkName;
+    if(!link.linkName.isEmpty())gLink->mpLink->linkName=link.linkName;
     /*路网ID*/
-    gLink->mpLink->netId=link.netId;
+    if(link.netId>0)gLink->mpLink->netId=link.netId;
     /*道路ID*/
-    gLink->mpLink->roadId=link.roadId;
+    if(link.roadId>0)gLink->mpLink->roadId=link.roadId;
     /* 车道数 */
-    gLink->mpLink->laneNumber=link.laneNumber;
+    if(0 == _isnan(link.laneNumber))gLink->mpLink->laneNumber=link.laneNumber;
     /* 车道宽度 */
-    gLink->mpLink->laneWidth=link.laneWidth;
+    if (0 == _isnan(link.laneWidth))gLink->mpLink->laneWidth=link.laneWidth;
     /* 车道颜色 */
-    gLink->mpLink->laneColor=link.laneColor;
+    if (!link.laneColor.isEmpty())gLink->mpLink->laneColor=link.laneColor;
     /* 道路类型 */
-    gLink->mpLink->linkType=link.linkType;
+    if (!link.linkType.isEmpty())gLink->mpLink->linkType=link.linkType;
     /* 路段长度 */
-    gLink->mpLink->length=link.length;
+    if (0 == _isnan(link.length))gLink->mpLink->length=link.length;
     /* 曲率 */
-    gLink->mpLink->curvature=link.curvature;
+    if (0 == _isnan(link.curvature))gLink->mpLink->curvature=link.curvature;
     /* 道路非直线系数 */
-    gLink->mpLink->nonLinearCoefficient=link.nonLinearCoefficient;
+    if (0 == _isnan(link.nonLinearCoefficient))gLink->mpLink->nonLinearCoefficient=link.nonLinearCoefficient;
     /* 饱和流率 */
-    gLink->mpLink->linkSaturationFlow=link.linkSaturationFlow;
+    if (0 == _isnan(link.linkSaturationFlow))gLink->mpLink->linkSaturationFlow=link.linkSaturationFlow;
     /* 路段流量 */
-    gLink->mpLink->linkTrafficFlow=link.linkTrafficFlow;
+    if (0 == _isnan(link.linkTrafficFlow))gLink->mpLink->linkTrafficFlow=link.linkTrafficFlow;
     /* 期望速度(自由流速度) 千米/小时*/
-    gLink->mpLink->desiredSpeed=link.desiredSpeed;
+    if (0 == _isnan(link.desiredSpeed))gLink->mpLink->desiredSpeed=link.desiredSpeed;
     /* 限速 千米/小时*/
-    gLink->mpLink->limitSpeed=link.limitSpeed;
+    if (0 == _isnan(link.limitSpeed))gLink->mpLink->limitSpeed=link.limitSpeed;
     /* 最小速度 千米/小时*/
-    gLink->mpLink->minSpeed=link.minSpeed;
+    if (0 == _isnan(link.minSpeed))gLink->mpLink->minSpeed=link.minSpeed;
     /* 附加值 */
-    gLink->mpLink->addValue=link.addValue;
+    if (0 == _isnan(link.addValue))gLink->mpLink->addValue=link.addValue;
     /* 中心线断点json数组 */
-    gLink->mpLink->centerLinePointsJson=link.centerLinePointsJson;
+    if (!link.centerLinePointsJson.isEmpty())gLink->mpLink->centerLinePointsJson=link.centerLinePointsJson;
     /* 左侧断点json数据 */
-    gLink->mpLink->leftBreakPointsJson=link.leftBreakPointsJson;
+    if (!link.leftBreakPointsJson.isEmpty())gLink->mpLink->leftBreakPointsJson=link.leftBreakPointsJson;
     /* 右侧断点json数据 */
-    gLink->mpLink->rightBreakPointsJson=link.rightBreakPointsJson;
+    if (!link.rightBreakPointsJson.isEmpty())gLink->mpLink->rightBreakPointsJson=link.rightBreakPointsJson;
     /* 其它属性json数据 */
-    gLink->mpLink->otherAttrsJson=link.otherAttrsJson;
+    if (!link.otherAttrsJson.isEmpty())gLink->mpLink->otherAttrsJson=link.otherAttrsJson;
 
     gupdateNode(gLink->mpLink->startNode,link.startNode);
     gupdateNode(gLink->mpLink->endNode,link.endNode);
@@ -183,30 +182,30 @@ bool TessngDBToolsUpdate::updateLane(const Lane& lane){
 
     assert(nullptr!=glane);
     /* 路段ID*/
-    glane->mpLane->linkID=lane.linkID;
+    if(lane.linkID>0)glane->mpLane->linkID=lane.linkID;
     /* 车道序号 */
-    glane->mpLane->serialNumber=lane.serialNumber;
+    if(lane.serialNumber>0)glane->mpLane->serialNumber=lane.serialNumber;
     /* 车道宽度 */
-    glane->mpLane->width=lane.width;
+    if(0==_isnan(lane.width))glane->mpLane->width=lane.width;
     /* 希望行驶方向，L：左，R：右，A：任意 */
-    glane->mpLane->expectTravelDirection=lane.expectTravelDirection;
+    if(!lane.expectTravelDirection.isEmpty())glane->mpLane->expectTravelDirection=lane.expectTravelDirection;
     /* 行为类型 */
-    glane->mpLane->actionType=lane.actionType;
+    if (!lane.actionType.isEmpty())glane->mpLane->actionType=lane.actionType;
     /* 中心线断点json数据 */
-    glane->mpLane->centerLinePointsJson=lane.centerLinePointsJson;
+    if(!lane.centerLinePointsJson.isEmpty())glane->mpLane->centerLinePointsJson=lane.centerLinePointsJson;
     /* 左侧断点json数据 */
-    glane->mpLane->leftBreakPointsJson=lane.leftBreakPointsJson;
+    if (!lane.leftBreakPointsJson.isEmpty())glane->mpLane->leftBreakPointsJson=lane.leftBreakPointsJson;
     /* 右侧断点json数据 */
-    glane->mpLane->rightBreakPointsJson=lane.rightBreakPointsJson;
+    if (!lane.rightBreakPointsJson.isEmpty())glane->mpLane->rightBreakPointsJson=lane.rightBreakPointsJson;
     /* 其它属性json数据 */
-    glane->mpLane->otherAttrsJson=lane.otherAttrsJson;
+    if (!lane.otherAttrsJson.isEmpty())glane->mpLane->otherAttrsJson=lane.otherAttrsJson;
 
     /*导向箭头*/
     foreach (auto it, glane->mpLane->mlGuideArrow) {
         gupdateGuideArrow(it,lane.mlGuideArrow);
     }
     /*限制车型*/
-    glane->mpLane->mlVehicleType=lane.mlVehicleType;
+    if(!lane.mlVehicleType.isEmpty())glane->mpLane->mlVehicleType=lane.mlVehicleType;
     return true;
 }
 
@@ -217,11 +216,11 @@ bool TessngDBToolsUpdate::updateGuideArrow(const GuideArrow& arrow){
     foreach (auto it, gpScene->mlGGuideArrow) {
         if(it->mpGuideArrow->guideArrowID==arrow.guideArrowID){
             /* 车道编号 */
-            it->mpGuideArrow->laneID=arrow.laneID;
+            if(arrow.laneID>0)it->mpGuideArrow->laneID=arrow.laneID;
             /*导向箭头长度*/
-            it->mpGuideArrow->length=arrow.length;
+            if(0==_isnan(arrow.length))it->mpGuideArrow->length=arrow.length;
             /*中心点到末端距离 单位米*/
-            it->mpGuideArrow->distToTerminal=arrow.distToTerminal;
+            if (0 == _isnan(arrow.distToTerminal))it->mpGuideArrow->distToTerminal=arrow.distToTerminal;
 
             it->mpGuideArrow->arrowType=arrow.arrowType;
             break;
@@ -239,17 +238,17 @@ bool TessngDBToolsUpdate::updateLaneConnector(const LaneConnector& laneConn) {
     updateLane(*laneConn.mpFromLane);
     updateLane(*laneConn.mpToLane);
 
-    glaneConn->mpLaneConnector->mrLength= laneConn.mrLength;
+    if (0 == _isnan(laneConn.mrLength))glaneConn->mpLaneConnector->mrLength= laneConn.mrLength;
     /* 权重 */
-    glaneConn->mpLaneConnector->weight = laneConn.weight;
+    if(laneConn.weight>0)glaneConn->mpLaneConnector->weight = laneConn.weight;
     /* 中心线断点json数据 */
-    glaneConn->mpLaneConnector->centerLinePointsJson = laneConn.centerLinePointsJson;
+    if(!laneConn.centerLinePointsJson.isEmpty())glaneConn->mpLaneConnector->centerLinePointsJson = laneConn.centerLinePointsJson;
     /* 左侧断点json数据 */
-    glaneConn->mpLaneConnector->leftBreakPointsJson = laneConn.leftBreakPointsJson;
+    if (!laneConn.leftBreakPointsJson.isEmpty())glaneConn->mpLaneConnector->leftBreakPointsJson = laneConn.leftBreakPointsJson;
     /* 右侧断点json数据 */
-    glaneConn->mpLaneConnector->rightBreakPointsJson = laneConn.rightBreakPointsJson;
+    if (!laneConn.rightBreakPointsJson.isEmpty())glaneConn->mpLaneConnector->rightBreakPointsJson = laneConn.rightBreakPointsJson;
     /* 其它属性json数据 */
-    glaneConn->mpLaneConnector->otherAttrsJson = laneConn.otherAttrsJson;
+    if (!laneConn.otherAttrsJson.isEmpty())glaneConn->mpLaneConnector->otherAttrsJson = laneConn.otherAttrsJson;
 
 
     return true;
@@ -263,9 +262,9 @@ bool TessngDBToolsUpdate::updateConnector(const Connector& conn){
     assert(nullptr != gConn);
 
     /* 道路ID */
-    gConn->mpConnector->roadId=conn.roadId;
+    if(conn.roadId>0)gConn->mpConnector->roadId=conn.roadId;
     /* 连接段名称 */
-    gConn->mpConnector->connName = conn.connName;
+    if(!conn.connName.isEmpty())gConn->mpConnector->connName = conn.connName;
     /* 连接段长度 */
     gConn->mpConnector->length = conn.length;
     /* 曲率 */
