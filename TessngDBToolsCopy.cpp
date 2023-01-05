@@ -22,7 +22,7 @@ bool TessngDBToolsCopy::copySignalLamp(SignalLamp& dest, SignalLamp* src) {
     return true;
 }
 
-bool copySignalPhase(SignalPhase* dest, SignalPhase* src) {
+bool TessngDBToolsCopy::copySignalPhase(SignalPhase* dest, SignalPhase* src) {
     dest->signalPhaseID = src->signalPhaseID;
     dest->serialNumber = src->serialNumber;
     dest->name = src->name;
@@ -31,7 +31,7 @@ bool copySignalPhase(SignalPhase* dest, SignalPhase* src) {
     return true;
 }
 
-bool copySignalGroup(SignalGroup& dest, SignalGroup* src) {
+bool TessngDBToolsCopy::copySignalGroup(SignalGroup& dest, SignalGroup* src) {
     dest.signalGroupID = src->signalGroupID;
     dest.name = src->name;
     dest.timeLength = src->timeLength;
