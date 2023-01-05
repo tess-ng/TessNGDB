@@ -106,7 +106,7 @@ private:
 
     bool updateBusLineRoads(BusLine* bline);
 
-    bool updatePassengerArriving(long stationLineID,const QList<PassengerArriving*>& list);
+    bool updateBusStationPassengerArriving(long stationLineID,const QList<PassengerArriving*>& list);
 
     bool updateBusStationLine(const QList<BusStationLine*>& list);
 

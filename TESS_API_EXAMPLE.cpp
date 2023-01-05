@@ -283,13 +283,14 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
                 //只修改第一个BusStationLine
                 test.mlBusStationLine.clear();
                 TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusLine->mlBusStationLine[0]);
+                tempLine->parkingTime = it->mpBusLine->mlBusStationLine[0]->parkingTime + 10;
                 test.mlBusStationLine.push_back(tempLine);
 
                 //只修改第一个BusStationLine的第一个PassengerArriving
                 test.mlBusStationLine[0]->mlPassengerArriving.clear();
                 TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]);
+                tempPA->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
                 test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
-                test.mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
 
                 break;
             }

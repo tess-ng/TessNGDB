@@ -333,7 +333,7 @@ bool TessngDBToolsUpdateBase::updateLaneConnectorPtr(LaneConnector* it) {
     bool result = true;
     QSqlQuery  query(gDB);
     QString sql = "UPDATE LaneConnector set ";
-    sql += QString(",weight=%1").arg(it->weight);
+    sql += QString("weight=%1").arg(it->weight);
     sql += QString(",centerLinePointsJson='%1'").arg(jsonObjToStr(it->centerLinePointsJson));
     sql += QString(",leftBreakPointsJson='%1'").arg(jsonObjToStr(it->leftBreakPointsJson));
     sql += QString(",rightBreakPointsJson='%1'").arg(jsonObjToStr(it->rightBreakPointsJson));
@@ -352,7 +352,7 @@ bool TessngDBToolsUpdateBase::updateLaneConnectors(long connId,const QList<LaneC
     QSqlQuery  query(gDB);
     foreach(auto it,list){
         QString sql="UPDATE LaneConnector set ";
-        sql+=QString(",weight=%1").arg(it->weight);
+        sql+=QString("weight=%1").arg(it->weight);
         sql+=QString(",centerLinePointsJson='%1'").arg(jsonObjToStr(it->centerLinePointsJson));
         sql+=QString(",leftBreakPointsJson='%1'").arg(jsonObjToStr(it->leftBreakPointsJson));
         sql+=QString(",rightBreakPointsJson='%1'").arg(jsonObjToStr(it->rightBreakPointsJson));
@@ -1015,7 +1015,7 @@ bool TessngDBToolsUpdateBase::updateReduceSpeedVehiTypes(const QList<ReduceSpeed
     QSqlQuery  query(gDB);
     foreach (auto it, list) {
         QString sql="UPDATE ReduceSpeedVehiType set ";
-        sql+=QString(",avgSpeed=%1").arg(it->avgSpeed);
+        sql+=QString("avgSpeed=%1").arg(it->avgSpeed);
         sql+=QString(",speedSD=%1").arg(it->speedSD);
         sql+=QString(" WHERE vehicleTypeCode=%1 and reduceSpeedAreaID=%2").arg(it->vehicleTypeCode).arg(it->reduceSpeedAreaID);
         query.prepare(sql);
@@ -1032,7 +1032,7 @@ bool TessngDBToolsUpdateBase::updateReduceSpeedIntervals(const QList<ReduceSpeed
     QSqlQuery  query(gDB);
     foreach (auto it, list) {
         QString sql="UPDATE ReduceSpeedInterval set ";
-        sql+=QString(",reduceSpeedAreaID=%1").arg(it->reduceSpeedAreaID);
+        sql+=QString("reduceSpeedAreaID=%1").arg(it->reduceSpeedAreaID);
         sql+=QString(",startTime=%1").arg(it->startTime);
         sql+=QString(",endTime=%1").arg(it->endTime);
         sql+=QString(" WHERE intervalID=%1").arg(it->intervalID);
@@ -1160,11 +1160,11 @@ bool TessngDBToolsUpdateBase::updateBusLineRoads(BusLine* bline){
     return result;
 }
 
-bool TessngDBToolsUpdateBase::updatePassengerArriving(long stationLineID,const QList<PassengerArriving*>& list){
+bool TessngDBToolsUpdateBase::updateBusStationPassengerArriving(long stationLineID,const QList<PassengerArriving*>& list){
     bool result=true;
     QSqlQuery  query(gDB);
     foreach (auto it, list) {
-        QString sql="UPDATE PassengerArriving set ";
+        QString sql="UPDATE BusStationPassengerArriving set ";
         sql+=QString("stationLineID=%1").arg(stationLineID);
         sql+=QString(",startTime=%1").arg(it->startTime);
         sql+=QString(",endTime=%1").arg(it->endTime);
@@ -1185,10 +1185,10 @@ bool TessngDBToolsUpdateBase::updateBusStationLine(const QList<BusStationLine*>&
     bool result=true;
     QSqlQuery  query(gDB);
     foreach (auto it, list) {
-        result=updatePassengerArriving(it->stationLineID, it->mlPassengerArriving);
+        result= updateBusStationPassengerArriving(it->stationLineID, it->mlPassengerArriving);
         if(!result) break;
         QString sql="UPDATE BusStationLine set ";
-        sql+=QString(",busStationID=%1").arg(it->busStationID);
+        sql+=QString("busStationID=%1").arg(it->busStationID);
         sql+=QString(",busLineID=%1").arg(it->busLineID);
         sql+=QString(",parkingTime=%1").arg(it->parkingTime);
         sql+=QString(",getOnTimePerson=%1").arg(it->getOnTimePerson);
