@@ -6,6 +6,8 @@
 #include <QMainWindow>
 #include "DBPluginGui.h"
 #include <QException>
+
+
 int main(int argc, char *argv[])
 {
     const char* pAppFilePath = "C:\\TESSNG_2.1.0\\TESSNG.exe";

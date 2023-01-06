@@ -113,6 +113,8 @@ private:
     bool updateBusLineBase(BusLine* pBusLine);
 
     QString jsonObjToStr(const QJsonObject& obj);
+
+    bool checkSqlString(QString& str);
 };
 
 #endif // TESSNGDBTOOLSUPDATEBASE_H
