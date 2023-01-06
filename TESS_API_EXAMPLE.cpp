@@ -1027,22 +1027,26 @@ void TESS_API_EXAMPLE::on_btnConnector_released()
         }
         if (testG != NULL) {
             Connector test(testG->id(), testG->mpConnector->mpFromLink, testG->mpConnector->mpToLink);
-            test.roadId = testG->mpConnector->roadId;
-            test.connName = testG->mpConnector->connName;
-            test.length = testG->mpConnector->length;
-            test.curvature = testG->mpConnector->curvature;
-            test.nonLinearCoefficient = testG->mpConnector->nonLinearCoefficient;
-            test.color = testG->mpConnector->color;
-            test.desiredSpeed = testG->mpConnector->desiredSpeed;
-            test.limitSpeed = testG->mpConnector->limitSpeed;
-            test.leftBreakPointsJson = testG->mpConnector->leftBreakPointsJson;
-            test.rightBreakPointsJson = testG->mpConnector->rightBreakPointsJson;
-            test.otherAttrsJson = testG->mpConnector->otherAttrsJson;
-            test.mpFromLink = testG->mpConnector->mpFromLink;
-            test.mpToLink = testG->mpConnector->mpToLink;
-            test.mlLaneConnector = testG->mpConnector->mlLaneConnector;
-            test.mlVehicleType = testG->mpConnector->mlVehicleType;
+            LaneConnector* tempLC = new LaneConnector(
+                testG->mpConnector, 
+                testG->mlGLaneConnector[0]->mpLaneConnector->mpFromLane, 
+                testG->mlGLaneConnector[0]->mpLaneConnector->mpToLane);
+            //填充表单数据
+            TessngDBToolsCopy::getInstance()->copyConnector(test, testG->mpConnector);
+
+            //修改表单数据
+            test.mlLaneConnector.clear();
+            test.color = "F56C6C";
+
+            TessngDBToolsCopy::getInstance()->copyLaneConnector(tempLC, testG->mlGLaneConnector[0]->mpLaneConnector);
+            tempLC->weight = tempLC->weight * 2;
+            test.mlLaneConnector.push_back(tempLC);
+
             result = TessngDBToolsUpdate::getInstance()->updateConnector(test);
+
+            delete tempLC;
+            tempLC = NULL;
+            test.mlLaneConnector.clear();
         }
     }
     else if (bDelete) {
@@ -1075,22 +1079,17 @@ void TESS_API_EXAMPLE::on_btnLane_released()
         Lane test;
         foreach(GLane * it, gpScene->mlGLane) {
             if (it->id() == id) {
-                test.laneID = it->mpLane->laneID;
-                test.linkID = it->mpLane->linkID;
-                test.serialNumber = it->mpLane->serialNumber;
-                test.width = it->mpLane->width;
-                test.expectTravelDirection = it->mpLane->expectTravelDirection;
-                test.actionType = it->mpLane->actionType;
-                test.centerLinePointsJson = it->mpLane->centerLinePointsJson;
-                test.leftBreakPointsJson = it->mpLane->leftBreakPointsJson;
-                test.rightBreakPointsJson = it->mpLane->rightBreakPointsJson;
-                test.otherAttrsJson = it->mpLane->otherAttrsJson;
-                test.mlGuideArrow = it->mpLane->mlGuideArrow;
-                test.mlVehicleType = it->mpLane->mlVehicleType;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyLane(test, it->mpLane);
+
+                //修改表单数据
+                test.mlGuideArrow.clear();
+                test.width = test.width * 1.2;
+
+                result = TessngDBToolsUpdate::getInstance()->updateLane(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateLane(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -1146,35 +1145,21 @@ void TESS_API_EXAMPLE::on_btnLink_released()
         Link test;
         foreach(GLink * it, gpScene->mlGLink) {
             if (it->id() == id) {
-                test.linkID = it->mpLink->linkID;
-                test.linkName = it->mpLink->linkName;
-                test.netId = it->mpLink->netId;
-                test.roadId = it->mpLink->roadId;
-                test.laneNumber = it->mpLink->laneNumber;
-                test.laneWidth = it->mpLink->laneWidth;
-                test.laneColor = it->mpLink->laneColor;
-                test.linkType = it->mpLink->linkType;
-                test.length = it->mpLink->length;
-                test.curvature = it->mpLink->curvature;
-                test.nonLinearCoefficient = it->mpLink->nonLinearCoefficient;
-                test.linkSaturationFlow = it->mpLink->linkSaturationFlow;
-                test.linkTrafficFlow = it->mpLink->linkTrafficFlow;
-                test.desiredSpeed = it->mpLink->desiredSpeed;
-                test.limitSpeed = it->mpLink->limitSpeed;
-                test.minSpeed = it->mpLink->minSpeed;
-                test.addValue = it->mpLink->addValue;
-                test.centerLinePointsJson = it->mpLink->centerLinePointsJson;
-                test.leftBreakPointsJson = it->mpLink->leftBreakPointsJson;
-                test.rightBreakPointsJson = it->mpLink->rightBreakPointsJson;
-                test.otherAttrsJson = it->mpLink->otherAttrsJson;
-                test.startNode = it->mpLink->startNode;
-                test.endNode = it->mpLink->endNode;
-                test.mlVertex = it->mpLink->mlVertex;
-                test.mlLane = it->mpLink->mlLane;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyLink(test, it->mpLink);
+
+                //修改表单数据
+                test.mlVertex.clear();
+                test.mlLane.clear();
+                test.length = test.length * 2.0;
+
+                result = TessngDBToolsUpdate::getInstance()->updateLink(test);
+
+                test.startNode = NULL;
+                test.endNode = NULL;
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateLink(test);
     }
     else if (bDelete) {
         QList<long> list;

@@ -235,8 +235,8 @@ bool TessngDBToolsUpdate::updateLaneConnector(const LaneConnector& laneConn) {
 	assert(nullptr != glaneConn);
 	if (glaneConn->mpLaneConnector->mpConnector->connID != laneConn.laneConnectorID) return true;
 
-	updateLane(*laneConn.mpFromLane);
-	updateLane(*laneConn.mpToLane);
+	/*updateLane(*laneConn.mpFromLane);
+	updateLane(*laneConn.mpToLane);*/
 
 	if (0 == _isnan(laneConn.mrLength))glaneConn->mpLaneConnector->mrLength = laneConn.mrLength;
 	/* 权重 */
@@ -284,10 +284,10 @@ bool TessngDBToolsUpdate::updateConnector(const Connector& conn) {
 	/* 其它属性json数据 */
 	if (!conn.otherAttrsJson.isEmpty())gConn->mpConnector->otherAttrsJson = conn.otherAttrsJson;
 
-	/* 起始路段 */
-	updateLink(*gConn->mpConnector->mpFromLink);
-	/* 目标路段 */
-	updateLink(*gConn->mpConnector->mpToLink);
+	///* 起始路段 */
+	//updateLink(*gConn->mpConnector->mpFromLink);
+	///* 目标路段 */
+	//updateLink(*gConn->mpConnector->mpToLink);
 
 	/* 车道连接集*/
 	foreach(auto it, conn.mlLaneConnector) {

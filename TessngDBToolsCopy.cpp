@@ -245,6 +245,56 @@ bool TessngDBToolsCopy::copyDecisionPoint(DecisionPoint& dest, DecisionPoint* sr
     return true;
 }
 
+bool TessngDBToolsCopy::copyLaneConnector(LaneConnector* dest, LaneConnector* src) {
+    dest->mpConnector = src->mpConnector;
+    dest->mpFromLane = src->mpFromLane;
+    dest->mpToLane = src->mpToLane;
+    dest->laneConnectorID = src->laneConnectorID;
+    dest->mrLength = src->mrLength;
+    dest->weight = src->weight;
+    dest->centerLinePointsJson = src->centerLinePointsJson;
+    dest->leftBreakPointsJson = src->leftBreakPointsJson;
+    dest->rightBreakPointsJson = src->rightBreakPointsJson;
+    dest->otherAttrsJson = src->otherAttrsJson;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyConnector(Connector& dest, Connector* src) {
+    dest.connID = src->connID;
+    dest.roadId = src->roadId;
+    dest.connName = src->connName;
+    dest.length = src->length;
+    dest.curvature = src->curvature;
+    dest.nonLinearCoefficient = src->nonLinearCoefficient;
+    dest.color = src->color;
+    dest.desiredSpeed = src->desiredSpeed;
+    dest.limitSpeed = src->limitSpeed;
+    dest.leftBreakPointsJson = src->leftBreakPointsJson;
+    dest.rightBreakPointsJson = src->rightBreakPointsJson;
+    dest.otherAttrsJson = src->otherAttrsJson;
+    dest.mpFromLink = src->mpFromLink;
+    dest.mpToLink = src->mpToLink;
+    dest.mlLaneConnector = src->mlLaneConnector;
+    dest.mlVehicleType = src->mlVehicleType;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyLane(Lane& dest, Lane* src) {
+    dest.laneID = src->laneID;
+    dest.linkID = src->linkID;
+    dest.serialNumber = src->serialNumber;
+    dest.width = src->width;
+    dest.expectTravelDirection = src->expectTravelDirection;
+    dest.actionType = src->actionType;
+    dest.centerLinePointsJson = src->centerLinePointsJson;
+    dest.leftBreakPointsJson = src->leftBreakPointsJson;
+    dest.rightBreakPointsJson = src->rightBreakPointsJson;
+    dest.otherAttrsJson = src->otherAttrsJson;
+    dest.mlGuideArrow = src->mlGuideArrow;
+    dest.mlVehicleType = src->mlVehicleType;
+    return true;
+}
+
 bool TessngDBToolsCopy::copyLink(Link* dest, Link* src) {
     dest->linkID = src->linkID;
     dest->linkName = src->linkName;
@@ -272,5 +322,35 @@ bool TessngDBToolsCopy::copyLink(Link* dest, Link* src) {
     dest->endNode = src->endNode;
     dest->mlVertex = src->mlVertex;
     dest->mlLane = src->mlLane;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyLink(Link& dest, Link* src) {
+    dest.linkID = src->linkID;
+    dest.linkName = src->linkName;
+    dest.netId = src->netId;
+    dest.roadId = src->roadId;
+    dest.laneNumber = src->laneNumber;
+    dest.laneWidth = src->laneWidth;
+    dest.laneColor = src->laneColor;
+    dest.linkType = src->linkType;
+    dest.length = src->length;
+    dest.curvature = src->curvature;
+    dest.nonLinearCoefficient = src->nonLinearCoefficient;
+    dest.linkSaturationFlow = src->linkSaturationFlow;
+    dest.linkTrafficFlow = src->linkTrafficFlow;
+    dest.desiredSpeed = src->desiredSpeed;
+    dest.limitSpeed = src->limitSpeed;
+    dest.minSpeed = src->minSpeed;
+    dest.addValue = src->addValue;
+    dest.centerLinePointsJson = src->centerLinePointsJson;
+    dest.leftBreakPointsJson = src->leftBreakPointsJson;
+    dest.rightBreakPointsJson = src->rightBreakPointsJson;
+    dest.otherAttrsJson = src->otherAttrsJson;
+
+    dest.startNode = src->startNode;
+    dest.endNode = src->endNode;
+    dest.mlVertex = src->mlVertex;
+    dest.mlLane = src->mlLane;
     return true;
 }

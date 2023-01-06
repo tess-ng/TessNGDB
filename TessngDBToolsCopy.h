@@ -75,6 +75,7 @@ public:
 
 	bool copyDeparturePoint(DeparturePoint& dest, DeparturePoint* src);
 	//-----------------------------------道路及连接---------------------------------
+
 	bool copyRouting(Routing& dest, Routing* src);
 
 	bool copyRoutingFLowRatio(RoutingFLowRatio* dest, RoutingFLowRatio* src);
@@ -83,7 +84,15 @@ public:
 
 	bool copyDecisionPoint(DecisionPoint& dest, DecisionPoint* src);
 
+	bool copyLaneConnector(LaneConnector* dest, LaneConnector* src);
+
+	bool copyConnector(Connector& dest, Connector* src);
+
+	bool copyLane(Lane& dest, Lane* src);
+
 	bool copyLink(Link* dest, Link* src);
+
+	bool copyLink(Link& dest, Link* src);
 protected:
 	~TessngDBToolsCopy();
 };
