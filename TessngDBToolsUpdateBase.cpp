@@ -331,8 +331,8 @@ bool TessngDBToolsUpdateBase::updateGuideArrowPtr(GuideArrow* arrow)
 	if (arrow->laneID > 0)sql += QString("laneID=%1").arg(arrow->laneID);
 	if (!std::_Is_nan(arrow->length))sql += QString(",length=%1").arg(arrow->length);
 	if (!std::_Is_nan(arrow->distToTerminal))sql += QString(",distToTerminal=%1").arg(arrow->distToTerminal);
-	sql += QString(",arrowType='%1'").arg(arrow->arrowType);
-	sql += QString(" WHERE guideArrowID=%1").arg(arrow->laneID);
+	sql += QString(",arrowType=%1").arg(arrow->arrowType);
+	sql += QString(" WHERE guideArrowID=%1").arg(arrow->guideArrowID);
 
 	if (checkSqlString(sql)) {
 		query.prepare(sql);
@@ -504,6 +504,7 @@ failed:
 	return result;
 }
 bool TessngDBToolsUpdateBase::updateRoutingLinks(Routing* routing) {
+	if (routing->mllLink.isEmpty()) return true;
 	bool result = TessngDBToolsRemove::getInstance()->removeRoutingLink(routing);
 	if (!result) return false;
 	QSqlQuery  query(gDB);
