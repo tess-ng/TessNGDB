@@ -349,7 +349,6 @@ Routing* TessngDBToolsUpdate::updateRouteing(const Routing& rt) {
 	return gRt->getRouting();
 }
 void TessngDBToolsUpdate::gupdateRoutingFlowByInterval(QList<RoutingFLowRatio*>& dest, const QList<RoutingFLowRatio*>& src) {
-	bool result = false;
 	for (int i = 0; i < dest.size(); i++) {
 		for (int j = 0; j < src.size(); j++) {
 			if (dest[i]->RoutingFLowRatioID != src[j]->RoutingFLowRatioID) continue;

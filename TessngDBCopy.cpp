@@ -1116,19 +1116,25 @@ bool TessngDBCopy::clippingDB(const QPainterPath& pathShape, const QString& path
 
     ///保存发车点
     foreach(GDeparturePoint * pDp, gpScene->mlGDeparturePoint) {
-        if (!hashLink.contains(pDp->link()->id())) continue;
+        ILink* link = pDp->link();
+        if (nullptr == link) continue;
+        if (!hashLink.contains(link->id())) continue;
         result = insertDeparturePoint(*pDp->mpDeparturePoint);
         if (!result) goto exit;
     }
     ///保存采集器
     foreach(GVehicleDrivInfoCollector * pGCollecter, gpScene->mlGVehicleDrivInfoCollector) {
-        if (!hashLink.contains(pGCollecter->link()->id())) continue;
+        ILink* link = pGCollecter->link();
+        if (nullptr == link) continue;
+        if (!hashLink.contains(link->id())) continue;
         result = insertDrivInfoCollector(*pGCollecter->mpVehicleDrivInfoCollector);
         if (!result) goto exit;
     }
     ///保存排队计数器
     foreach(GVehicleQueueCounter * pGQueue, gpScene->mlGVehicleQueueCounter) {
-        if (!hashLink.contains(pGQueue->mpGLane->link()->id())) continue;
+        GLane* lane = pGQueue->mpGLane;
+        if (nullptr == lane) continue;
+        if (!hashLink.contains(lane->link()->id())) continue;
         result = insertVehicleQueueCounter(pGQueue->mpVehicleQueueCounter);
         if (!result) goto exit;
     }
@@ -1170,7 +1176,9 @@ bool TessngDBCopy::clippingDB(const QPainterPath& pathShape, const QString& path
     }
     ///保存公交站
     foreach(GBusStation * pGBusStation, gpScene->mlGBusStation) {
-        if (!hashLink.contains(pGBusStation->link()->id())) continue;
+        ILink* link = pGBusStation->link();
+        if (nullptr == link)continue;
+        if (!hashLink.contains(link->id())) continue;
         result = insertBusStation(pGBusStation->mpBusStation);
         if (!result) goto exit;
     }

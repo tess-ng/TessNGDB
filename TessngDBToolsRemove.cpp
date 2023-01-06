@@ -1475,9 +1475,11 @@ bool TessngDBToolsRemove::protectRoutingLaneConnector(GConnector* connector, lon
             }
         }
     }
+
+    return true;
 }
 
-bool TessngDBToolsRemove::protectRoutingLinks(GConnector* connector, long fromLaneId, long toLaneId)
+bool TessngDBToolsRemove::protectRoutingLinks(GConnector* connector, long /*fromLaneId*/, long /*toLaneId*/)
 {
     //删除连接段之前要删除经过这个连接段的所有路径的一部分序列
     for (int i = 0; i < gpScene->mlGRouting.size(); i++) {
@@ -1517,9 +1519,11 @@ bool TessngDBToolsRemove::protectRoutingLinks(GConnector* connector, long fromLa
         }
 
     }
+
+    return true;
 }
 
-bool TessngDBToolsRemove::protectBusLineLinks(GConnector* connector, long fromLaneId, long toLaneId)
+bool TessngDBToolsRemove::protectBusLineLinks(GConnector* connector, long /*fromLaneId*/, long /*toLaneId*/)
 {
     //删除连接段之前要删除经过这个连接段的所有公交线路的一部分序列
     for (int i = 0; i < gpScene->mlGBusLine.size(); i++) {
@@ -1552,6 +1556,8 @@ bool TessngDBToolsRemove::protectBusLineLinks(GConnector* connector, long fromLa
         }
         gpScene->mlGBusLine.at(i)->buildPath();
     }
+
+    return true;
 }
 
 bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long toLaneId, bool trans)
