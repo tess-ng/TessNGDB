@@ -556,10 +556,10 @@ bool TessngDBToolsUpdate::updateVehicleTravelDetector(const VehicleTravelDetecto
     QList<GVehicleTravelDetector*> list = gpScene->findGVehicleTravelDetectorById(vtd.detectorId);
     GVehicleTravelDetector* gdP = nullptr;
     foreach(auto it, list) {
-        if (it->mpVehicleTravelDetector->detectorId == vtd.detectorId) continue;
-
-        gdP = it;
-        break;
+        if (it->mpVehicleTravelDetector->detectorId == vtd.detectorId) {
+            gdP = it;
+            break;
+        }
     }
     if (nullptr == gdP) return true;
     /* 检测器名称 */

@@ -129,6 +129,48 @@ bool TessngDBToolsCopy::copyReduceSpeedArea(ReduceSpeedArea& dest, ReduceSpeedAr
     return true;
 }
 
+bool TessngDBToolsCopy::copyVehicleTravelDetector(VehicleTravelDetector& dest, VehicleTravelDetector* src) {
+    dest.detectorId = src->detectorId;
+    dest.name = src->name;
+    dest.startRoadId = src->startRoadId;
+    dest.start_laneNumber = src->start_laneNumber;
+    dest.start_toLaneNumber = src->start_toLaneNumber;
+    dest.startDist = src->startDist;
+    dest.startX = src->startX;
+    dest.startY = src->startY;
+    dest.teminalRoadId = src->teminalRoadId;
+    dest.teminal_laneNumber = src->teminal_laneNumber;
+    dest.teminal_toLaneNumber = src->teminal_toLaneNumber;
+    dest.teminalDist = src->teminalDist;
+    dest.teminalX = src->teminalX;
+    dest.teminalY = src->teminalY;
+    dest.startTime = src->startTime;
+    dest.endTime = src->endTime;
+    dest.dataInterval = src->dataInterval;
+    dest.shortestDistance = src->shortestDistance;
+    return true;
+}
+
+bool copyVehicleQueueCounter(VehicleQueueCounter& dest, VehicleQueueCounter* src) {
+    dest.queueCounterID = src->queueCounterID;
+    dest.name = src->name;
+    dest.roadID = src->roadID;
+    dest.laneNumber = src->laneNumber;
+    dest.toLaneNumber = src->toLaneNumber;
+    dest.x = src->x;
+    dest.y = src->y;
+    dest.z = src->z;
+    dest.speedLowLimit = src->speedLowLimit;
+    dest.speedUpLimit = src->speedUpLimit;
+    dest.maxDistInterval = src->maxDistInterval;
+    dest.maxQueueLength = src->maxQueueLength;
+    dest.distance = src->distance;
+    dest.startTime = src->startTime;
+    dest.endTime = src->endTime;
+    dest.dataInterval = src->dataInterval;
+    dest.countInterval = src->countInterval;
+    return true;
+}
 //-----------------------------------道路及连接---------------------------------
 bool TessngDBToolsCopy::copyLink(Link* dest, Link* src) {
     dest->linkID = src->linkID;

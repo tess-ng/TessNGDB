@@ -66,6 +66,9 @@ public:
 	bool copyReduceSpeedVehiType(ReduceSpeedVehiType* dest, ReduceSpeedVehiType* src);
 	bool copyReduceSpeedArea(ReduceSpeedArea& dest, ReduceSpeedArea* src);
 
+	bool copyVehicleTravelDetector(VehicleTravelDetector& dest, VehicleTravelDetector* src);
+
+	bool copyVehicleQueueCounter(VehicleQueueCounter& dest, VehicleQueueCounter* src);
 	//-----------------------------------道路及连接---------------------------------
 	bool copyLink(Link* dest, Link* src);
 protected:

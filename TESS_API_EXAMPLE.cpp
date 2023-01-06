@@ -81,11 +81,10 @@ void TESS_API_EXAMPLE::on_btnSignalLamp_released()
                 TessngDBToolsCopy::getInstance()->copySignalLamp(test, it->mpSignalLamp);
                 test.name = it->mpSignalLamp->name + "1";
 
+                result = TessngDBToolsUpdate::getInstance()->updateSignalLamp(test);
                 break;
             }
         }
-
-        result = TessngDBToolsUpdate::getInstance()->updateSignalLamp(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -182,10 +181,10 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
                     test.mlPhase.push_back(tempSP);
                 }
 
+                result = TessngDBToolsUpdate::getInstance()->updateSignalGroup(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateSignalGroup(test);
 
         delete tempSP;
         tempSP = NULL;
@@ -302,10 +301,10 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
                     }
                 }
 
+                result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
 
         delete tempPA;
         tempPA = NULL;
@@ -372,10 +371,10 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
                     }
                 }
 
+                result = TessngDBToolsUpdate::getInstance()->updateBustation(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateBustation(test);
 
         delete tempPA;
         tempPA = NULL;
@@ -420,28 +419,16 @@ void TESS_API_EXAMPLE::on_btnVehicleTravelDetector_released()
         VehicleTravelDetector test;
         foreach(GVehicleTravelDetector * it, gpScene->mlGVehicleTravelDetector) {
             if (it->mpVehicleTravelDetector->detectorId == id) {
-                test.detectorId = it->mpVehicleTravelDetector->detectorId;
-                test.name = it->mpVehicleTravelDetector->name;
-                test.startRoadId = it->mpVehicleTravelDetector->startRoadId;
-                test.start_laneNumber = it->mpVehicleTravelDetector->start_laneNumber;
-                test.start_toLaneNumber = it->mpVehicleTravelDetector->start_toLaneNumber;
-                test.startDist = it->mpVehicleTravelDetector->startDist;
-                test.startX = it->mpVehicleTravelDetector->startX;
-                test.startY = it->mpVehicleTravelDetector->startY;
-                test.teminalRoadId = it->mpVehicleTravelDetector->teminalRoadId;
-                test.teminal_laneNumber = it->mpVehicleTravelDetector->teminal_laneNumber;
-                test.teminal_toLaneNumber = it->mpVehicleTravelDetector->teminal_toLaneNumber;
-                test.teminalDist = it->mpVehicleTravelDetector->teminalDist;
-                test.teminalX = it->mpVehicleTravelDetector->teminalX;
-                test.teminalY = it->mpVehicleTravelDetector->teminalY;
-                test.startTime = it->mpVehicleTravelDetector->startTime;
-                test.endTime = it->mpVehicleTravelDetector->endTime;
-                test.dataInterval = it->mpVehicleTravelDetector->dataInterval;
-                test.shortestDistance = it->mpVehicleTravelDetector->shortestDistance;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyVehicleTravelDetector(test, it->mpVehicleTravelDetector);
+
+                //修改表单数据
+                test.name = it->mpVehicleTravelDetector->name + "1";
+
+                result = TessngDBToolsUpdate::getInstance()->updateVehicleTravelDetector(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateVehicleTravelDetector(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -473,27 +460,16 @@ void TESS_API_EXAMPLE::on_btnVehicleQueueCounter_released()
         VehicleQueueCounter test;
         foreach(GVehicleQueueCounter * it, gpScene->mlGVehicleQueueCounter) {
             if (it->mpVehicleQueueCounter->queueCounterID == id) {
-                test.queueCounterID = it->mpVehicleQueueCounter->queueCounterID;
-                test.name = it->mpVehicleQueueCounter->name;
-                test.roadID = it->mpVehicleQueueCounter->roadID;
-                test.laneNumber = it->mpVehicleQueueCounter->laneNumber;
-                test.toLaneNumber = it->mpVehicleQueueCounter->toLaneNumber;
-                test.x = it->mpVehicleQueueCounter->x;
-                test.y = it->mpVehicleQueueCounter->y;
-                test.z = it->mpVehicleQueueCounter->z;
-                test.speedLowLimit = it->mpVehicleQueueCounter->speedLowLimit;
-                test.speedUpLimit = it->mpVehicleQueueCounter->speedUpLimit;
-                test.maxDistInterval = it->mpVehicleQueueCounter->maxDistInterval;
-                test.maxQueueLength = it->mpVehicleQueueCounter->maxQueueLength;
-                test.distance = it->mpVehicleQueueCounter->distance;
-                test.startTime = it->mpVehicleQueueCounter->startTime;
-                test.endTime = it->mpVehicleQueueCounter->endTime;
-                test.dataInterval = it->mpVehicleQueueCounter->dataInterval;
-                test.countInterval = it->mpVehicleQueueCounter->countInterval;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyVehicleQueueCounter(test, it->mpVehicleQueueCounter);
+
+                //修改表单数据
+                test.name = it->mpVehicleQueueCounter->name + "1";
+
+                result = TessngDBToolsUpdate::getInstance()->updateVehicleQueueCounter(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateVehicleQueueCounter(test);
     }
     else if (bDelete) {
         QList<long> list;
