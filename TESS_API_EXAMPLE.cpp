@@ -940,7 +940,6 @@ void TESS_API_EXAMPLE::on_btnDecisionPoint_released()
 
                 if (!it->mpDecisionPoint->mlRoutingFlowByInterval.isEmpty()) {
                     TessngDBToolsCopy::getInstance()->copyRoutingFlowByInterval(tempInterval, it->mpDecisionPoint->mlRoutingFlowByInterval[0]);
-                    tempInterval->endDateTime = tempInterval->endDateTime + 10;
                     test.mlRoutingFlowByInterval.push_back(tempInterval);
 
                     tempInterval->mlRoutingFlowRatio.clear();
