@@ -24,7 +24,7 @@ protected:
     bool updateLaneConnectorPtr(LaneConnector*);
 
     ///update Routeing
-    bool updateRouteingPtr(Routing*);
+    bool updateRouteingPtr(Routing*,bool trans=true);
 
     ///update DecisionPoint
     bool updateDecisionPointPtr(DecisionPoint*);

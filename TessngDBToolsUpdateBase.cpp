@@ -547,11 +547,11 @@ bool TessngDBToolsUpdateBase::updateRouteingBase(Routing* route) {
 
 	return result;
 }
-bool TessngDBToolsUpdateBase::updateRouteingPtr(Routing* it) {
+bool TessngDBToolsUpdateBase::updateRouteingPtr(Routing* it, bool trans) {
 	bool result = true;
 	try {
 		//开启事务
-		gDB.transaction();
+		if(trans)gDB.transaction();
 		result = updateRoutingLinks(it);
 		if (!result) goto failed;
 
@@ -573,10 +573,13 @@ bool TessngDBToolsUpdateBase::updateRouteingPtr(Routing* it) {
 		result = false;
 	}
 failed:
-	result = gDB.commit() && result;
-	if (!result) {
-		gDB.rollback();
+	if (trans) {
+		result = gDB.commit() && result;
+		if (!result) {
+			gDB.rollback();
+		}
 	}
+
 
 	return result;
 }
@@ -655,7 +658,7 @@ bool TessngDBToolsUpdateBase::updateDecisionPointPtr(DecisionPoint* mpDecisionPo
 		if (!result) goto failed;
 
 		foreach(auto it, mpDecisionPoint->mlRouting) {
-			result = updateRouteingPtr(it);
+			result = updateRouteingPtr(it,false);
 			if (!result) goto failed;
 		}
 
