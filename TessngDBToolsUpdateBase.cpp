@@ -117,12 +117,13 @@ bool TessngDBToolsUpdateBase::updateNode(const QList<Node*>& list) {
 bool TessngDBToolsUpdateBase::updateLinkVertex(long linkId, const QList<Vertex*>& list) {
 	bool result = true;
 	QSqlQuery  query(gDB);
+	int num = 1;
 	foreach(auto it, list) {
 		query.prepare(QString("UPDATE LinkVertex set Num=%1 WHERE LinkID=%2 and VertexID=%3")
-			.arg(list.size())
+			.arg(num)
 			.arg(linkId)
 			.arg(it->vertexID));
-
+		num++;
 		result = query.exec();
 		if (!result) {
 			throw PH::Exception(query.lastError().text().toStdString());
