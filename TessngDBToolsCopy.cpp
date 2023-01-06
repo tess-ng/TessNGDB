@@ -151,7 +151,7 @@ bool TessngDBToolsCopy::copyVehicleTravelDetector(VehicleTravelDetector& dest, V
     return true;
 }
 
-bool copyVehicleQueueCounter(VehicleQueueCounter& dest, VehicleQueueCounter* src) {
+bool TessngDBToolsCopy::copyVehicleQueueCounter(VehicleQueueCounter& dest, VehicleQueueCounter* src) {
     dest.queueCounterID = src->queueCounterID;
     dest.name = src->name;
     dest.roadID = src->roadID;
@@ -171,7 +171,80 @@ bool copyVehicleQueueCounter(VehicleQueueCounter& dest, VehicleQueueCounter* src
     dest.countInterval = src->countInterval;
     return true;
 }
+
+bool TessngDBToolsCopy::copyVehicleDrivInfoCollector(VehicleDrivInfoCollector& dest, VehicleDrivInfoCollector* src) {
+    dest.collecterID = src->collecterID;
+    dest.name = src->name;
+    dest.roadID = src->roadID;
+    dest.laneNumber = src->laneNumber;
+    dest.toLaneNumber = src->toLaneNumber;
+    dest.distance = src->distance;
+    dest.x = src->x;
+    dest.y = src->y;
+    dest.z = src->z;
+    dest.startTime = src->startTime;
+    dest.endTime = src->endTime;
+    dest.dataInterval = src->dataInterval;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyGuideArrow(GuideArrow& dest, GuideArrow* src) {
+    dest.guideArrowID = src->guideArrowID;
+    dest.laneID = src->laneID;
+    dest.length = src->length;
+    dest.distToTerminal = src->distToTerminal;
+    dest.arrowType = src->arrowType;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyDeparturePoint(DeparturePoint& dest, DeparturePoint* src) {
+    dest.departurePointID = src->departurePointID;
+    dest.name = src->name;
+    dest.mpLink = src->mpLink;
+    dest.mlDepaInterval = src->mlDepaInterval;
+    dest.mlDepaPossion = src->mlDepaPossion;
+    return true;
+}
 //-----------------------------------道路及连接---------------------------------
+bool TessngDBToolsCopy::copyRouting(Routing& dest, Routing* src) {
+    dest.routingID = src->routingID;
+    dest.routingName = src->routingName;
+    dest.proportion = src->proportion;
+    dest.mpDecisionPoint = src->mpDecisionPoint;
+    dest.mllLink = src->mllLink;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyRoutingFLowRatio(RoutingFLowRatio* dest, RoutingFLowRatio* src) {
+    dest->RoutingFLowRatioID = src->RoutingFLowRatioID;
+    dest->routingID = src->routingID;
+    dest->startDateTime = src->startDateTime;
+    dest->endDateTime = src->endDateTime;
+    dest->ratio = src->ratio;
+    dest->vehiCount = src->vehiCount;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyRoutingFlowByInterval(RoutingFlowByInterval* dest, RoutingFlowByInterval* src) {
+    dest->endDateTime = src->endDateTime;
+    dest->mlRoutingFlowRatio = src->mlRoutingFlowRatio;
+    return true;
+}
+
+bool TessngDBToolsCopy::copyDecisionPoint(DecisionPoint& dest, DecisionPoint* src) {
+    dest.deciPointID = src->deciPointID;
+    dest.deciPointName = src->deciPointName;
+    dest.X = src->X;
+    dest.Y = src->Y;
+    dest.Z = src->Z;
+    dest.mFromPoint = src->mFromPoint;
+    dest.mToPoint = src->mToPoint;
+    dest.mlRouting = src->mlRouting;
+    dest.mpLink = src->mpLink;
+    dest.mlRoutingFlowByInterval = src->mlRoutingFlowByInterval;
+    return true;
+}
+
 bool TessngDBToolsCopy::copyLink(Link* dest, Link* src) {
     dest->linkID = src->linkID;
     dest->linkName = src->linkName;

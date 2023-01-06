@@ -50,26 +50,39 @@ class TessngDBToolsCopy: public PH::SingleHolder<TessngDBToolsCopy>
 public:
 	TessngDBToolsCopy::TessngDBToolsCopy();
 	//------------------------------------信号控制----------------------------------
-
 	bool copySignalLamp(SignalLamp& dest, SignalLamp* src);
 	bool copySignalPhase(SignalPhase* dest, SignalPhase* src);
 	bool copySignalGroup(SignalGroup& dest, SignalGroup* src);
 	//--------------------------------------公交------------------------------------
-
 	bool copyPassengerArriving(PassengerArriving* dest, PassengerArriving* src);
 	bool copyBusStationLine(BusStationLine* dest, BusStationLine* src);
 	bool copyBusLine(BusLine& dest, BusLine* src);
 	bool copyBusStation(BusStation& dest, BusStation* src);
 	//---------------------------------车辆运行及检测-------------------------------
-
 	bool copyReduceSpeedInterval(ReduceSpeedInterval* dest, ReduceSpeedInterval* src);
+
 	bool copyReduceSpeedVehiType(ReduceSpeedVehiType* dest, ReduceSpeedVehiType* src);
+
 	bool copyReduceSpeedArea(ReduceSpeedArea& dest, ReduceSpeedArea* src);
 
 	bool copyVehicleTravelDetector(VehicleTravelDetector& dest, VehicleTravelDetector* src);
 
 	bool copyVehicleQueueCounter(VehicleQueueCounter& dest, VehicleQueueCounter* src);
+
+	bool copyVehicleDrivInfoCollector(VehicleDrivInfoCollector& dest, VehicleDrivInfoCollector* src);
+
+	bool copyGuideArrow(GuideArrow& dest, GuideArrow* src);
+
+	bool copyDeparturePoint(DeparturePoint& dest, DeparturePoint* src);
 	//-----------------------------------道路及连接---------------------------------
+	bool copyRouting(Routing& dest, Routing* src);
+
+	bool copyRoutingFLowRatio(RoutingFLowRatio* dest, RoutingFLowRatio* src);
+
+	bool copyRoutingFlowByInterval(RoutingFlowByInterval* dest, RoutingFlowByInterval* src);
+
+	bool copyDecisionPoint(DecisionPoint& dest, DecisionPoint* src);
+
 	bool copyLink(Link* dest, Link* src);
 protected:
 	~TessngDBToolsCopy();

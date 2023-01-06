@@ -299,8 +299,8 @@ bool TessngDBToolsUpdateBase::updateGuideArrowPtr(GuideArrow *arrow)
     sql+=QString("laneID=%1").arg(arrow->laneID);
     sql+=QString(",length=%1").arg(arrow->length);
     sql+=QString(",distToTerminal=%1").arg(arrow->distToTerminal);
-    sql+=QString(",arrowType='%1'").arg(arrow->arrowType);
-    sql+=QString(" WHERE guideArrowID=%1").arg(arrow->laneID);
+    sql+=QString(",arrowType=%1").arg(arrow->arrowType);
+    sql+=QString(" WHERE guideArrowID=%1").arg(arrow->guideArrowID);
     query.prepare(sql);
     result=query.exec();
     if(!result) throw PH::Exception(query.lastError().text().toStdString());
@@ -453,9 +453,10 @@ failed:
     return result;
 }
 bool TessngDBToolsUpdateBase::updateRoutingLinks(Routing* routing){
-    bool result=TessngDBToolsRemove::getInstance()->removeRoutingLink(routing);
+    if (routing->mllLink.isEmpty()) return true;
+    bool result = TessngDBToolsRemove::getInstance()->removeRoutingLink(routing);
     if(!result) return false;
-    QSqlQuery  query(gDB);
+    QSqlQuery query(gDB);
     QString sql = "insert into RoutingLink(routingID, linkID, num1, num2) values(:routingID, :linkID, :num1, :num2)";
     query.prepare(sql);
     int num1 = 1;
@@ -595,7 +596,6 @@ bool TessngDBToolsUpdateBase::updateDecisionPointPtr(DecisionPoint* mpDecisionPo
             result = updateRouteingPtr(it);
             if (!result) goto failed;
         }
-
 
         result = updateDecisionPointBase(mpDecisionPoint);
         if (!result) goto failed;

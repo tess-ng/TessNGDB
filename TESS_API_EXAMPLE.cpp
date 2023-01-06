@@ -501,22 +501,16 @@ void TESS_API_EXAMPLE::on_btnVehicleDrivInfoCollecter_released()
         VehicleDrivInfoCollector test;
         foreach(GVehicleDrivInfoCollector * it, gpScene->mlGVehicleDrivInfoCollector) {
             if (it->id() == id) {
-                test.collecterID = it->mpVehicleDrivInfoCollector->collecterID;
-                test.name = it->mpVehicleDrivInfoCollector->name;
-                test.roadID = it->mpVehicleDrivInfoCollector->roadID;
-                test.laneNumber = it->mpVehicleDrivInfoCollector->laneNumber;
-                test.toLaneNumber = it->mpVehicleDrivInfoCollector->toLaneNumber;
-                test.distance = it->mpVehicleDrivInfoCollector->distance;
-                test.x = it->mpVehicleDrivInfoCollector->x;
-                test.y = it->mpVehicleDrivInfoCollector->y;
-                test.z = it->mpVehicleDrivInfoCollector->z;
-                test.startTime = it->mpVehicleDrivInfoCollector->startTime;
-                test.endTime = it->mpVehicleDrivInfoCollector->endTime;
-                test.dataInterval = it->mpVehicleDrivInfoCollector->dataInterval;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyVehicleDrivInfoCollector(test, it->mpVehicleDrivInfoCollector);
+
+                //修改表单数据
+                test.name = it->mpVehicleDrivInfoCollector->name + "1";
+
+                result = TessngDBToolsUpdate::getInstance()->updateVehicleDrivInfoCollector(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateVehicleDrivInfoCollector(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -548,15 +542,17 @@ void TESS_API_EXAMPLE::on_btnGuideArrow_released()
         GuideArrow test;
         foreach(GGuideArrow * it, gpScene->mlGGuideArrow) {
             if (it->mpGuideArrow->guideArrowID == id) {
-                test.guideArrowID = it->mpGuideArrow->guideArrowID;
-                test.laneID = it->mpGuideArrow->laneID;
-                test.length = it->mpGuideArrow->length;
-                test.distToTerminal = it->mpGuideArrow->distToTerminal;
-                test.arrowType = it->mpGuideArrow->arrowType;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyGuideArrow(test, it->mpGuideArrow);
+
+                //修改表单数据
+                test.length = it->mpGuideArrow->length * 1.2;
+                test.arrowType = it->mpGuideArrow->Left;
+
+                result = TessngDBToolsUpdate::getInstance()->updateGuideArrow(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateGuideArrow(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -734,15 +730,16 @@ void TESS_API_EXAMPLE::on_btnDeparturePoint_released()
         DeparturePoint test;
         foreach(GDeparturePoint * it, gpScene->mlGDeparturePoint) {
             if (it->id() == id) {
-                test.departurePointID = it->mpDeparturePoint->departurePointID;
-                test.name = it->mpDeparturePoint->name;
-                test.mpLink = it->mpDeparturePoint->mpLink;
-                test.mlDepaInterval = it->mpDeparturePoint->mlDepaInterval;
-                test.mlDepaPossion = it->mpDeparturePoint->mlDepaPossion;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyDeparturePoint(test, it->mpDeparturePoint);
+
+                //修改表单数据
+                test.name = it->mpDeparturePoint->name + "1";
+
+                result = TessngDBToolsUpdate::getInstance()->updateDeparturePoint(test);
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateDeparturePoint(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -889,15 +886,19 @@ void TESS_API_EXAMPLE::on_btnRouting_released()
         foreach(GRouting * it, gpScene->mlGRouting) {
             if (it->id() == id) {
                 Routing* itRouting = it->getRouting();
-                test.routingID = itRouting->routingID;
-                test.routingName = itRouting->routingName;
-                test.proportion = itRouting->proportion;
-                test.mpDecisionPoint = itRouting->mpDecisionPoint;
-                test.mllLink = itRouting->mllLink;
+                
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyRouting(test, itRouting);
+
+                //修改表单数据
+                test.mllLink.clear();
+                test.routingName = itRouting->routingName + "1";
+
+                result = TessngDBToolsUpdate::getInstance()->updateRouteing(test);
+
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateRouteing(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -926,22 +927,45 @@ void TESS_API_EXAMPLE::on_btnDecisionPoint_released()
     }
     else if (bUpdate) {
         DecisionPoint test;
+        RoutingFlowByInterval* tempInterval = new RoutingFlowByInterval();
+        RoutingFLowRatio* tempRatio = new RoutingFLowRatio();
         foreach(GDecisionPoint * it, gpScene->mlGDecisionPoint) {
             if (it->id() == id) {
-                test.deciPointID = it->mpDecisionPoint->deciPointID;
-                test.deciPointName = it->mpDecisionPoint->deciPointName;
-                test.X = it->mpDecisionPoint->X;
-                test.Y = it->mpDecisionPoint->Y;
-                test.Z = it->mpDecisionPoint->Z;
-                test.mFromPoint = it->mpDecisionPoint->mFromPoint;
-                test.mToPoint = it->mpDecisionPoint->mToPoint;
-                test.mlRouting = it->mpDecisionPoint->mlRouting;
-                test.mpLink = it->mpDecisionPoint->mpLink;
-                test.mlRoutingFlowByInterval = it->mpDecisionPoint->mlRoutingFlowByInterval;
+                //填充表单数据
+                TessngDBToolsCopy::getInstance()->copyDecisionPoint(test, it->mpDecisionPoint);
+
+                //修改表单数据
+                test.deciPointName = it->mpDecisionPoint->deciPointName + "1";
+                test.mlRoutingFlowByInterval.clear();
+                test.mlRouting.clear();
+
+                if (!it->mpDecisionPoint->mlRoutingFlowByInterval.isEmpty()) {
+                    TessngDBToolsCopy::getInstance()->copyRoutingFlowByInterval(tempInterval, it->mpDecisionPoint->mlRoutingFlowByInterval[0]);
+                    tempInterval->endDateTime = tempInterval->endDateTime + 10;
+                    test.mlRoutingFlowByInterval.push_back(tempInterval);
+
+                    tempInterval->mlRoutingFlowRatio.clear();
+                    if (!it->mpDecisionPoint->mlRoutingFlowByInterval[0]->mlRoutingFlowRatio.isEmpty()) {
+                        TessngDBToolsCopy::getInstance()->copyRoutingFLowRatio(tempRatio, it->mpDecisionPoint->mlRoutingFlowByInterval[0]->mlRoutingFlowRatio[0]);
+                        tempRatio->ratio = tempRatio->ratio * 1.2;
+                        test.mlRoutingFlowByInterval[0]->mlRoutingFlowRatio.push_back(tempRatio);
+                    }
+                }
+
+                result = TessngDBToolsUpdate::getInstance()->updateDecisionPoint(test);
+
                 break;
             }
         }
-        result = TessngDBToolsUpdate::getInstance()->updateDecisionPoint(test);
+        delete tempRatio;
+        tempRatio = NULL;
+        if (!test.mlRoutingFlowByInterval.isEmpty()) {
+            test.mlRoutingFlowByInterval[0]->mlRoutingFlowRatio.clear();
+        }
+
+        delete tempInterval;
+        tempInterval = NULL;
+        test.mlRoutingFlowByInterval.clear();
     }
     else if (bDelete) {
         QList<long> list;
