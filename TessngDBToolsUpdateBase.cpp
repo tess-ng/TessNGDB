@@ -117,12 +117,13 @@ bool TessngDBToolsUpdateBase::updateNode(const QList<Node*>& list) {
 bool TessngDBToolsUpdateBase::updateLinkVertex(long linkId, const QList<Vertex*>& list) {
 	bool result = true;
 	QSqlQuery  query(gDB);
+	int num = 1;
 	foreach(auto it, list) {
 		query.prepare(QString("UPDATE LinkVertex set Num=%1 WHERE LinkID=%2 and VertexID=%3")
-			.arg(list.size())
+			.arg(num)
 			.arg(linkId)
 			.arg(it->vertexID));
-
+		num++;
 		result = query.exec();
 		if (!result) {
 			throw PH::Exception(query.lastError().text().toStdString());
@@ -149,7 +150,7 @@ bool TessngDBToolsUpdateBase::updateLinkBase(Link* link) {
 	if (!std::_Is_nan(link->length))sql += QString(",length=%1").arg(link->length);
 	if (!std::_Is_nan(link->curvature))sql += QString(",curvature=%1").arg(link->curvature);
 	if (!std::_Is_nan(link->nonLinearCoefficient))sql += QString(",nonLinearCoefficient=%1").arg(link->nonLinearCoefficient);
-	if (!std::_Is_nan(link->linkSaturationFlow)) sql += QString(",linkSaturationFlow=%1").arg(link->linkSaturationFlow);
+	if (!std::_Is_nan(link->linkSaturationFlow)) sql += QString(",LinkSaturationFlow=%1").arg(link->linkSaturationFlow);
 	if (!std::_Is_nan(link->linkTrafficFlow))sql += QString(",linkTrafficFlow=%1").arg(link->linkTrafficFlow);
 	if (!std::_Is_nan(link->desiredSpeed))sql += QString(",desiredSpeed=%1").arg(link->desiredSpeed);
 	if (!std::_Is_nan(link->limitSpeed))sql += QString(",limitSpeed=%1").arg(link->limitSpeed);
