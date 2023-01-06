@@ -937,7 +937,6 @@ void TESS_API_EXAMPLE::on_btnDecisionPoint_released()
                 //修改表单数据
                 test.deciPointName = it->mpDecisionPoint->deciPointName + "1";
                 test.mlRoutingFlowByInterval.clear();
-                test.mlRouting.clear();
 
                 if (!it->mpDecisionPoint->mlRoutingFlowByInterval.isEmpty()) {
                     TessngDBToolsCopy::getInstance()->copyRoutingFlowByInterval(tempInterval, it->mpDecisionPoint->mlRoutingFlowByInterval[0]);
