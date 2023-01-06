@@ -178,7 +178,7 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
                 test.mlPhase.clear();
                 if (!it->mlPhase.isEmpty()) {
                     TessngDBToolsCopy::getInstance()->copySignalPhase(tempSP, it->mlPhase[0]);
-                    tempSP->name = it->mlPhase[0]->name;
+                    tempSP->name = it->mlPhase[0]->name + "1";
                     test.mlPhase.push_back(tempSP);
                 }
 
@@ -186,6 +186,10 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
             }
         }
         result = TessngDBToolsUpdate::getInstance()->updateSignalGroup(test);
+
+        delete tempSP;
+        tempSP = NULL;
+        if (!test.mlPhase.isEmpty()) test.mlPhase.clear();
     }
     else if (bDelete) {
         QList<long> list;
