@@ -100,7 +100,7 @@ bool TessngDBToolsUpdateBase::updateNode(const QList<Node*>& list) {
 				.arg(it->nodeID));
 			result = query.exec();
 		}
-		if (it->nodeName != "") {
+		if (it->mpVertex != NULL) {
 			query.prepare(QString("UPDATE Node set vertexID='%1' WHERE nodeID=%2")
 				.arg(it->mpVertex->vertexID)
 				.arg(it->nodeID));
