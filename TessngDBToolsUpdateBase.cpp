@@ -190,16 +190,16 @@ bool TessngDBToolsUpdateBase::updateLinkPtr(Link* mpLink) {
 
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what()<<__FILE__<<__LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update Links failed! Unknow Error.";
+		qWarning() << "update Links failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -258,16 +258,16 @@ bool TessngDBToolsUpdateBase::updateLanesPtr(const QList<GLane*>& list, bool tra
 		}
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update Lanes failed! Unknow Error.";
+		qWarning() << "update Lanes failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -292,16 +292,16 @@ bool TessngDBToolsUpdateBase::updateLanesPtr(const QList<Lane*>& list, bool tran
 		}
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update Lanes failed! Unknow Error.";
+		qWarning() << "update Lanes failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -355,16 +355,16 @@ bool TessngDBToolsUpdateBase::updateGuideArrowByTransPtr(GuideArrow* mpGuideArro
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update GuideArrow failed! Unknow Error.";
+		qWarning() << "update GuideArrow failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -484,16 +484,16 @@ bool TessngDBToolsUpdateBase::updateConnectorsPtr(Connector* mpConnector)
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update Connectors failed! Unknow Error.";
+		qWarning() << "update Connectors failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -562,16 +562,16 @@ bool TessngDBToolsUpdateBase::updateRouteingPtr(Routing* it, bool trans) {
 
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update Routeing failed! Unknow Error.";
+		qWarning() << "update Routeing failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -668,16 +668,16 @@ bool TessngDBToolsUpdateBase::updateDecisionPointPtr(DecisionPoint* mpDecisionPo
         if (!result) goto failed;
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
-        qWarning() << "update DecisionPoint failed! Unknow Error.";
+        qWarning() << "update DecisionPoint failed! Unknow Error." << __FILE__ << __LINE__;
         result = false;
     }
 failed:
@@ -739,16 +739,16 @@ bool TessngDBToolsUpdateBase::updateDeparturePointPtr(DeparturePoint* mpDepartur
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update DeparturePoint failed! Unknow Error.";
+		qWarning() << "update DeparturePoint failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -857,16 +857,16 @@ bool TessngDBToolsUpdateBase::updateSignalGroupPtr(SignalGroup* it)
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update SignalGroups failed! Unknow Error.";
+		qWarning() << "update SignalGroups failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -886,16 +886,16 @@ bool TessngDBToolsUpdateBase::updateSignalLampByTransPtr(SignalLamp* sl) {
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update SignalLamps failed! Unknow Error.";
+		qWarning() << "update SignalLamps failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -936,16 +936,16 @@ bool TessngDBToolsUpdateBase::updateVehicleDrivInfoCollectorPtr(VehicleDrivInfoC
 
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update VehicleDrivInfoCollectors failed! Unknow Error.";
+		qWarning() << "update VehicleDrivInfoCollectors failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 	result = gDB.commit() && result;
@@ -991,16 +991,16 @@ bool TessngDBToolsUpdateBase::updateVehicleQueueCounterPtr(VehicleQueueCounter* 
 
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update VehicleQueueCounters failed! Unknow Error.";
+		qWarning() << "update VehicleQueueCounters failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 	result = gDB.commit() && result;
@@ -1046,16 +1046,16 @@ bool TessngDBToolsUpdateBase::updateVehicleTravelDetectorPtr(VehicleTravelDetect
 		}
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update VehicleTravelDetectors failed! Unknow Error.";
+		qWarning() << "update VehicleTravelDetectors failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 
@@ -1094,16 +1094,16 @@ bool TessngDBToolsUpdateBase::updateVehicleDetectorPtr(VehicleDetector* it) {
 		}
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update VehicleDetectors failed! Unknow Error.";
+		qWarning() << "update VehicleDetectors failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 
@@ -1189,16 +1189,16 @@ bool TessngDBToolsUpdateBase::updateReduceSpeedAreaPtr(ReduceSpeedArea* mpReduce
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update ReduceSpeedAreas failed! Unknow Error.";
+		qWarning() << "update ReduceSpeedAreas failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
@@ -1233,16 +1233,16 @@ bool TessngDBToolsUpdateBase::updateBustationPtr(BusStation* mpBusStation) {
 		}
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update Bustation failed! Unknow Error.";
+		qWarning() << "update Bustation failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 	result = gDB.commit() && result;
@@ -1367,16 +1367,16 @@ bool TessngDBToolsUpdateBase::updateBusLinePtr(BusLine* mpBusLine) {
 		if (!result) goto failed;
 	}
 	catch (QException& exc) {
-		qWarning() << exc.what();
+		qWarning() << exc.what() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (const PH::Exception& exc)
 	{
-		qWarning() << exc.message().c_str();
+		qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
 		result = false;
 	}
 	catch (...) {
-		qWarning() << "update GBusLine failed! Unknow Error.";
+		qWarning() << "update GBusLine failed! Unknow Error." << __FILE__ << __LINE__;
 		result = false;
 	}
 failed:
