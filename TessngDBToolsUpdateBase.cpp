@@ -94,6 +94,7 @@ bool TessngDBToolsUpdateBase::updateNode(const QList<Node*>& list) {
 	bool result = true;
 	QSqlQuery  query(gDB);
 	foreach(auto it, list) {
+		if (it == NULL) continue;
 		QString sql = "UPDATE Node set ";
 		if(!it->nodeName.isEmpty()) sql += QString("nodeName='%1'").arg(it->nodeName);
 
@@ -119,6 +120,7 @@ bool TessngDBToolsUpdateBase::updateLinkVertex(long linkId, const QList<Vertex*>
 	QSqlQuery  query(gDB);
 	int num = 1;
 	foreach(auto it, list) {
+		if (it == NULL) continue;
 		query.prepare(QString("UPDATE LinkVertex set Num=%1 WHERE LinkID=%2 and VertexID=%3")
 			.arg(num)
 			.arg(linkId)
@@ -140,8 +142,8 @@ bool TessngDBToolsUpdateBase::updateLinkBase(Link* link) {
 	bool result = true;
 	QSqlQuery  query(gDB);
 	QString sql = "UPDATE Link set ";
-	if (link->startNode->nodeID > 0)sql += QString("StartNodeID=%1").arg(link->startNode->nodeID);
-	if (link->endNode->nodeID > 0)sql += QString(",EndNodeID=%1").arg(link->endNode->nodeID);
+	if (link->startNode != NULL && link->startNode->nodeID > 0)sql += QString("StartNodeID=%1").arg(link->startNode->nodeID);
+	if (link->endNode != NULL && link->endNode->nodeID > 0)sql += QString(",EndNodeID=%1").arg(link->endNode->nodeID);
 	if (!link->linkName.isEmpty())sql += QString(",LinkName='%1'").arg(link->linkName);
 	if (!std::_Is_nan(link->laneNumber))sql += QString(",laneNumber=%1").arg(link->laneNumber);
 	if (!std::_Is_nan(link->laneWidth))sql += QString(",laneWidth=%1").arg(link->laneWidth);
@@ -446,8 +448,8 @@ bool TessngDBToolsUpdateBase::updateConnector(Connector* it) {
 	bool result = true;
 	QSqlQuery  query(gDB);
 	QString sql = "UPDATE Connector set ";
-	if (it->mpFromLink->linkID > 0)sql += QString("StartLinkID=%1").arg(it->mpFromLink->linkID);
-	if (it->mpToLink->linkID > 0)sql += QString(",EndLinkID=%1").arg(it->mpToLink->linkID);
+	if (it->mpFromLink != NULL && it->mpFromLink->linkID > 0)sql += QString("StartLinkID=%1").arg(it->mpFromLink->linkID);
+	if (it->mpToLink != NULL && it->mpToLink->linkID > 0)sql += QString(",EndLinkID=%1").arg(it->mpToLink->linkID);
 	if (!std::_Is_nan(it->length))sql += QString(",Length=%1").arg(it->length);
 	if (!it->connName.isEmpty())sql += QString(",ConnName='%1'").arg(it->connName);
 	if (!it->color.isEmpty())sql += QString(",Color='%1'").arg(it->color);
@@ -536,8 +538,8 @@ bool TessngDBToolsUpdateBase::updateRouteingBase(Routing* route) {
 	bool result = true;
 	QSqlQuery  query(gDB);
 	QString sql = "UPDATE Routing set ";
-	if (route->mpDecisionPoint->deciPointID > 0)sql += QString("deciPointID=%1").arg(route->mpDecisionPoint->deciPointID);
-	if (!route->routingName.isEmpty())sql += QString(",routingName=%1").arg(route->routingName);
+	if (route->mpDecisionPoint != NULL && route->mpDecisionPoint->deciPointID > 0)sql += QString("deciPointID=%1").arg(route->mpDecisionPoint->deciPointID);
+	if (!route->routingName.isEmpty())sql += QString(",routingName='%1'").arg(route->routingName);
 	if (!std::_Is_nan(route->proportion))sql += QString(",proportion=%1").arg(route->proportion);
 	sql += QString(" WHERE routingID=%1").arg(route->routingID);
 
@@ -636,7 +638,7 @@ bool TessngDBToolsUpdateBase::updateDecisionPointBase(DecisionPoint* pDecisionPo
 	QSqlQuery  query(gDB);
 	QString sql = "UPDATE DecisionPoint set ";
 	if (!pDecisionPoint->deciPointName.isEmpty())sql += QString("deciPointName='%1'").arg(pDecisionPoint->deciPointName);
-	if (pDecisionPoint->mpLink->linkID > 0)sql += QString(",linkID=%1").arg(pDecisionPoint->mpLink->linkID);
+	if (pDecisionPoint->mpLink != NULL && pDecisionPoint->mpLink->linkID > 0)sql += QString(",linkID=%1").arg(pDecisionPoint->mpLink->linkID);
 	if (!std::_Is_nan(pDecisionPoint->X))sql += QString(",X=%1").arg(pDecisionPoint->X);
 	if (!std::_Is_nan(pDecisionPoint->Y))sql += QString(",Y=%1").arg(pDecisionPoint->Y);
 	if (!std::_Is_nan(pDecisionPoint->Z))sql += QString(",Z=%1").arg(pDecisionPoint->Z);
@@ -716,7 +718,7 @@ bool TessngDBToolsUpdateBase::updateDeparturePointBase(DeparturePoint* dp) {
 	QSqlQuery  query(gDB);
 	QString sql = "UPDATE DeparturePoint set ";
 	if (!dp->name.isEmpty())sql += QString("name='%1'").arg(dp->name);
-	if (dp->mpLink->linkID > 0)sql += QString(",linkID=%1").arg(dp->mpLink->linkID);
+	if (dp->mpLink != NULL && dp->mpLink->linkID > 0)sql += QString(",linkID=%1").arg(dp->mpLink->linkID);
 	sql += QString(" WHERE departurePointID=%1").arg(dp->departurePointID);
 
 	if (checkSqlString(sql)) {

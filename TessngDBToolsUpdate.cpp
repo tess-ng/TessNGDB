@@ -53,7 +53,10 @@ TessngDBToolsUpdate::~TessngDBToolsUpdate()
 
 }
 void TessngDBToolsUpdate::gupdateNode(Node* dest, Node* it) {
+	if (it == NULL) return;
 	if (!it->nodeName.isEmpty()) dest->nodeName = it->nodeName;
+
+	if (it->mpVertex == NULL) return;
 	if (it->mpVertex->vertexID > 0) dest->mpVertex->vertexID = it->mpVertex->vertexID;
 	if (0 == _isnan(it->mpVertex->x))dest->mpVertex->x = it->mpVertex->x;
 	if (0 == _isnan(it->mpVertex->y))dest->mpVertex->y = it->mpVertex->y;
@@ -61,6 +64,7 @@ void TessngDBToolsUpdate::gupdateNode(Node* dest, Node* it) {
 }
 void TessngDBToolsUpdate::gupdateVertex(Vertex* dest, const QList<Vertex*>& src) {
 	foreach(auto it, src) {
+		if (it == NULL) continue;
 		if (dest->vertexID == it->vertexID) {
 			if (0 == _isnan(it->x))dest->x = it->x;
 			if (0 == _isnan(it->y))dest->y = it->y;
@@ -87,6 +91,7 @@ void TessngDBToolsUpdate::gupdateGuideArrow(GuideArrow* dest, const QList<GuideA
 
 void TessngDBToolsUpdate::gupdateLane(Lane* dest, const QList<Lane*>& src) {
 	foreach(auto it, src) {
+		if (it == NULL) continue;
 		/* 路段ID*/
 		if (it->linkID > 0)dest->linkID = it->linkID;
 		/* 车道序号 */
@@ -351,6 +356,7 @@ Routing* TessngDBToolsUpdate::updateRouteing(const Routing& rt) {
 void TessngDBToolsUpdate::gupdateRoutingFlowByInterval(QList<RoutingFLowRatio*>& dest, const QList<RoutingFLowRatio*>& src) {
 	for (int i = 0; i < dest.size(); i++) {
 		for (int j = 0; j < src.size(); j++) {
+			if (src[j] == NULL) continue;
 			if (dest[i]->RoutingFLowRatioID != src[j]->RoutingFLowRatioID) continue;
 
 			if (src[j]->routingID > 0)dest[i]->routingID = src[j]->routingID;

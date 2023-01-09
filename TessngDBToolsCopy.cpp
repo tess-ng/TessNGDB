@@ -43,7 +43,7 @@ bool TessngDBToolsCopy::copySignalGroup(SignalGroup& dest, SignalGroup* src) {
 
 bool TessngDBToolsCopy::initSignalLamp(SignalLamp& dest) {
     dest.signalLampID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.mpSignalPhase = NULL;
     dest.laneID = -1;
     dest.toLaneID = -1;
@@ -56,7 +56,7 @@ bool TessngDBToolsCopy::initSignalLamp(SignalLamp& dest) {
 bool TessngDBToolsCopy::initSignalPhase(SignalPhase* dest) {
     dest->signalPhaseID = -1;
     dest->serialNumber = -1;
-    dest->name = "";
+    //dest->name = "";
     dest->mlSignalColor.clear();
     dest->mpSignalGroup = NULL;
     return true;
@@ -64,7 +64,7 @@ bool TessngDBToolsCopy::initSignalPhase(SignalPhase* dest) {
 
 bool TessngDBToolsCopy::initSignalGroup(SignalGroup& dest) {
     dest.signalGroupID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.timeLength = -1;
     dest.startTime = -1;
     dest.endTime = -1;
@@ -154,7 +154,7 @@ bool TessngDBToolsCopy::initBusStationLine(BusStationLine* dest) {
 
 bool TessngDBToolsCopy::initBusLine(BusLine& dest) {
     dest.busLineID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.length = *((double*)&__NaN);
     dest.dischargeFreq = -1;
     dest.dischargeStartTime = -1;
@@ -169,18 +169,18 @@ bool TessngDBToolsCopy::initBusLine(BusLine& dest) {
     dest.mlLink.clear();
     dest.mlLinkId.clear();
     dest.mlBusStationLine.clear();
-    dest.mSpecialApp = "";
+    //dest.mSpecialApp = "";
     return true;
 }
 
 bool TessngDBToolsCopy::initBusStation(BusStation& dest) {
     dest.busStationID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.laneNumber = -1;
     dest.x = *((double*)&__NaN);
     dest.y = *((double*)&__NaN);
     dest.length = *((double*)&__NaN);
-    dest.type = "";
+    //dest.type = "";
     dest.mlBusStationLine.clear();
     dest.mpLink = NULL;
     return true;
@@ -310,7 +310,7 @@ bool TessngDBToolsCopy::initReduceSpeedVehiType(ReduceSpeedVehiType* dest) {
 
 bool TessngDBToolsCopy::initReduceSpeedArea(ReduceSpeedArea& dest) {
     dest.reduceSpeedAreaID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.location = *((double*)&__NaN);
     dest.areaLength = *((double*)&__NaN);
     dest.roadID = -1;
@@ -323,7 +323,7 @@ bool TessngDBToolsCopy::initReduceSpeedArea(ReduceSpeedArea& dest) {
 
 bool TessngDBToolsCopy::initVehicleTravelDetector(VehicleTravelDetector& dest) {
     dest.detectorId = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.startRoadId = -1;
     dest.start_laneNumber = -1;
     dest.start_toLaneNumber = -1;
@@ -345,7 +345,7 @@ bool TessngDBToolsCopy::initVehicleTravelDetector(VehicleTravelDetector& dest) {
 
 bool TessngDBToolsCopy::initVehicleQueueCounter(VehicleQueueCounter& dest) {
     dest.queueCounterID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.roadID = -1;
     dest.laneNumber = -1;
     dest.toLaneNumber = -1;
@@ -366,7 +366,7 @@ bool TessngDBToolsCopy::initVehicleQueueCounter(VehicleQueueCounter& dest) {
 
 bool TessngDBToolsCopy::initVehicleDrivInfoCollector(VehicleDrivInfoCollector& dest) {
     dest.collecterID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.roadID = -1;
     dest.laneNumber = -1;
     dest.toLaneNumber = -1;
@@ -391,7 +391,7 @@ bool TessngDBToolsCopy::initGuideArrow(GuideArrow& dest) {
 
 bool TessngDBToolsCopy::initDeparturePoint(DeparturePoint& dest) {
     dest.departurePointID = -1;
-    dest.name = "";
+    //dest.name = "";
     dest.mpLink = NULL;
     dest.mlDepaInterval.clear();
     dest.mlDepaPossion.clear();
@@ -549,7 +549,7 @@ bool TessngDBToolsCopy::copyLink(Link& dest, Link* src) {
 
 bool TessngDBToolsCopy::initRouting(Routing& dest) {
     dest.routingID = -1;
-    dest.routingName = "";
+    //dest.routingName = "";
     dest.proportion = *((double*)&__NaN);
     dest.mpDecisionPoint = NULL;
     dest.mllLink.clear();
@@ -574,12 +574,10 @@ bool TessngDBToolsCopy::initRoutingFlowByInterval(RoutingFlowByInterval* dest) {
 
 bool TessngDBToolsCopy::initDecisionPoint(DecisionPoint& dest) {
     dest.deciPointID = -1;
-    dest.deciPointName = "";
+    //dest.deciPointName = "";
     dest.X = *((double*)&__NaN);
     dest.Y = *((double*)&__NaN);
     dest.Z = *((double*)&__NaN);
-    dest.mFromPoint = QPointF(*((double*)&__NaN), *((double*)&__NaN));
-    dest.mToPoint = QPointF(*((double*)&__NaN), *((double*)&__NaN));
     dest.mlRouting.clear();
     dest.mpLink = NULL;
     dest.mlRoutingFlowByInterval.clear();
@@ -599,11 +597,11 @@ bool TessngDBToolsCopy::initLaneConnector(LaneConnector* dest) {
 bool TessngDBToolsCopy::initConnector(Connector& dest) {
     dest.connID = -1;
     dest.roadId = -1;
-    dest.connName = "";
+    //dest.connName = "";
     dest.length = *((double*)&__NaN);
     dest.curvature = *((double*)&__NaN);
     dest.nonLinearCoefficient = *((double*)&__NaN);
-    dest.color = "";
+    //dest.color = "";
     dest.desiredSpeed = *((double*)&__NaN);
     dest.limitSpeed = *((double*)&__NaN);
 
@@ -619,8 +617,8 @@ bool TessngDBToolsCopy::initLane(Lane& dest) {
     dest.linkID = -1;
     dest.serialNumber = -1;
     dest.width = *((double*)&__NaN);
-    dest.expectTravelDirection = "";
-    dest.actionType = "";
+    //dest.expectTravelDirection = "";
+    //dest.actionType = "";
     dest.mlGuideArrow.clear();
     dest.mlVehicleType.clear();
     return true;
@@ -628,13 +626,13 @@ bool TessngDBToolsCopy::initLane(Lane& dest) {
 
 bool TessngDBToolsCopy::initLink(Link* dest) {
     dest->linkID = -1;
-    dest->linkName = "";
+    //dest->linkName = "";
     dest->netId = -1;
     dest->roadId = -1;
     dest->laneNumber = *((double*)&__NaN);
     dest->laneWidth = *((double*)&__NaN);
-    dest->laneColor = "";
-    dest->linkType = "";
+    //dest->laneColor = "";
+    //dest->linkType = "";
     dest->length = *((double*)&__NaN);
     dest->curvature = *((double*)&__NaN);
     dest->nonLinearCoefficient = *((double*)&__NaN);
@@ -654,13 +652,13 @@ bool TessngDBToolsCopy::initLink(Link* dest) {
 
 bool TessngDBToolsCopy::initLink(Link& dest) {
     dest.linkID = -1;
-    dest.linkName = "";
+    //dest.linkName = "";
     dest.netId = -1;
     dest.roadId = -1;
     dest.laneNumber = *((double*)&__NaN);
     dest.laneWidth = *((double*)&__NaN);
-    dest.laneColor = "";
-    dest.linkType = "";
+    //dest.laneColor = "";
+    //dest.linkType = "";
     dest.length = *((double*)&__NaN);
     dest.curvature = *((double*)&__NaN);
     dest.nonLinearCoefficient = *((double*)&__NaN);
