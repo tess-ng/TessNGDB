@@ -113,16 +113,16 @@ bool TessngDBToolsRemove::deleteSignalLamp(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error." << __FILE__ << __LINE__;
         result = false;
     }
 exitPoint:
@@ -158,16 +158,16 @@ bool TessngDBToolsRemove::deleteSignalColor(long id, QList<int> serialNnumbers)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error." << __FILE__ << __LINE__;
         result = false;
     }
 exitPoint:
@@ -223,16 +223,16 @@ bool TessngDBToolsRemove::deleteSignalPhase(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
-        qWarning() << "remove SignalGroups exitPoint! Unknow Error.";
+        qWarning() << "remove SignalGroups exitPoint! Unknow Error." << __FILE__ << __LINE__;
         result = false;
     }
 exitPoint:
@@ -282,12 +282,12 @@ bool TessngDBToolsRemove::deleteSignalGroup(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -342,12 +342,12 @@ bool TessngDBToolsRemove::deleteBusStationPassengerArriving(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -407,12 +407,12 @@ bool TessngDBToolsRemove::deleteBusStationLine(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -491,12 +491,12 @@ bool TessngDBToolsRemove::deleteBusStation(QList<long> ids) {
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -538,12 +538,12 @@ bool TessngDBToolsRemove::deleteBusLine(QList<long> ids) {
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -579,12 +579,12 @@ bool TessngDBToolsRemove::deleteDrivInfoCollector(QList<long> ids) {
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -620,12 +620,12 @@ bool TessngDBToolsRemove::deleteVehicleQueueCounter(QList<long> ids) {
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -660,12 +660,12 @@ bool TessngDBToolsRemove::deleteVehicleTravelDetector(QList<long> ids) {
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -700,12 +700,12 @@ bool TessngDBToolsRemove::deleteGuideArrow(QList<long> ids) {
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -768,12 +768,12 @@ bool TessngDBToolsRemove::deleteReduceSpeedInterval(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -823,12 +823,12 @@ bool TessngDBToolsRemove::deleteReduceSpeedVehiType(long id, QList<long> vehicle
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -863,12 +863,12 @@ bool TessngDBToolsRemove::deleteReduceSpeedArea(QList<long> departureIntervalDs)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -916,12 +916,12 @@ bool TessngDBToolsRemove::deleteDepartureInterval(long id, QList<long> departure
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -957,12 +957,12 @@ bool TessngDBToolsRemove::deleteDeparturePoint(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1011,12 +1011,12 @@ bool TessngDBToolsRemove::deleteVehicleConsDetail(long id, QList<long> vehicleTy
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1078,11 +1078,11 @@ bool TessngDBToolsRemove::deleteVehicleConstitutent(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1136,12 +1136,12 @@ bool TessngDBToolsRemove::deleteRoutingFLowRatio(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1311,12 +1311,12 @@ bool TessngDBToolsRemove::deleteRoutingLaneConnector(long routingID, long connID
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1354,12 +1354,12 @@ bool TessngDBToolsRemove::deleteRouting(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1397,12 +1397,12 @@ bool TessngDBToolsRemove::deleteDecisionPoint(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1755,12 +1755,12 @@ bool TessngDBToolsRemove::deleteLaneConnector(long connID, long fromLaneId, long
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -1849,12 +1849,12 @@ bool TessngDBToolsRemove::deleteConnectors(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -2161,12 +2161,12 @@ bool TessngDBToolsRemove::deleteLane(QList<long> ids)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -2219,12 +2219,12 @@ bool TessngDBToolsRemove::deleteLinkVertex(long id, QList<int> nums)
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
@@ -2460,12 +2460,12 @@ bool TessngDBToolsRemove::deleteLink(QList<long> ids,bool clearCache, bool trans
         }
     }
     catch (QException& exc) {
-        qWarning() << exc.what();
+        qWarning() << exc.what() << __FILE__ << __LINE__;
         result = false;
     }
     catch (const PH::Exception& exc)
     {
-        qWarning() << exc.message().c_str();
+        qWarning() << exc.message().c_str() << __FILE__ << __LINE__;
         result = false;
     }
     catch (...) {
