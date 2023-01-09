@@ -1218,8 +1218,8 @@ bool TessngDBToolsUpdateBase::updateBustationPtr(BusStation* mpBusStation) {
 		QString sql = "UPDATE BusStation set ";
 		if (!mpBusStation->name.isEmpty())sql += QString("name='%1'").arg(mpBusStation->name);
 		if (!mpBusStation->type.isEmpty())sql += QString(",type='%1'").arg(gSpecialWords.trZhToEn(mpBusStation->type));
-		if (mpBusStation->mpLink->linkID > 0)sql += QString(",linkID=%1").arg(mpBusStation->mpLink->linkID);
-		if (mpBusStation->mpLink->laneNumber > 0)sql += QString(",laneNumber=%1").arg(mpBusStation->laneNumber);
+		if (mpBusStation->mpLink != NULL && mpBusStation->mpLink->linkID > 0)sql += QString(",linkID=%1").arg(mpBusStation->mpLink->linkID);
+		if (mpBusStation->mpLink != NULL && mpBusStation->mpLink->laneNumber > 0)sql += QString(",laneNumber=%1").arg(mpBusStation->laneNumber);
 		if (!std::_Is_nan(mpBusStation->x))sql += QString(",x=%1").arg(mpBusStation->x);
 		if (!std::_Is_nan(mpBusStation->y))sql += QString(",y=%1").arg(mpBusStation->y);
 		if (!std::_Is_nan(mpBusStation->length))sql += QString(",length=%1").arg(mpBusStation->length);
@@ -1253,6 +1253,7 @@ bool TessngDBToolsUpdateBase::updateBustationPtr(BusStation* mpBusStation) {
 	return result;
 }
 bool TessngDBToolsUpdateBase::updateBusLineRoads(BusLine* bline) {
+	if (bline->mlLink.isEmpty()) return true;
 	bool result = TessngDBToolsRemove::getInstance()->removeBusLineRoad(bline);
 	if (!result) return false;
 	QSqlQuery  query(gDB);

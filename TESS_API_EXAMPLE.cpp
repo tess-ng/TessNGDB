@@ -168,27 +168,11 @@ void TESS_API_EXAMPLE::on_btnSignalGroup_released()
     }
     else if (bUpdate) {
         SignalGroup test;
-        SignalPhase* tempSP = new SignalPhase();
-        foreach(SignalGroup * it, gpScene->mlSignalGroup) {
-            if (it->id() == id) {
-                TessngDBToolsCopy::getInstance()->copySignalGroup(test, it);
-                test.name = it->name + "1";
+        TessngDBToolsCopy::getInstance()->initSignalGroup(test);
+        test.signalGroupID = id;
+        test.name = "test";
 
-                test.mlPhase.clear();
-                if (!it->mlPhase.isEmpty()) {
-                    TessngDBToolsCopy::getInstance()->copySignalPhase(tempSP, it->mlPhase[0]);
-                    tempSP->name = it->mlPhase[0]->name + "1";
-                    test.mlPhase.push_back(tempSP);
-                }
-
-                result = TessngDBToolsUpdate::getInstance()->updateSignalGroup(test);
-                break;
-            }
-        }
-
-        delete tempSP;
-        tempSP = NULL;
-        if (!test.mlPhase.isEmpty()) test.mlPhase.clear();
+        result = TessngDBToolsUpdate::getInstance()->updateSignalGroup(test);
     }
     else if (bDelete) {
         QList<long> list;
@@ -272,49 +256,53 @@ void TESS_API_EXAMPLE::on_btnBusLine_released()
     }
     else if (bUpdate) {
         BusLine test;
-        BusStationLine* tempLine = new BusStationLine();
-        PassengerArriving* tempPA = new PassengerArriving();
-        
-        foreach(GBusLine * it, gpScene->mlGBusLine) {
-            if (it->id() == id) {
-                //填充表单数据
-                TessngDBToolsCopy::getInstance()->copyBusLine(test, it->mpBusLine);
-                test.mlLink.clear();
-                test.mlLinkId.clear();
+        TessngDBToolsCopy::getInstance()->initBusLine(test);
+        test.busLineID = id;
+        test.name = "test";
+        result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
 
-                //修改表单数据
-                test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime + 10;
-
-                //只修改第一个BusStationLine
-                if (!it->mpBusLine->mlBusStationLine.isEmpty()) {
-                    test.mlBusStationLine.clear();
-                    TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusLine->mlBusStationLine[0]);
-                    tempLine->parkingTime = it->mpBusLine->mlBusStationLine[0]->parkingTime + 10;
-                    test.mlBusStationLine.push_back(tempLine);
-
-                    //只修改第一个BusStationLine的第一个PassengerArriving
-                    if (!it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving.isEmpty()) {
-                        test.mlBusStationLine[0]->mlPassengerArriving.clear();
-                        TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]);
-                        tempPA->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
-                        test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
-                    }
-                }
-
-                result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
-                break;
-            }
-        }
-
-        delete tempPA;
-        tempPA = NULL;
-        if (!test.mlBusStationLine.isEmpty()) {
-            test.mlBusStationLine[0]->mlPassengerArriving.clear();
-        }
- 
-        delete tempLine;
-        tempLine = NULL;
-        test.mlBusStationLine.clear();
+        //BusStationLine* tempLine = new BusStationLine();
+        //PassengerArriving* tempPA = new PassengerArriving();
+        //foreach(GBusLine * it, gpScene->mlGBusLine) {
+        //    if (it->id() == id) {
+        //        //填充表单数据
+        //        TessngDBToolsCopy::getInstance()->copyBusLine(test, it->mpBusLine);
+        //        test.mlLink.clear();
+        //        test.mlLinkId.clear();
+        // 
+        //        //修改表单数据
+        //        test.passCountAtStartTime = it->mpBusLine->passCountAtStartTime + 10;
+        //        //只修改第一个BusStationLine
+        // 
+        //        if (!it->mpBusLine->mlBusStationLine.isEmpty()) {
+        //            test.mlBusStationLine.clear();
+        //            TessngDBToolsCopy::getInstance()->copyBusStationLine(tempLine, it->mpBusLine->mlBusStationLine[0]);
+        //            tempLine->parkingTime = it->mpBusLine->mlBusStationLine[0]->parkingTime + 10;
+        //            test.mlBusStationLine.push_back(tempLine);
+        // 
+        //            //只修改第一个BusStationLine的第一个PassengerArriving
+        //            if (!it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving.isEmpty()) {
+        //                test.mlBusStationLine[0]->mlPassengerArriving.clear();
+        //                TessngDBToolsCopy::getInstance()->copyPassengerArriving(tempPA, it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]);
+        //                tempPA->passengerCount = it->mpBusLine->mlBusStationLine[0]->mlPassengerArriving[0]->passengerCount + 5;
+        //                test.mlBusStationLine[0]->mlPassengerArriving.push_back(tempPA);
+        //            }
+        //        }
+        // 
+        //        result = TessngDBToolsUpdate::getInstance()->updateBusLine(test);
+        //        break;
+        //    }
+        //}
+        // 
+        //delete tempPA;
+        //tempPA = NULL;
+        //if (!test.mlBusStationLine.isEmpty()) {
+        //    test.mlBusStationLine[0]->mlPassengerArriving.clear();
+        //}
+        // 
+        //delete tempLine;
+        //tempLine = NULL;
+        //test.mlBusStationLine.clear();
     }
     else if (bDelete) {
         QList<long> list;
@@ -344,6 +332,12 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
     }
     else if (bUpdate) {
         BusStation test;
+        TessngDBToolsCopy::getInstance()->initBusStation(test);
+        test.busStationID = id;
+        test.name = "test";
+        result = TessngDBToolsUpdate::getInstance()->updateBustation(test);
+
+        /*
         BusStationLine* tempLine = new BusStationLine();
         PassengerArriving* tempPA = new PassengerArriving();
         
@@ -386,7 +380,7 @@ void TESS_API_EXAMPLE::on_btnBusStation_released()
         tempLine = NULL;
         test.mlBusStationLine.clear();
 
-        test.mpLink = NULL;
+        test.mpLink = NULL;*/
     }
     else if (bDelete) {
         QList<long> list;
@@ -417,7 +411,12 @@ void TESS_API_EXAMPLE::on_btnVehicleTravelDetector_released()
     }
     else if (bUpdate) {
         VehicleTravelDetector test;
-        foreach(GVehicleTravelDetector * it, gpScene->mlGVehicleTravelDetector) {
+        TessngDBToolsCopy::getInstance()->initVehicleTravelDetector(test);
+        test.detectorId = id;
+        test.name = "test";
+        result = TessngDBToolsUpdate::getInstance()->updateVehicleTravelDetector(test);
+
+        /*foreach(GVehicleTravelDetector * it, gpScene->mlGVehicleTravelDetector) {
             if (it->mpVehicleTravelDetector->detectorId == id) {
                 //填充表单数据
                 TessngDBToolsCopy::getInstance()->copyVehicleTravelDetector(test, it->mpVehicleTravelDetector);
@@ -428,7 +427,7 @@ void TESS_API_EXAMPLE::on_btnVehicleTravelDetector_released()
                 result = TessngDBToolsUpdate::getInstance()->updateVehicleTravelDetector(test);
                 break;
             }
-        }
+        }*/
     }
     else if (bDelete) {
         QList<long> list;
@@ -458,6 +457,11 @@ void TESS_API_EXAMPLE::on_btnVehicleQueueCounter_released()
     }
     else if (bUpdate) {
         VehicleQueueCounter test;
+        TessngDBToolsCopy::getInstance()->initVehicleQueueCounter(test);
+        test.queueCounterID = id;
+        test.name = "test";
+        result = TessngDBToolsUpdate::getInstance()->updateVehicleQueueCounter(test);
+        /*
         foreach(GVehicleQueueCounter * it, gpScene->mlGVehicleQueueCounter) {
             if (it->mpVehicleQueueCounter->queueCounterID == id) {
                 //填充表单数据
@@ -469,7 +473,7 @@ void TESS_API_EXAMPLE::on_btnVehicleQueueCounter_released()
                 result = TessngDBToolsUpdate::getInstance()->updateVehicleQueueCounter(test);
                 break;
             }
-        }
+        }*/
     }
     else if (bDelete) {
         QList<long> list;
@@ -499,6 +503,11 @@ void TESS_API_EXAMPLE::on_btnVehicleDrivInfoCollecter_released()
     }
     else if (bUpdate) {
         VehicleDrivInfoCollector test;
+        TessngDBToolsCopy::getInstance()->initVehicleDrivInfoCollector(test);
+        test.collecterID = id;
+        test.name = "test";
+        result = TessngDBToolsUpdate::getInstance()->updateVehicleDrivInfoCollector(test);
+        /*
         foreach(GVehicleDrivInfoCollector * it, gpScene->mlGVehicleDrivInfoCollector) {
             if (it->id() == id) {
                 //填充表单数据
@@ -510,7 +519,7 @@ void TESS_API_EXAMPLE::on_btnVehicleDrivInfoCollecter_released()
                 result = TessngDBToolsUpdate::getInstance()->updateVehicleDrivInfoCollector(test);
                 break;
             }
-        }
+        }*/
     }
     else if (bDelete) {
         QList<long> list;
@@ -540,6 +549,11 @@ void TESS_API_EXAMPLE::on_btnGuideArrow_released()
     }
     else if (bUpdate) {
         GuideArrow test;
+        TessngDBToolsCopy::getInstance()->initGuideArrow(test);
+        test.guideArrowID = id;
+        test.arrowType = GuideArrow::Right;
+        result = TessngDBToolsUpdate::getInstance()->updateGuideArrow(test);
+        /*
         foreach(GGuideArrow * it, gpScene->mlGGuideArrow) {
             if (it->mpGuideArrow->guideArrowID == id) {
                 //填充表单数据
@@ -552,7 +566,7 @@ void TESS_API_EXAMPLE::on_btnGuideArrow_released()
                 result = TessngDBToolsUpdate::getInstance()->updateGuideArrow(test);
                 break;
             }
-        }
+        }*/
     }
     else if (bDelete) {
         QList<long> list;

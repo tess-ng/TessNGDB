@@ -41,6 +41,36 @@ bool TessngDBToolsCopy::copySignalGroup(SignalGroup& dest, SignalGroup* src) {
     return true;
 }
 
+bool TessngDBToolsCopy::initSignalLamp(SignalLamp& dest) {
+    dest.signalLampID = -1;
+    dest.name = "";
+    dest.mpSignalPhase = NULL;
+    dest.laneID = -1;
+    dest.toLaneID = -1;
+    dest.x = *((double*)&__NaN);
+    dest.y = *((double*)&__NaN);
+    dest.z = *((double*)&__NaN);
+    return true;
+}
+
+bool TessngDBToolsCopy::initSignalPhase(SignalPhase* dest) {
+    dest->signalPhaseID = -1;
+    dest->serialNumber = -1;
+    dest->name = "";
+    dest->mlSignalColor.clear();
+    dest->mpSignalGroup = NULL;
+    return true;
+}
+
+bool TessngDBToolsCopy::initSignalGroup(SignalGroup& dest) {
+    dest.signalGroupID = -1;
+    dest.name = "";
+    dest.timeLength = -1;
+    dest.startTime = -1;
+    dest.endTime = -1;
+    dest.mlPhase.clear();
+    return true;
+}
 //--------------------------------------公交------------------------------------
 bool TessngDBToolsCopy::copyPassengerArriving(PassengerArriving* dest, PassengerArriving* src) {
     dest->passengerArrivingID = src->passengerArrivingID;
@@ -99,6 +129,62 @@ bool TessngDBToolsCopy::copyBusStation(BusStation& dest, BusStation* src) {
     return true;
 }
 
+bool TessngDBToolsCopy::initPassengerArriving(PassengerArriving* dest) {
+    dest->passengerArrivingID = -1;
+    dest->startTime = -1;
+    dest->endTime = -1;
+    dest->passengerCount = -1;
+    return true;
+}
+
+bool TessngDBToolsCopy::initBusStationLine(BusStationLine* dest) {
+    dest->stationLineID = -1;
+    dest->busStationID = -1;
+    dest->linkID = -1;
+    dest->busLineID = -1;
+    dest->parkingTime = -1;
+    dest->leavingPercent = *((double*)&__NaN);
+    dest->getOnTimePerson = *((double*)&__NaN);
+    dest->getOutTimePerson = *((double*)&__NaN);
+    dest->mlPassengerArriving.clear();
+    dest->mlPassenger.clear();
+    dest->mlPassengerLeaved.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initBusLine(BusLine& dest) {
+    dest.busLineID = -1;
+    dest.name = "";
+    dest.length = *((double*)&__NaN);
+    dest.dischargeFreq = -1;
+    dest.dischargeStartTime = -1;
+    dest.dischargeEndTime = -1;
+    dest.startX = *((double*)&__NaN);
+    dest.startY = *((double*)&__NaN);
+    dest.endX = *((double*)&__NaN);
+    dest.endY = *((double*)&__NaN);
+    dest.desirSpeed = *((double*)&__NaN);
+    dest.speedSD = *((double*)&__NaN);
+    dest.passCountAtStartTime = -1;
+    dest.mlLink.clear();
+    dest.mlLinkId.clear();
+    dest.mlBusStationLine.clear();
+    dest.mSpecialApp = "";
+    return true;
+}
+
+bool TessngDBToolsCopy::initBusStation(BusStation& dest) {
+    dest.busStationID = -1;
+    dest.name = "";
+    dest.laneNumber = -1;
+    dest.x = *((double*)&__NaN);
+    dest.y = *((double*)&__NaN);
+    dest.length = *((double*)&__NaN);
+    dest.type = "";
+    dest.mlBusStationLine.clear();
+    dest.mpLink = NULL;
+    return true;
+}
 //---------------------------------车辆运行及检测-------------------------------
 bool TessngDBToolsCopy::copyReduceSpeedInterval(ReduceSpeedInterval* dest, ReduceSpeedInterval* src) {
     dest->intervalID = src->intervalID;
@@ -203,6 +289,112 @@ bool TessngDBToolsCopy::copyDeparturePoint(DeparturePoint& dest, DeparturePoint*
     dest.mpLink = src->mpLink;
     dest.mlDepaInterval = src->mlDepaInterval;
     dest.mlDepaPossion = src->mlDepaPossion;
+    return true;
+}
+
+bool TessngDBToolsCopy::initReduceSpeedInterval(ReduceSpeedInterval* dest) {
+    dest->intervalID = -1;
+    dest->reduceSpeedAreaID = -1;
+    dest->startTime = -1;
+    dest->endTime = -1;
+    return true;
+}
+
+bool TessngDBToolsCopy::initReduceSpeedVehiType(ReduceSpeedVehiType* dest) {
+    dest->vehicleTypeCode = -1;
+    dest->reduceSpeedAreaID = -1;
+    dest->avgSpeed = *((double*)&__NaN);
+    dest->speedSD = *((double*)&__NaN);
+    return true;
+}
+
+bool TessngDBToolsCopy::initReduceSpeedArea(ReduceSpeedArea& dest) {
+    dest.reduceSpeedAreaID = -1;
+    dest.name = "";
+    dest.location = *((double*)&__NaN);
+    dest.areaLength = *((double*)&__NaN);
+    dest.roadID = -1;
+    dest.laneNumber = -1;
+    dest.toLaneNumber = -1;
+    dest.mlReduceSpeedInterval.clear();
+    dest.mlReduceSpeedVehiType.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initVehicleTravelDetector(VehicleTravelDetector& dest) {
+    dest.detectorId = -1;
+    dest.name = "";
+    dest.startRoadId = -1;
+    dest.start_laneNumber = -1;
+    dest.start_toLaneNumber = -1;
+    dest.startDist = *((double*)&__NaN);
+    dest.startX = *((double*)&__NaN);
+    dest.startY = *((double*)&__NaN);
+    dest.teminalRoadId = -1;
+    dest.teminal_laneNumber = -1;
+    dest.teminal_toLaneNumber = -1;
+    dest.teminalDist = *((double*)&__NaN);
+    dest.teminalX = *((double*)&__NaN);
+    dest.teminalY = *((double*)&__NaN);
+    dest.startTime = -1;
+    dest.endTime = -1;
+    dest.dataInterval = -1;
+    dest.shortestDistance = *((double*)&__NaN);
+    return true;
+}
+
+bool TessngDBToolsCopy::initVehicleQueueCounter(VehicleQueueCounter& dest) {
+    dest.queueCounterID = -1;
+    dest.name = "";
+    dest.roadID = -1;
+    dest.laneNumber = -1;
+    dest.toLaneNumber = -1;
+    dest.x = *((double*)&__NaN);
+    dest.y = *((double*)&__NaN);
+    dest.z = *((double*)&__NaN);
+    dest.speedLowLimit = *((double*)&__NaN);
+    dest.speedUpLimit = *((double*)&__NaN);
+    dest.maxDistInterval = *((double*)&__NaN);
+    dest.maxQueueLength = *((double*)&__NaN);
+    dest.distance = *((double*)&__NaN);
+    dest.startTime = -1;
+    dest.endTime = -1;
+    dest.dataInterval = -1;
+    dest.countInterval = -1;
+    return true;
+}
+
+bool TessngDBToolsCopy::initVehicleDrivInfoCollector(VehicleDrivInfoCollector& dest) {
+    dest.collecterID = -1;
+    dest.name = "";
+    dest.roadID = -1;
+    dest.laneNumber = -1;
+    dest.toLaneNumber = -1;
+    dest.distance = *((double*)&__NaN);
+    dest.x = *((double*)&__NaN);
+    dest.y = *((double*)&__NaN);
+    dest.z = *((double*)&__NaN);
+    dest.startTime = -1;
+    dest.endTime = -1;
+    dest.dataInterval = -1;
+    return true;
+}
+
+bool TessngDBToolsCopy::initGuideArrow(GuideArrow& dest) {
+    dest.guideArrowID = -1;
+    dest.laneID = -1;
+    dest.length = *((double*)&__NaN);
+    dest.distToTerminal = *((double*)&__NaN);
+    dest.arrowType = GuideArrow::Left;//随便
+    return true;
+}
+
+bool TessngDBToolsCopy::initDeparturePoint(DeparturePoint& dest) {
+    dest.departurePointID = -1;
+    dest.name = "";
+    dest.mpLink = NULL;
+    dest.mlDepaInterval.clear();
+    dest.mlDepaPossion.clear();
     return true;
 }
 //-----------------------------------道路及连接---------------------------------
@@ -352,5 +544,136 @@ bool TessngDBToolsCopy::copyLink(Link& dest, Link* src) {
     dest.endNode = src->endNode;
     dest.mlVertex = src->mlVertex;
     dest.mlLane = src->mlLane;
+    return true;
+}
+
+bool TessngDBToolsCopy::initRouting(Routing& dest) {
+    dest.routingID = -1;
+    dest.routingName = "";
+    dest.proportion = *((double*)&__NaN);
+    dest.mpDecisionPoint = NULL;
+    dest.mllLink.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initRoutingFLowRatio(RoutingFLowRatio* dest) {
+    dest->RoutingFLowRatioID = -1;
+    dest->routingID = -1;
+    dest->startDateTime = -1;
+    dest->endDateTime = -1;
+    dest->ratio = *((double*)&__NaN);
+    dest->vehiCount = -1;
+    return true;
+}
+
+bool TessngDBToolsCopy::initRoutingFlowByInterval(RoutingFlowByInterval* dest) {
+    dest->endDateTime = -1;
+    dest->mlRoutingFlowRatio.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initDecisionPoint(DecisionPoint& dest) {
+    dest.deciPointID = -1;
+    dest.deciPointName = "";
+    dest.X = *((double*)&__NaN);
+    dest.Y = *((double*)&__NaN);
+    dest.Z = *((double*)&__NaN);
+    dest.mFromPoint = QPointF(*((double*)&__NaN), *((double*)&__NaN));
+    dest.mToPoint = QPointF(*((double*)&__NaN), *((double*)&__NaN));
+    dest.mlRouting.clear();
+    dest.mpLink = NULL;
+    dest.mlRoutingFlowByInterval.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initLaneConnector(LaneConnector* dest) {
+    dest->mpConnector = NULL;
+    dest->mpFromLane = NULL;
+    dest->mpToLane = NULL;
+    dest->laneConnectorID = -1;
+    dest->mrLength = *((double*)&__NaN);
+    dest->weight = -1;
+    return true;
+}
+
+bool TessngDBToolsCopy::initConnector(Connector& dest) {
+    dest.connID = -1;
+    dest.roadId = -1;
+    dest.connName = "";
+    dest.length = *((double*)&__NaN);
+    dest.curvature = *((double*)&__NaN);
+    dest.nonLinearCoefficient = *((double*)&__NaN);
+    dest.color = "";
+    dest.desiredSpeed = *((double*)&__NaN);
+    dest.limitSpeed = *((double*)&__NaN);
+
+    dest.mpFromLink = NULL;
+    dest.mpToLink = NULL;
+    dest.mlLaneConnector.clear();
+    dest.mlVehicleType.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initLane(Lane& dest) {
+    dest.laneID = -1;
+    dest.linkID = -1;
+    dest.serialNumber = -1;
+    dest.width = *((double*)&__NaN);
+    dest.expectTravelDirection = "";
+    dest.actionType = "";
+    dest.mlGuideArrow.clear();
+    dest.mlVehicleType.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initLink(Link* dest) {
+    dest->linkID = -1;
+    dest->linkName = "";
+    dest->netId = -1;
+    dest->roadId = -1;
+    dest->laneNumber = *((double*)&__NaN);
+    dest->laneWidth = *((double*)&__NaN);
+    dest->laneColor = "";
+    dest->linkType = "";
+    dest->length = *((double*)&__NaN);
+    dest->curvature = *((double*)&__NaN);
+    dest->nonLinearCoefficient = *((double*)&__NaN);
+    dest->linkSaturationFlow = *((double*)&__NaN);
+    dest->linkTrafficFlow = *((double*)&__NaN);
+    dest->desiredSpeed = *((double*)&__NaN);
+    dest->limitSpeed = *((double*)&__NaN);
+    dest->minSpeed = *((double*)&__NaN);
+    dest->addValue = *((double*)&__NaN);
+
+    dest->startNode = NULL;
+    dest->endNode = NULL;
+    dest->mlVertex.clear();
+    dest->mlLane.clear();
+    return true;
+}
+
+bool TessngDBToolsCopy::initLink(Link& dest) {
+    dest.linkID = -1;
+    dest.linkName = "";
+    dest.netId = -1;
+    dest.roadId = -1;
+    dest.laneNumber = *((double*)&__NaN);
+    dest.laneWidth = *((double*)&__NaN);
+    dest.laneColor = "";
+    dest.linkType = "";
+    dest.length = *((double*)&__NaN);
+    dest.curvature = *((double*)&__NaN);
+    dest.nonLinearCoefficient = *((double*)&__NaN);
+    dest.linkSaturationFlow = *((double*)&__NaN);
+    dest.linkTrafficFlow = *((double*)&__NaN);
+    dest.desiredSpeed = *((double*)&__NaN);
+    dest.limitSpeed = *((double*)&__NaN);
+    dest.minSpeed = *((double*)&__NaN);
+    dest.addValue = *((double*)&__NaN);
+
+    dest.startNode = NULL;
+    dest.endNode = NULL;
+    dest.mlVertex.clear();
+    dest.mlLane.clear();
     return true;
 }
