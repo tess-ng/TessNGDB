@@ -81,11 +81,11 @@ bool TessngDBToolsUpdateBase::updateVertex(const QList<Vertex*>& list)
 				.arg(pVertex->z)
 				.arg(pVertex->vertexID));
 			result = query.exec();
-		}
+			if (!result) {
+				throw PH::Exception(query.lastError().text().toStdString());
+				break;
+			}
 
-		if (!result) {
-			throw PH::Exception(query.lastError().text().toStdString());
-			break;
 		}
 	}
 	return result;
@@ -94,23 +94,23 @@ bool TessngDBToolsUpdateBase::updateNode(const QList<Node*>& list) {
 	bool result = true;
 	QSqlQuery  query(gDB);
 	foreach(auto it, list) {
-		if (it->nodeName != "") {
-			query.prepare(QString("UPDATE Node set nodeName='%1' WHERE nodeID=%2")
-				.arg(it->nodeName)
-				.arg(it->nodeID));
-			result = query.exec();
-		}
-		if (it->mpVertex != NULL) {
-			query.prepare(QString("UPDATE Node set vertexID='%1' WHERE nodeID=%2")
-				.arg(it->mpVertex->vertexID)
-				.arg(it->nodeID));
-			result = query.exec() && result;
-		}
+		QString sql = "UPDATE Node set ";
+		if(!it->nodeName.isEmpty()) sql += QString("nodeName='%1'").arg(it->nodeName);
 
-		if (!result) {
-			throw PH::Exception(query.lastError().text().toStdString());
-			break;
+		if(it->mpVertex!=NULL) sql += QString(",vertexID=%1").arg(it->mpVertex->vertexID);
+
+		sql += QString(" WHERE nodeID=%1").arg(it->nodeID);
+
+		if (checkSqlString(sql)) {
+			query.prepare(sql);
+			result = query.exec() && result;
+
+			if (!result) {
+				throw PH::Exception(query.lastError().text().toStdString());
+				break;
+			}
 		}
+		
 	}
 	return result;
 }
